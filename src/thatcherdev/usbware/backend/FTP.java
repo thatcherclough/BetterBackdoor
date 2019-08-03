@@ -23,7 +23,7 @@ public class FTP {
 	public static boolean shell(String filePath, String protocol) {
 		ServerSocketChannel serverSocketChannel=null;
 		SocketChannel socketChannel=null;
-		try {
+		try{
 			serverSocketChannel=ServerSocketChannel.open();
 			serverSocketChannel.socket().bind(new InetSocketAddress(1026));
 			socketChannel=serverSocketChannel.accept();
@@ -32,15 +32,15 @@ public class FTP {
 			else if(protocol.equals("rec"))
 				rec(filePath, socketChannel);
 			return true;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return false;
-		}finally {
-			try {
+		}finally{
+			try{
 				if(serverSocketChannel!=null)
 					serverSocketChannel.close();
 				if(socketChannel!=null)
 					socketChannel.close();
-			}catch (Exception e) {}
+			}catch(Exception e){}
 		}
 	}
 
@@ -54,7 +54,7 @@ public class FTP {
 	 */
 	public static boolean backdoor(String filePath, String protocol, String ip) {
 		SocketChannel socketChannel=null;
-		try {
+		try{
 			socketChannel=SocketChannel.open();
 			SocketAddress socketAddress=new InetSocketAddress(ip, 1026);
 			socketChannel.connect(socketAddress);
@@ -63,13 +63,13 @@ public class FTP {
 			else if(protocol.equals("rec"))
 				rec(filePath, socketChannel);
 			return true;
-		}catch (Exception e) {
+		}catch(Exception e){
 			return false;
-		}finally {
-			try {
+		}finally{
+			try{
 				if(socketChannel!=null)
 					socketChannel.close();
-			}catch (Exception e) {}
+			}catch(Exception e){}
 		}
 	}
 
@@ -84,7 +84,7 @@ public class FTP {
 		RandomAccessFile file=new RandomAccessFile(new File(filePath), "r");
 		FileChannel fileChannel=file.getChannel();
 		ByteBuffer buffer=ByteBuffer.allocate(1024);
-		while(fileChannel.read(buffer)>0) {
+		while(fileChannel.read(buffer)>0){
 			buffer.flip();
 			socketChannel.write(buffer);
 			buffer.clear();
@@ -104,7 +104,7 @@ public class FTP {
 		RandomAccessFile file=new RandomAccessFile(filePath, "rw");
 		FileChannel fileChannel=file.getChannel();
 		ByteBuffer buffer=ByteBuffer.allocate(1024);
-		while(socketChannel.read(buffer)>0) {
+		while(socketChannel.read(buffer)>0){
 			buffer.flip();
 			fileChannel.write(buffer);
 			buffer.clear();

