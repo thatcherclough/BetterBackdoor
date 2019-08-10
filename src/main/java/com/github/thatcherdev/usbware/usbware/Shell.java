@@ -1,4 +1,4 @@
-package thatcherdev.usbware.usbware;
+package com.github.thatcherdev.usbware.usbware;
 
 import java.io.PrintWriter;
 import java.net.ServerSocket;
