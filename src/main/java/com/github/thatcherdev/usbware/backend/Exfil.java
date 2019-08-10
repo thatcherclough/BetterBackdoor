@@ -1,4 +1,4 @@
-package thatcherdev.usbware.backend;
+package com.github.thatcherdev.usbware.backend;
 
 import java.io.File;
 import java.io.FileOutputStream;

