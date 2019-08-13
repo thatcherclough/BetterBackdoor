@@ -28,7 +28,6 @@ public class HandleCommand {
 			else if(command.equals("ds"))
 				Shell.out.println("cmd cd scripts && dir/b/a:-d *.duck");
 			ArrayList<String> scripts=new ArrayList<String>(Arrays.asList(getResp().split("\n")));
-			scripts.remove("BrowserCreds.ps1");
 			scripts.remove("File Not Found");
 			if(scripts.size()==0)
 				System.out.println("No scripts found");

