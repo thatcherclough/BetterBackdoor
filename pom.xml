@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.thatcherdev</groupId>
-	<artifactId>USBware</artifactId>
+	<artifactId>SocketShell</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
@@ -29,30 +29,31 @@
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<plugins>
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+	   			<artifactId>maven-compiler-plugin</artifactId>
+	   			<version>3.8.1</version>
+	   			<configuration>
+		 			<source>1.8</source>
+		 			<target>1.8</target>
+	   			</configuration>
+	 		</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>USBware</id>
+						<id>SocketShell</id>
 						<configuration>
 							<outputDirectory>${project.basedir}</outputDirectory>
 							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
-									<mainClass>com.github.thatcherdev.usbware.usbware.USBware</mainClass>
+									<mainClass>com.github.thatcherdev.socketshell.SocketShell</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<finalName>usbware</finalName>
+							<finalName>socketshell</finalName>
 						</configuration>
 						<phase>package</phase>
 						<goals>
@@ -65,13 +66,13 @@
 							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
-									<mainClass>com.github.thatcherdev.usbware.backdoor.Backdoor</mainClass>
+									<mainClass>com.github.thatcherdev.socketshell.backdoor.Backdoor</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<finalName>backdoor</finalName>
+							<finalName>run</finalName>
 						</configuration>
 						<phase>package</phase>
 						<goals>
@@ -84,7 +85,7 @@
 							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
-									<mainClass>com.github.thatcherdev.usbware.install.Install</mainClass>
+									<mainClass>com.github.thatcherdev.socketshell.install.Install</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>

