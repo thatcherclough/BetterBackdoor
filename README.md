@@ -17,23 +17,20 @@ This backdoor can:
 - Get a screenshot of victim's computer
 
 To compile the backdoor, SocketShell:
-- Writes and encrypts your private IP address to 'ip.txt' in directory 'backdoor'.
 - Copies the necessary jar files to 'backdoor'.
 - If desired, copies a Java Runtime Environment to 'backdoor'.
-- Creates batch files in 'backdoor' for running the jar files in a packaged Java Runtime Environment.
+- Creates batch files in 'backdoor' for running the jar files in a packaged Java Runtime Environment and supplying jar files with the server's IPv4 address.
 - Copies all '.duck' DuckyScripts and '.ps1' PowerShell scripts to 'backdoor'.
 
 To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC and execute either run.bat or install.bat.
 
 run.bat will:
 - Start the backdoor
-- Display information for controlling the backdoor
 
 install.bat will:
 - Install the backdoor to 'C:\ProgramData\USBDrivers'
 - Add the backdoor to startup (if executed as administrator)
 - Run the backdoor
-- Display information for controlling the backdoor
 
 Once running, to control the backdoor you must return to SocketShell and run option 1 at start while connected to the same WiFi network as the victim's computer.
 

