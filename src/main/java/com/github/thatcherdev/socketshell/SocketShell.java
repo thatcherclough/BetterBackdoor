@@ -4,7 +4,9 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Scanner;
 import com.github.thatcherdev.socketshell.shell.Shell;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class SocketShell {
 
 	public final static Scanner sc = new Scanner(System.in);

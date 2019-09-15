@@ -38,8 +38,7 @@ install.bat will:
 Once running, to control the backdoor you must return to SocketShell and run option 1 at start while connected to the same WiFi network as the victim's computer.
 
 ## Requirements
-- A Java JDK distribution must be installed and added to PATH.
-- Maven must be installed and added to PATH.
+- A Java JDK distribution must be installed and added to PATH with label JAVA_HOME.
 - You must use the same computer to compile and control the backdoor.
   - The computer used to compile the backdoor must be on the same WiFi network as the victim's computer.
   - The IPv4 address of this computer must remain static in the time between compiling the backdoor and controlling it.
@@ -57,7 +56,12 @@ git clone https://github.com/ThatcherDev/SocketShell.git
 cd SocketShell
 
 # build SocketShell with Maven
-mvn clean package
+# for Linux run
+chmod +x mvnw
+./mvnw clean package
+
+# for Windows run
+mvnw.cmd clean package
 ```
 
 ## Usage
