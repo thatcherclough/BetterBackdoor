@@ -15,6 +15,7 @@ This backdoor can:
 - Send and receive files to and from victim's computer
 - Start a KeyLogger
 - Get a screenshot of victim's computer
+- Get text copied to victim's clipboard
 
 To compile the backdoor, SocketShell:
 - Copies the necessary jar files to 'backdoor'.

