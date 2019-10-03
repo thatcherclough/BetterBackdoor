@@ -1,18 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.1.8.RELEASE</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 	<groupId>com.github.thatcherdev</groupId>
-	<artifactId>SocketShell</artifactId>
+	<artifactId>BetterBackdoor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SocketShell</name>
-	<description>A backdoor compiling and controlling tool.</description>
+	<name>BetterBackdoor</name>
+	<description>A backdoor creating and controlling tool.</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -56,11 +55,11 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>socketshell</id>
+						<id>betterbackdoor</id>
 						<phase>package</phase>
 						<configuration>
-							<finalName>socketshell</finalName>
-							<mainClass>com.github.thatcherdev.socketshell.SocketShell</mainClass>
+							<finalName>betterbackdoor</finalName>
+							<mainClass>com.github.thatcherdev.betterbackdoor.BetterBackdoor</mainClass>
 							<outputDirectory>${project.basedir}</outputDirectory>
 						</configuration>
 						<goals>
@@ -73,7 +72,7 @@
 						<phase>package</phase>
 						<configuration>
 							<finalName>run</finalName>
-							<mainClass>com.github.thatcherdev.socketshell.backdoor.Backdoor</mainClass>
+							<mainClass>com.github.thatcherdev.betterbackdoor.backdoor.Backdoor</mainClass>
 						</configuration>
 						<goals>
 							<goal>repackage</goal>
@@ -85,13 +84,13 @@
 						<phase>package</phase>
 						<configuration>
 							<finalName>install</finalName>
-							<mainClass>com.github.thatcherdev.socketshell.install.Install</mainClass>
+							<mainClass>com.github.thatcherdev.betterbackdoor.install.Install</mainClass>
 						</configuration>
 						<goals>
 							<goal>repackage</goal>
 						</goals>
 					</execution>
-				 </executions>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

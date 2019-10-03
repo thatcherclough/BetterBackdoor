@@ -1,10 +1,12 @@
-# SocketShell
-Typically, reverse shell utilities such as Netcat have 2 main functions, to pipe remote input into cmd or bash, and output the response.
+# BetterBackdoor
+A backdoor is a program run on a machine that is used to remotely gain access and controll to that machine.
+
+Typically, backdoor utilities such as Netcat have 2 main functions, to pipe remote input into cmd or bash, and output the response.
 This is useful, but it is also limited.
-SocketShell overcomes these limitations by including the ability to inject keystrokes, get screenshots, transfer files, and many other tasks.
+BetterBackdoor overcomes these limitations by including the ability to inject keystrokes, get screenshots, transfer files, and many other tasks.
 
 ## Features
-SocketShell is a backdoor compiling and controlling tool.
+BetterBackdoor can create and controll a backdoor.
 
 This backdoor can:
 - Run Command Prompt commands
@@ -18,8 +20,8 @@ This backdoor can:
 - Get text copied to victim's clipboard
 - Get data from a victim's file (cat)
 
-To compile the backdoor, SocketShell:
-- Copies the necessary jar files to 'backdoor'.
+To create the backdoor, BetterBackdoor:
+- Copies the necessary jar files to a new directory called 'backdoor'.
 - If desired, copies a Java Runtime Environment to 'backdoor'.
 - Creates batch files in 'backdoor' for running the jar files in a packaged Java Runtime Environment and supplying jar files with the server's IPv4 address.
 - Copies all '.duck' DuckyScripts and '.ps1' PowerShell scripts to 'backdoor'.
@@ -34,27 +36,27 @@ install.bat will:
 - Add the backdoor to startup (if executed as administrator)
 - Run the backdoor
 
-Once running, to control the backdoor you must return to SocketShell and run option 1 at start while connected to the same WiFi network as the victim's computer.
+Once running, to control the backdoor you must return to BetterBackdoor and run option 1 at start while connected to the same WiFi network as the victim's computer.
 
 ## Requirements
-- A Java JDK distribution must be installed and added to PATH with label JAVA_HOME.
-- You must use the same computer to compile and control the backdoor.
-  - The computer used to compile the backdoor must be on the same WiFi network as the victim's computer.
-  - The IPv4 address of this computer must remain static in the time between compiling the backdoor and controlling it.
-- The computer used to control the backdoor must have their firewall deactivated.
+- A Java JDK distribution must be installed and added to PATH.
+- You must use the same computer to create and control the backdoor.
+  - The computer used to create the backdoor must be on the same WiFi network as the victim's computer.
+  - The IPv4 address of this computer must remain static in the time between creating the backdoor and controlling it.
+- The computer used to control the backdoor must have their firewall deactivated and must run BetterBackdoor as 'sudo' (if run on Mac or Linux).
 
 ## Compatibility
-SocketShell is compatible with Windows and Linux, while the backdoor is only compatible with Windows.
+BetterBackdoor is compatible with Windows and Linux, while the backdoor is only compatible with Windows.
 
 ## Installation
 ```
-# clone SocketShell
-git clone https://github.com/ThatcherDev/SocketShell.git
+# clone BetterBackdoor
+git clone https://github.com/ThatcherDev/BetterBackdoor.git
 
-# change the working directory to SocketShell
-cd SocketShell
+# change the working directory to BetterBackdoor
+cd BetterBackdoor
 
-# build SocketShell with Maven
+# build BetterBackdoor with Maven
 # for Linux run
 chmod +x mvnw
 ./mvnw clean package
@@ -65,8 +67,8 @@ mvnw.cmd clean package
 
 ## Usage
 ```
-# run SocketShell
-java -jar socketshell.jar
+# run BetterBackdoor
+java -jar BetterBackdoor.jar
 ```
 
 ## License
