@@ -1,6 +1,6 @@
-package com.github.thatcherdev.socketshell.backend;
+package com.github.thatcherdev.betterbackdoor.backend;
 
-import com.github.thatcherdev.socketshell.SocketShell;
+import com.github.thatcherdev.betterbackdoor.BetterBackdoor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -102,7 +102,7 @@ public class Utils {
 			}
 			throw new Exception();
 		} catch (Exception e) {
-			SocketShell.error("Could not get IP address");
+			BetterBackdoor.error("Could not get IP address");
 			return null;
 		}
 	}

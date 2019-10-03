@@ -1,28 +1,28 @@
-package com.github.thatcherdev.socketshell;
+package com.github.thatcherdev.betterbackdoor;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import com.github.thatcherdev.socketshell.shell.Shell;
+import com.github.thatcherdev.betterbackdoor.shell.Shell;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SocketShell {
+public class BetterBackdoor {
 
 	public final static Scanner sc = new Scanner(System.in);
 	public final static String os = System.getProperty("os.name");
 
 	public static void main(String[] args) {
-		System.out.println("  _________              __           __   _________.__           .__  .__\n"
-				+ " /   _____/ ____   ____ |  | __ _____/  |_/   _____/|  |__   ____ |  | |  |\n"
-				+ " \\_____  \\ /  _ \\_/ ___\\|  |/ // __ \\   __\\_____  \\ |  |  \\_/ __ \\|  | |  |\n"
-				+ " /        (  <_> )  \\___|    <\\  ___/|  | /        \\|   Y  \\  ___/|  |_|  |__\n"
-				+ "/_______  /\\____/ \\___  >__|_ \\\\___  >__|/_______  /|___|  /\\___  >____/____/\n"
-				+ "        \\/            \\/     \\/    \\/            \\/      \\/     \\/");
-		System.out.println("Welcome to SocketShell");
-		System.out.println("A backdoor compiling and controlling tool.\n");
+		System.out.println("_________        __    __              __________                __       .___\n"
+				+ "\\_____   \\ _____/  |__/  |_  __________\\______   \\______    ____ |  | __ __| _/____   ___________ \n"
+				+ " |    |  _// __ \\   __\\   __\\/ __ \\_  __ \\    |  _/\\__  \\ _/ ___\\|  |/ // __ |/  _ \\ /  _ \\_  __ \\\n"
+				+ " |    |   \\  ___/|  |  |  | \\  ___/|  | \\/    |   \\ / __ \\\\  \\___|    </ /_/ (  <_> |  <_> )  | \\/\n"
+				+ " |______  /\\___  >__|  |__|  \\___  >__|  |______  /(____  /\\___  >__|_ \\____ |\\____/ \\____/|__|\n"
+				+ "        \\/     \\/                \\/             \\/      \\/     \\/     \\/    \\/");
+		System.out.println("Welcome to BetterBackdoor");
+		System.out.println("A backdoor creating and controlling tool.\n");
 		System.out.println("Select:");
-		System.out.println("[0] Compile backdoor");
+		System.out.println("[0] Create backdoor");
 		System.out.println("[1] Open backdoor shell");
 		String choice = getInput("op01");
 		if (choice.equals("1"))
@@ -37,15 +37,15 @@ public class SocketShell {
 					"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
 							+ "create folder 'jre' in current directory with 'bin' and 'lib' folders from a Windows JRE distribution.\n");
 		System.out.println("Place all desired '.duck' DuckyScripts and '.ps1' PowerShell scripts in scripts\n");
-		System.out.println("Press ENTER to compile...");
+		System.out.println("Press ENTER to create backdoor...");
 		sc.nextLine();
-		System.out.println("Compiling...\n");
+		System.out.println("Creating...\n");
 		try {
-			Setup.compile(jre);
+			Setup.create(jre);
 		} catch (Exception e) {
-			error("Could not compile:\n" + e.getMessage());
+			error("Could not create backdoor:\n" + e.getMessage());
 		}
-		System.out.println("Compiled!\n");
+		System.out.println("Create!\n");
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

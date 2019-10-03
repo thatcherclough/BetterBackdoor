@@ -1,4 +1,4 @@
-package com.github.thatcherdev.socketshell.backend;
+package com.github.thatcherdev.betterbackdoor.backend;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.Buffer;
 
 public class FTP {
 
@@ -87,7 +88,7 @@ public class FTP {
 		FileChannel fileChannel = file.getChannel();
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
 		while (fileChannel.read(buffer) > 0) {
-			buffer.flip();
+			((Buffer) buffer).flip();
 			socketChannel.write(buffer);
 			buffer.clear();
 		}
@@ -107,7 +108,7 @@ public class FTP {
 		FileChannel fileChannel = file.getChannel();
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
 		while (socketChannel.read(buffer) > 0) {
-			buffer.flip();
+			((Buffer) buffer).flip();
 			fileChannel.write(buffer);
 			buffer.clear();
 		}
