@@ -33,7 +33,8 @@ public class Shell {
 				HandleCommand.handle(command);
 			}
 		} catch (Exception e) {
-			if (e.getMessage().equals("String index out of range: -1"))
+			if (e.getMessage().equals("String index out of range: -1")
+					|| e.getMessage().equals("begin 0, end -1, length 0"))
 				BetterBackdoor.error("The victim's computer has disconnected");
 			else
 				BetterBackdoor.error(e.getMessage());

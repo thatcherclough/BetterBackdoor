@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class DuckyScripts {
 
-	private static Robot r;
+	private static Robot robot;
 	private static int defaultDelay;
 	private static ArrayList<Character> regKeys = (ArrayList<Character>) "abcdefghijklmnopqrstuvwxyz`1234567890-=[]\\;',./ "
 			.chars().mapToObj((i) -> Character.valueOf((char) i)).collect(Collectors.toList());
@@ -27,7 +27,7 @@ public class DuckyScripts {
 	public static boolean run(String scriptName) {
 		Scanner in = null;
 		try {
-			r = new Robot();
+			robot = new Robot();
 			in = new Scanner(new File("scripts\\" + scriptName));
 			while (in.hasNextLine()) {
 				String line = in.nextLine();
@@ -103,15 +103,15 @@ public class DuckyScripts {
 			type(args);
 		} else if (command.equals("WINDOWS") || command.equals("SHIFT") || command.equals("CONTROL")
 				|| command.equals("ALT")) {
-			r.keyPress(KeyEvent.class.getField("VK_" + command).getInt(null));
+			robot.keyPress(KeyEvent.class.getField("VK_" + command).getInt(null));
 			if (!args.isEmpty()) {
-				r.keyPress(KeyEvent.class.getField("VK_" + args.toUpperCase()).getInt(null));
-				r.keyRelease(KeyEvent.class.getField("VK_" + args.toUpperCase()).getInt(null));
+				robot.keyPress(KeyEvent.class.getField("VK_" + args.toUpperCase()).getInt(null));
+				robot.keyRelease(KeyEvent.class.getField("VK_" + args.toUpperCase()).getInt(null));
 			}
-			r.keyRelease(KeyEvent.class.getField("VK_" + command).getInt(null));
+			robot.keyRelease(KeyEvent.class.getField("VK_" + command).getInt(null));
 		} else if (!line.startsWith("REM")) {
-			r.keyPress(KeyEvent.class.getField("VK_" + command).getInt(null));
-			r.keyRelease(KeyEvent.class.getField("VK_" + command).getInt(null));
+			robot.keyPress(KeyEvent.class.getField("VK_" + command).getInt(null));
+			robot.keyRelease(KeyEvent.class.getField("VK_" + command).getInt(null));
 		}
 		Thread.sleep(defaultDelay);
 	}
@@ -124,13 +124,13 @@ public class DuckyScripts {
 	private static void type(String toType) {
 		for (char c : toType.toCharArray())
 			if (regKeys.indexOf(c) != -1) {
-				r.keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
-				r.keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
+				robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
+				robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
 			} else {
-				r.keyPress(KeyEvent.VK_SHIFT);
-				r.keyPress(KeyEvent.getExtendedKeyCodeForChar(regKeys.get(shiftKeys.indexOf(c))));
-				r.keyRelease(KeyEvent.getExtendedKeyCodeForChar(regKeys.get(shiftKeys.indexOf(c))));
-				r.keyRelease(KeyEvent.VK_SHIFT);
+				robot.keyPress(KeyEvent.VK_SHIFT);
+				robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(regKeys.get(shiftKeys.indexOf(c))));
+				robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(regKeys.get(shiftKeys.indexOf(c))));
+				robot.keyRelease(KeyEvent.VK_SHIFT);
 			}
 	}
 }

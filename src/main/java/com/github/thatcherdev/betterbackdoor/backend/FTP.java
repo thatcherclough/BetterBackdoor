@@ -66,6 +66,7 @@ public class FTP {
 				rec(filePath, socketChannel);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		} finally {
 			try {
@@ -90,7 +91,7 @@ public class FTP {
 		while (fileChannel.read(buffer) > 0) {
 			((Buffer) buffer).flip();
 			socketChannel.write(buffer);
-			buffer.clear();
+			((Buffer) buffer).clear();
 		}
 		file.close();
 		fileChannel.close();
@@ -110,7 +111,7 @@ public class FTP {
 		while (socketChannel.read(buffer) > 0) {
 			((Buffer) buffer).flip();
 			fileChannel.write(buffer);
-			buffer.clear();
+			((Buffer) buffer).clear();
 		}
 		file.close();
 		fileChannel.close();
