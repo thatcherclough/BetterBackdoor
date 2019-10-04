@@ -32,7 +32,7 @@ public class BetterBackdoor {
 			System.out.println(
 					"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?(y/n):");
 			jre = Boolean.parseBoolean(getInput("yn"));
-		} else if (os.contains("Linux"))
+		} else if (os.contains("Linux") || os.contains("Mac"))
 			System.out.println(
 					"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
 							+ "create folder 'jre' in current directory with 'bin' and 'lib' folders from a Windows JRE distribution.\n");
@@ -45,7 +45,7 @@ public class BetterBackdoor {
 		} catch (Exception e) {
 			error("Could not create backdoor:\n" + e.getMessage());
 		}
-		System.out.println("Create!\n");
+		System.out.println("Created!\n");
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -76,9 +76,6 @@ public class BetterBackdoor {
 			getInput(type);
 		} else if (type.equals("yn") && !(ret.equalsIgnoreCase("y") || ret.equalsIgnoreCase("n"))) {
 			System.out.println("\nInvalid entry\nEnter 'y' or 'n':");
-			return getInput(type);
-		} else if (type.equals("drive") && !new File(ret + ":\\").exists()) {
-			System.out.println("\nDrive not found\nInsert a USB drive and enter it's drive letter:");
 			return getInput(type);
 		} else if (type.startsWith("op") && (!type.substring(2).contains(ret) || !(ret.length() == 1)))
 			return getInput(type);

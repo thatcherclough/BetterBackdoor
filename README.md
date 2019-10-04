@@ -46,7 +46,7 @@ Once running, to control the backdoor you must return to BetterBackdoor and run 
 - The computer used to control the backdoor must have their firewall deactivated and must run BetterBackdoor as 'sudo' (if run on Mac or Linux).
 
 ## Compatibility
-BetterBackdoor is compatible with Windows and Linux, while the backdoor is only compatible with Windows.
+BetterBackdoor is compatible with Windows, Mac, and Linux, while the backdoor is only compatible with Windows.
 
 ## Installation
 ```
@@ -57,12 +57,15 @@ git clone https://github.com/ThatcherDev/BetterBackdoor.git
 cd BetterBackdoor
 
 # build BetterBackdoor with Maven
+# for Windows run
+mvnw.cmd clean package
+
 # for Linux run
 chmod +x mvnw
 ./mvnw clean package
 
-# for Windows run
-mvnw.cmd clean package
+# for Mac run
+sh mvnw clean package
 ```
 
 ## Usage
