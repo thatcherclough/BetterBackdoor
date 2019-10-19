@@ -51,11 +51,9 @@ public class BetterBackdoor {
 		} catch (InterruptedException e) {
 		}
 		System.out.println(
-				"To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC and execute either run.bat or install.bat\n");
-		System.out.println("run.bat will:\n-Start the backdoor\n-Display information for controlling the backdoor\n");
-		System.out.println(
-				"install.bat will:\n-Install the backdoor to 'C:\\ProgramData\\USBDrivers'\n-Add the backdoor to startup (if executed as administrator)\n"
-						+ "-Run the backdoor\n-Display information for controlling the backdoor\n");
+				"To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC.\n"
+						+ "If you packaged a JRE with the backdoor, execute run.bat, otherwise execute run.jar.\n"
+						+ "This will start the backdoor on the victim's PC.\n");
 		System.out.println("Press ENTER to exit...");
 		sc.nextLine();
 	}
@@ -94,21 +92,12 @@ public class BetterBackdoor {
 	}
 
 	/**
-	 * Display error message.
+	 * Displays error message.
 	 *
 	 * @param errorMessage message to display
 	 */
 	public static void error(String errorMessage) {
 		System.out.println("An error occurred:\n" + errorMessage + "\n");
-		try {
-			Thread.sleep(3000);
-		} catch (Exception e) {
-		}
-		System.out.println("Program will now exit");
-		try {
-			Thread.sleep(2000);
-		} catch (Exception e) {
-		}
 		System.exit(0);
 	}
 }

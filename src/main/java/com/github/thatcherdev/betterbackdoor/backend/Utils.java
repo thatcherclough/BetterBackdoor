@@ -16,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 public class Utils {
 
 	/**
-	 * Run {@link command} in Command Prompt and return response.
+	 * Runs {@link command} in Command Prompt and return response.
 	 *
 	 * @param command command to run
 	 * @return response to running command
@@ -50,10 +50,10 @@ public class Utils {
 	}
 
 	/**
-	 * Run PowerShell script {@link script}.
+	 * Runs PowerShell script with name {@link script}.
 	 *
 	 * @param script name of script to run
-	 * @return Response from script
+	 * @return response from script
 	 */
 	public static String runPSScript(String script) {
 		return runCommand("Powershell.exe -executionpolicy remotesigned -File scripts\\" + script);

