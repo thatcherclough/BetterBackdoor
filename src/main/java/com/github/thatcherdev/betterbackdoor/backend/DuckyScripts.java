@@ -19,7 +19,7 @@ public class DuckyScripts {
 	/**
 	 * Cycles though lines from DuckyScript corresponding to {@link scriptName}
 	 * using {@link in}. If applicable, spaces at end of line are removed and line
-	 * is passed to {@link handleLine(String line)}.
+	 * is passed to {@link #handleLine(String line)}.
 	 *
 	 * @param scriptName name of DuckyScript to execute
 	 * @return state of completion
@@ -47,7 +47,7 @@ public class DuckyScripts {
 
 	/**
 	 * {@link line} is split into {@link command} and {@link args} which are then
-	 * mutated to work with robot {@link r}.
+	 * mutated to work with robot {@link #robot}.
 	 *
 	 * @param line line from DuckyScript to execute
 	 * @throws InterruptedException
@@ -117,7 +117,7 @@ public class DuckyScripts {
 	}
 
 	/**
-	 * {@link r} is used to type {@link toType}.
+	 * {@link #robot} is used to type {@link toType}.
 	 *
 	 * @param toType String to type
 	 */

