@@ -37,6 +37,9 @@ This will start the backdoor on the victim's PC.
 
 Once running, to control the backdoor you must return to BetterBackdoor and run option 1 at start while connected to the same WiFi network as the victim's computer.
 
+## Demo
+<a href="https://asciinema.org/a/6K0SOY7W8u7ligNoP3s912kwY" target="_blank"><img src="https://asciinema.org/a/6K0SOY7W8u7ligNoP3s912kwY.svg" width="600"/></a>
+
 ## Requirements
 - A Java JDK distribution >=8 must be installed and added to PATH.
 - You must use the same computer to create and control the backdoor.
@@ -74,4 +77,4 @@ java -jar betterbackdoor.jar
 
 ## License
 - [MIT](https://choosealicense.com/licenses/mit/)
-- Copyright 2019 © ThatcherDev.
+- Copyright 2019 ©️ ThatcherDev.
