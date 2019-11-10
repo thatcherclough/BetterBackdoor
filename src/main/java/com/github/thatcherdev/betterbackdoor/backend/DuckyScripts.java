@@ -11,24 +11,26 @@ public class DuckyScripts {
 
 	private static Robot robot;
 	private static int defaultDelay;
-	private static ArrayList<Character> regKeys = (ArrayList<Character>) "abcdefghijklmnopqrstuvwxyz`1234567890-=[]\\;',./ "
+	final private static ArrayList<Character> regKeys = (ArrayList<Character>) "abcdefghijklmnopqrstuvwxyz`1234567890-=[]\\;',./ "
 			.chars().mapToObj((i) -> Character.valueOf((char) i)).collect(Collectors.toList());
-	private static ArrayList<Character> shiftKeys = (ArrayList<Character>) "ABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+{}|:\"<>?"
+	final private static ArrayList<Character> shiftKeys = (ArrayList<Character>) "ABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+{}|:\"<>?"
 			.chars().mapToObj((i) -> Character.valueOf((char) i)).collect(Collectors.toList());
 
 	/**
-	 * Cycles though lines from DuckyScript corresponding to {@link scriptName}
-	 * using {@link in}. If applicable, spaces at end of line are removed and line
-	 * is passed to {@link #handleLine(String line)}.
+	 * Runs a DuckyScript.
+	 * <p>
+	 * Cycles though lines from the file with the name {@link filename}. If
+	 * applicable, spaces at end of each line are removed and the line is passed to
+	 * {@link #handleLine(String line)} to handle and execute it.
 	 *
-	 * @param scriptName name of DuckyScript to execute
-	 * @return state of completion
+	 * @param filename name of DuckyScript to execute
+	 * @return if DuckyScript was executed successfully
 	 */
-	public static boolean run(String scriptName) {
+	public static boolean run(String filename) {
 		Scanner in = null;
 		try {
 			robot = new Robot();
-			in = new Scanner(new File("scripts\\" + scriptName));
+			in = new Scanner(new File(filename));
 			while (in.hasNextLine()) {
 				String line = in.nextLine();
 				while (line.endsWith(" "))
@@ -46,10 +48,12 @@ public class DuckyScripts {
 	}
 
 	/**
+	 * Handles and executes DuckyScript line {@link line}.
+	 * <p>
 	 * {@link line} is split into {@link command} and {@link args} which are then
-	 * mutated to work with robot {@link #robot}.
+	 * mutated to work with {@link java.awt.Robot} {@link #robot}.
 	 *
-	 * @param line line from DuckyScript to execute
+	 * @param line line to handle and execute
 	 * @throws InterruptedException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
@@ -117,7 +121,7 @@ public class DuckyScripts {
 	}
 
 	/**
-	 * {@link #robot} is used to type {@link toType}.
+	 * Uses {@link java.awt.Robot} {@link #robot} to simulate typing {@link toType}.
 	 *
 	 * @param toType String to type
 	 */

