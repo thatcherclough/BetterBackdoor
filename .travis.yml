@@ -1,10 +1,12 @@
 language: java
 
-script: "mvn cobertura:cobertura"
-
 jdk:
-#  - oraclejdk8
+  - oraclejdk8
   - openjdk8
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+os:
+  - linux
+  - osx
+
+install: true
+script: ./mvnw clean install
