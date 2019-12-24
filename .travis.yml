@@ -2,9 +2,5 @@ language: java
 
 jdk: openjdk8
 
-os:
-  - linux
-  - osx
-
 install: true
 script: ./mvnw clean install
