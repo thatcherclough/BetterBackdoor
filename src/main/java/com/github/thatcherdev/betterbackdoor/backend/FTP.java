@@ -43,14 +43,14 @@ public class FTP {
 	 * Transfers a file with server.
 	 * <p>
 	 * Opens {@link java.nio.channels.SocketChannel} {@link socketChannel} for
-	 * transferring file with server with an IPv4 address of {@link ip}. If
+	 * transferring file with server with an IP address of {@link ip}. If
 	 * {@link protocol} is "send", uses {@link #send} to send file with path
 	 * {@link filePath} to server. If {@link protocol} is "rec", uses {@link #rec}
 	 * to receive file with path {@link filePath} from server.
 	 * 
 	 * @param filePath path of file to transfer
 	 * @param protocol if file should be sent or received
-	 * @param ip       IPv4 address of server to transfer file with
+	 * @param ip       IP address of server to transfer file with
 	 * @throws IOException
 	 */
 	public static void backdoor(String filePath, String protocol, String ip) throws IOException {
