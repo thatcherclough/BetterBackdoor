@@ -8,7 +8,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -87,25 +87,37 @@ public class Utils {
 	}
 
 	/**
-	 * Gets the IPv4 address of the current machine.
+	 * If {@link ipType} is "internal", returns the internal IP address of the
+	 * current machine. Otherwise, if {@link ipType} is "external", returns the
+	 * external IP address of the current machine.
 	 * 
-	 * @return IPv4 address of the current machine
-	 * @throws SocketException
+	 * @param ipType type of IP address to return
+	 * @return either the internal or external IP address of the current machine
+	 * @throws IOException
 	 */
-	public static String getIP() throws SocketException {
-		Enumeration<NetworkInterface> majorInterfaces = NetworkInterface.getNetworkInterfaces();
-		while (majorInterfaces.hasMoreElements()) {
-			NetworkInterface inter = (NetworkInterface) majorInterfaces.nextElement();
-			for (Enumeration<InetAddress> minorInterfaces = inter.getInetAddresses(); minorInterfaces
-					.hasMoreElements();) {
-				InetAddress add = (InetAddress) minorInterfaces.nextElement();
-				if (!add.isLoopbackAddress())
-					if (add instanceof Inet4Address)
-						return add.getHostAddress();
-					else if (add instanceof Inet6Address)
-						continue;
+	public static String getIP(String ipType) throws IOException {
+		String ret = null;
+		if (ipType.equals("internal")) {
+			Enumeration<NetworkInterface> majorInterfaces = NetworkInterface.getNetworkInterfaces();
+			while (majorInterfaces.hasMoreElements()) {
+				NetworkInterface inter = (NetworkInterface) majorInterfaces.nextElement();
+				for (Enumeration<InetAddress> minorInterfaces = inter.getInetAddresses(); minorInterfaces
+						.hasMoreElements();) {
+					InetAddress add = (InetAddress) minorInterfaces.nextElement();
+					if (!add.isLoopbackAddress())
+						if (add instanceof Inet4Address)
+							ret = add.getHostAddress();
+						else if (add instanceof Inet6Address)
+							continue;
+				}
 			}
+		} else if (ipType.equals("external")) {
+			URL checkIP = new URL("http://checkip.amazonaws.com");
+			BufferedReader in = new BufferedReader(new InputStreamReader(checkIP.openStream()));
+			String ip = in.readLine();
+			in.close();
+			ret = ip;
 		}
-		return null;
+		return ret;
 	}
 }

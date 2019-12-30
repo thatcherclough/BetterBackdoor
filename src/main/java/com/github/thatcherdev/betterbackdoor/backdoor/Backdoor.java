@@ -27,8 +27,8 @@ public class Backdoor {
 	 * <p>
 	 * Uses {@link #readFromJar(String)} to get the contents of "ip", a text file
 	 * inside the jar file this class will be running from. This file contains the
-	 * IPv4 address of the server to be used to control the backdoor. Sets
-	 * {@link #ip} to this address. Creates directory "gathered".
+	 * IP address of the server to be used to control the backdoor. Sets {@link #ip}
+	 * to this address. Creates directory "gathered".
 	 */
 	private Backdoor() {
 		try {
