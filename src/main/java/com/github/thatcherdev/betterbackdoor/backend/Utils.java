@@ -113,10 +113,10 @@ public class Utils {
 			}
 		} else if (ipType.equals("external")) {
 			URL checkIP = new URL("http://checkip.amazonaws.com");
-			BufferedReader in = new BufferedReader(new InputStreamReader(checkIP.openStream()));
-			String ip = in.readLine();
-			in.close();
-			ret = ip;
+			try(BufferedReader in = new BufferedReader(new InputStreamReader(checkIP.openStream())))
+			{
+			ret = in.readLine();
+			}
 		}
 		return ret;
 	}
