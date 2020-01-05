@@ -86,10 +86,9 @@ public class Backdoor {
 	 * @return contents of the file
 	 */
 	private String readFromJar(String filename) {
-		String ret = null;
-		Scanner in = new Scanner(getClass().getResourceAsStream(filename));
-		ret = in.nextLine();
-		in.close();
-		return ret;
+		try(Scanner in = new Scanner(getClass().getResourceAsStream(filename)))
+		{
+		return in.nextLine();
+		}
 	}
 }

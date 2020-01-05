@@ -27,10 +27,8 @@ public class DuckyScripts {
 	 * @return if DuckyScript was executed successfully
 	 */
 	public static boolean run(String filename) {
-		Scanner in = null;
-		try {
+		try (Scanner in = new Scanner(new File(filename));) {
 			robot = new Robot();
-			in = new Scanner(new File(filename));
 			while (in.hasNextLine()) {
 				String line = in.nextLine();
 				while (line.endsWith(" "))
@@ -41,9 +39,6 @@ public class DuckyScripts {
 			return true;
 		} catch (Exception e) {
 			return false;
-		} finally {
-			if (in != null)
-				in.close();
 		}
 	}
 

