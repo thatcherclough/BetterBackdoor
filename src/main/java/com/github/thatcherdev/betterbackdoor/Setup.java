@@ -88,7 +88,6 @@ public class Setup {
 			try (Writer writer = Files.newBufferedWriter(fileSystem.getPath(filename), StandardCharsets.UTF_8,
 					StandardOpenOption.CREATE)) {
 				writer.write(fileContents);
-				writer.close();
 			}
 		}
 	}
