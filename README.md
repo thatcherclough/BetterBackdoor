@@ -80,4 +80,4 @@ java -jar betterbackdoor.jar
 
 ## License
 - [MIT](https://choosealicense.com/licenses/mit/)
-- Copyright 2019 © ThatcherDev.
+- Copyright 2020 © ThatcherDev.

