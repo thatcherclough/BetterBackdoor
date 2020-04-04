@@ -1,6 +1,6 @@
-package com.github.thatcherdev.betterbackdoor.shell;
+package com.thatcherdev.betterbackdoor.shell;
 
-import com.github.thatcherdev.betterbackdoor.BetterBackdoor;
+import com.thatcherdev.betterbackdoor.BetterBackdoor;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;

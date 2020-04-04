@@ -21,6 +21,8 @@ This created backdoor can:
 - Get a screenshot of victim's computer
 - Get text copied to victim's clipboard
 - Get contents from a victim's file (cat)
+- Compress a directory to a ZIP file
+- Decompress a ZIP file
 
 This backdoor uses a client and server socket connection to communicate.
 The attacker starts a server and the victim connects to this server as a client.

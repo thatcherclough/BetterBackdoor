@@ -7,7 +7,7 @@
 		<version>2.1.8.RELEASE</version>
 		<relativePath />
 	</parent>
-	<groupId>com.github.thatcherdev</groupId>
+	<groupId>com.thatcherdev</groupId>
 	<artifactId>BetterBackdoor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BetterBackdoor</name>
@@ -53,7 +53,7 @@
 						<phase>package</phase>
 						<configuration>
 							<finalName>betterbackdoor</finalName>
-							<mainClass>com.github.thatcherdev.betterbackdoor.BetterBackdoor</mainClass>
+							<mainClass>com.thatcherdev.betterbackdoor.BetterBackdoor</mainClass>
 							<outputDirectory>${project.basedir}</outputDirectory>
 						</configuration>
 						<goals>
@@ -66,7 +66,7 @@
 						<phase>package</phase>
 						<configuration>
 							<finalName>run</finalName>
-							<mainClass>com.github.thatcherdev.betterbackdoor.backdoor.Backdoor</mainClass>
+							<mainClass>com.thatcherdev.betterbackdoor.backdoor.Backdoor</mainClass>
 						</configuration>
 						<goals>
 							<goal>repackage</goal>

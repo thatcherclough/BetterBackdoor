@@ -1,4 +1,4 @@
-package com.github.thatcherdev.betterbackdoor.backend;
+package com.thatcherdev.betterbackdoor.backend;
 
 import java.awt.Robot;
 import java.awt.event.KeyEvent;

