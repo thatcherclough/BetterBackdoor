@@ -14,6 +14,7 @@ import java.nio.Buffer;
 public class FTP {
 
 	public static boolean socketTransferDone = false;
+	public static String error = null;
 
 	/**
 	 * Transfers a file with client.
@@ -42,7 +43,6 @@ public class FTP {
 					else if (protocol.equals("rec"))
 						rec(filePath, socketChannel);
 				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					try {
 						if (serverSocketChannel != null)
@@ -50,7 +50,6 @@ public class FTP {
 						if (socketChannel != null)
 							socketChannel.close();
 					} catch (Exception e) {
-						e.printStackTrace();
 					}
 				}
 			}
@@ -87,13 +86,12 @@ public class FTP {
 					socketChannel.close();
 					socketTransferDone = true;
 				} catch (Exception e) {
-					e.printStackTrace();
+					error = e.getMessage();
 				} finally {
 					try {
 						if (socketChannel != null)
 							socketChannel.close();
 					} catch (Exception e) {
-						e.printStackTrace();
 					}
 				}
 			}
