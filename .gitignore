@@ -5,3 +5,4 @@
 /backdoor/
 .DS_Store
 /*.jar
+/gathered

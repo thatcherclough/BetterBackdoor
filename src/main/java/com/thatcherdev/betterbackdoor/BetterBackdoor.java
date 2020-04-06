@@ -3,8 +3,10 @@ package com.thatcherdev.betterbackdoor;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Scanner;
+
 import com.thatcherdev.betterbackdoor.backend.Utils;
 import com.thatcherdev.betterbackdoor.shell.Shell;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication

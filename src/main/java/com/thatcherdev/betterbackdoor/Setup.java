@@ -14,8 +14,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.io.FileUtils;
+
 import com.thatcherdev.betterbackdoor.backend.Utils;
+
+import org.apache.commons.io.FileUtils;
 
 public class Setup {
 

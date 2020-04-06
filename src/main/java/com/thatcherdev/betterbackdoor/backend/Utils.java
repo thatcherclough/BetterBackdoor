@@ -130,10 +130,10 @@ public class Utils {
 				dirToZip(rootDir, sourceDir + File.separator + fileName, out);
 			else {
 				ZipEntry entry = new ZipEntry(
-						sourceDir.replace(rootDir.getParent() + File.separator, "") + File.separator + fileName);
+						sourceDir.replace(rootDir.getParent() + File.separator, "") + "/" + fileName);
 				out.putNextEntry(entry);
 
-				FileInputStream in = new FileInputStream(sourceDir + File.separator + fileName);
+				FileInputStream in = new FileInputStream(sourceDir + "/" + fileName);
 				IOUtils.copy(in, out);
 				IOUtils.closeQuietly(in);
 			}
