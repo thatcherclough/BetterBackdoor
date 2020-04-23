@@ -151,7 +151,7 @@ public class Utils {
 	 */
 	public static String unzip(String zipFileName) throws IOException {
 		ZipFile zipFile = new ZipFile(zipFileName);
-		String outputDir = new File(zipFileName).getParent();
+		String outputDir = new File(zipFileName).getParentFile().getAbsolutePath();
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
