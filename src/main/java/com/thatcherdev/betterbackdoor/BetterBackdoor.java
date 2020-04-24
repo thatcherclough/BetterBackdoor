@@ -37,11 +37,7 @@ public class BetterBackdoor {
 					+ "or over the internet, WAN (requires port forwarding):");
 			System.out.println("[0] LAN");
 			System.out.println("[1] WAN (requires port forwarding)");
-			String ipType = null;
-			if (getInput("op01").equals("0"))
-				ipType = "internal";
-			else
-				ipType = "external";
+			String ipType = getInput("op01").equals("0") ? "internal":"external";
 
 			boolean jre = false;
 			if (os.contains("Windows")) {
@@ -81,7 +77,7 @@ public class BetterBackdoor {
 	}
 
 	/**
-	 * Gets user input and verify it's validity with {@link type}.
+	 * Gets user input and verify it's validity with {@code type}.
 	 *
 	 * @param type type of input
 	 * @return user input
@@ -114,7 +110,7 @@ public class BetterBackdoor {
 	}
 
 	/**
-	 * Displays "An error occurred" followed by {@link errorMessage} and exits.
+	 * Displays "An error occurred" followed by {@code errorMessage} and exits.
 	 *
 	 * @param errorMessage error message to display
 	 */

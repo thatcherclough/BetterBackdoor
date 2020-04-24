@@ -1,8 +1,8 @@
 /target/
-/.settings/
-/.vscode/
 /jre/
 /backdoor/
 .DS_Store
 /*.jar
 /gathered
+/.idea/
+BetterBackdoor.iml

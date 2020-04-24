@@ -12,16 +12,16 @@ public class DuckyScripts {
 	private static Robot robot;
 	private static int defaultDelay;
 	final private static ArrayList<Character> regKeys = (ArrayList<Character>) "abcdefghijklmnopqrstuvwxyz`1234567890-=[]\\;',./ "
-			.chars().mapToObj((i) -> Character.valueOf((char) i)).collect(Collectors.toList());
+			.chars().mapToObj((i) -> (char) i).collect(Collectors.toList());
 	final private static ArrayList<Character> shiftKeys = (ArrayList<Character>) "ABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+{}|:\"<>?"
-			.chars().mapToObj((i) -> Character.valueOf((char) i)).collect(Collectors.toList());
+			.chars().mapToObj((i) -> (char) i).collect(Collectors.toList());
 
 	/**
 	 * Runs a DuckyScript.
 	 * <p>
-	 * Cycles though lines from the file with the name {@link filename}. If
+	 * Cycles though lines from the file with the name {@code filename}. If
 	 * applicable, spaces at end of each line are removed and the line is passed to
-	 * {@link #handleLine(String line)} to handle and execute it.
+	 * {@link #handleLine} to handle and execute it.
 	 *
 	 * @param filename name of DuckyScript to execute
 	 * @return if DuckyScript was executed successfully
@@ -48,9 +48,9 @@ public class DuckyScripts {
 	}
 
 	/**
-	 * Handles and executes DuckyScript line {@link line}.
+	 * Handles and executes DuckyScript line {@code line}.
 	 * <p>
-	 * {@link line} is split into {@link command} and {@link args} which are then
+	 * {@code line} is split into {@code command} and {@code args} which are then
 	 * mutated to work with {@link java.awt.Robot} {@link #robot}.
 	 *
 	 * @param line line to handle and execute
@@ -121,13 +121,13 @@ public class DuckyScripts {
 	}
 
 	/**
-	 * Uses {@link java.awt.Robot} {@link #robot} to simulate typing {@link toType}.
+	 * Uses {@link java.awt.Robot} {@link #robot} to simulate typing {@code toType}.
 	 *
 	 * @param toType String to type
 	 */
 	private static void type(String toType) {
 		for (char c : toType.toCharArray())
-			if (regKeys.indexOf(c) != -1) {
+			if (regKeys.contains(c)) {
 				robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
 				robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
 			} else {

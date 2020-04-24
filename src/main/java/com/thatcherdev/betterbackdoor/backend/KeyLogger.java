@@ -15,7 +15,7 @@ public class KeyLogger implements NativeKeyListener {
 	private boolean shift = false;
 
 	/**
-	 * Starts a key logger and logs keys to {@link dir}\keys.log.
+	 * Starts a key logger and logs keys to {@code dir}\keys.log.
 	 * 
 	 * @param dir directory to log keys to
 	 */

