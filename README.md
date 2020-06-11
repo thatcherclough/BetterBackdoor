@@ -23,7 +23,8 @@ This created backdoor can:
 - Decompress a ZIP file
 
 This backdoor uses a client and server socket connection to communicate.
-The attacker starts a server and the victim connects to this server as a client.
+The attacker starts a server, and the victim connects to this server as a client.
+(Note: if multiple clients attempt to connect, the user is prompted to select which client to connect to)
 Once a connection is established, commands can be sent to the client in order to control the backdoor. 
 
 To create the backdoor, BetterBackdoor:
