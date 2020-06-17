@@ -16,7 +16,7 @@ public class KeyLogger implements NativeKeyListener {
 
 	/**
 	 * Starts a key logger and logs keys to {@code dir}\keys.log.
-	 * 
+	 *
 	 * @param dir directory to log keys to
 	 */
 	public static void start(String dir) {

