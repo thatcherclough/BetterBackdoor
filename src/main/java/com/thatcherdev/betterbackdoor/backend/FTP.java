@@ -63,7 +63,7 @@ public class FTP {
 	 * {@code protocol} is "send", uses {@link #send} to send file with path
 	 * {@code filePath} to server. If {@code protocol} is "rec", uses {@link #rec}
 	 * to receive file with path {@code filePath} from server.
-	 * 
+	 *
 	 * @param filePath path of file to transfer
 	 * @param protocol if file should be sent or received
 	 * @param ip       IP address of server to transfer file with
