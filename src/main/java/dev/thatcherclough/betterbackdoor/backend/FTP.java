@@ -1,4 +1,4 @@
-package com.thatcherdev.betterbackdoor.backend;
+package dev.thatcherclough.betterbackdoor.backend;
 
 import java.io.File;
 import java.io.IOException;
