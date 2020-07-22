@@ -1,4 +1,4 @@
-package com.thatcherdev.betterbackdoor.backdoor;
+package dev.thatcherclough.betterbackdoor.backdoor;
 
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -13,10 +13,10 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-import com.thatcherdev.betterbackdoor.backend.DuckyScripts;
-import com.thatcherdev.betterbackdoor.backend.FTP;
-import com.thatcherdev.betterbackdoor.backend.KeyLogger;
-import com.thatcherdev.betterbackdoor.backend.Utils;
+import dev.thatcherclough.betterbackdoor.backend.DuckyScripts;
+import dev.thatcherclough.betterbackdoor.backend.FTP;
+import dev.thatcherclough.betterbackdoor.backend.KeyLogger;
+import dev.thatcherclough.betterbackdoor.backend.Utils;
 
 import org.apache.commons.io.FileUtils;
 

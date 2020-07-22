@@ -1,4 +1,4 @@
-package com.thatcherdev.betterbackdoor.backdoor;
+package dev.thatcherclough.betterbackdoor.backdoor;
 
 import java.io.*;
 import java.net.Socket;

