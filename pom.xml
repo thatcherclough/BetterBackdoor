@@ -7,7 +7,7 @@
 		<version>2.1.8.RELEASE</version>
 		<relativePath />
 	</parent>
-	<groupId>com.thatcherdev</groupId>
+	<groupId>dev.thatcherclough</groupId>
 	<artifactId>BetterBackdoor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BetterBackdoor</name>
