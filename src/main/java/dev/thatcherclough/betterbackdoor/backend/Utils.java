@@ -1,22 +1,13 @@
 package dev.thatcherclough.betterbackdoor.backend;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Objects;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -25,6 +16,9 @@ import dev.thatcherclough.betterbackdoor.backdoor.Backdoor;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Utils {
 
@@ -214,5 +208,31 @@ public class Utils {
 			ret = ip;
 		}
 		return ret;
+	}
+
+	public static String encrypt(String toEncrypt, String key) throws NoSuchPaddingException, NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException,
+			BadPaddingException, IllegalBlockSizeException {
+		byte[] toEncryptBytes = toEncrypt.getBytes("UTF8");
+
+		byte[] keyBytes = Base64.getDecoder().decode(key);
+		SecretKey encryptionKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES");
+
+		Cipher cipher = Cipher.getInstance("AES");
+		cipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
+		byte[] cipherBytes = cipher.doFinal(toEncryptBytes);
+		return Base64.getEncoder().encodeToString(cipherBytes);
+	}
+
+	public static String decrypt(String toDecrypt, String key) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException,
+			IllegalBlockSizeException, InvalidKeyException {
+		byte[] toDecryptBytes = Base64.getDecoder().decode(toDecrypt);
+
+		byte[] keyBytes = Base64.getDecoder().decode(key);
+		SecretKey encryptionKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES");
+
+		Cipher cipher = Cipher.getInstance("AES");
+		cipher.init(Cipher.DECRYPT_MODE, encryptionKey);
+		byte[] decryptedBytes = cipher.doFinal(toDecryptBytes);
+		return new String(decryptedBytes, "UTF8");
 	}
 }

