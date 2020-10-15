@@ -29,8 +29,8 @@ Once a connection is established, commands can be sent to the client in order to
 
 To create the backdoor, BetterBackdoor:
 - Creates 'run.jar', the backdoor jar file, and copies it to directory 'backdoor'.
-- Appends a text file containing the attacker's IP address to 'run.jar'. 
-  - Note: this IP address is written in plain text.
+- Appends a text file containing the attacker's IP address and an encryption key (if the attacker selected to encrypt the data sent to and from the backdoor) to 'run.jar'. 
+  - Note: this data is written in plain text.
 - If desired, copies a Java Runtime Environment to 'backdoor' and creates batch file 'run.bat' for running the backdoor in the packaged Java Runtime Environment.
 
 The backdoor can operate within a single network, LAN, and over the internet, WAN. 
